@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list id="4ed76096-16a8-4b58-869b-047fdbf1594c" name="Ignore" comment="">
+    <list default="true" id="3321a0e8-4e95-490b-816a-120d501c61cb" name="Default" comment="">
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.gitignore" afterPath="$PROJECT_DIR$/.gitignore" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
     </list>
-    <list default="true" id="3321a0e8-4e95-490b-816a-120d501c61cb" name="Default" comment="" />
     <ignored path="$PROJECT_DIR$/out/" />
     <ignored path="$PROJECT_DIR$/target/" />
     <ignored path="$PROJECT_DIR$/StockStrategy/target/" />
@@ -14,7 +14,6 @@
     <ignored mask="*.class" />
     <ignored mask="StockDataAnalyzer\2017*\*.txt" />
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
-    <file path="$PROJECT_DIR$/.idea/workspace.xml" ignored="false" />
     <option name="TRACKING_ENABLED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -38,11 +37,21 @@
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file leaf-file-name="StockDataAnalyzer.java" pinned="false" current-in-tab="true">
+      <file leaf-file-name="StockDataAnalyzer.java" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/StockDataAnalyzer/src/djx/stockdataanalyzer/StockDataAnalyzer.java">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="244">
               <caret line="26" column="64" lean-forward="false" selection-start-line="26" selection-start-column="64" selection-end-line="26" selection-end-column="64" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name=".gitignore" pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/.gitignore">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="552">
+              <caret line="36" column="19" lean-forward="true" selection-start-line="36" selection-start-column="19" selection-end-line="36" selection-end-column="19" />
               <folding />
             </state>
           </provider>
@@ -624,7 +633,7 @@
       <changelist id="" name="StockDataStoreJava" comment="" />
       <changelist id="" name="StockStrategyAnalyzer" comment="" />
       <changelist id="" name="StockStrategyAnalyzerWeb" comment="" />
-      <changelist id="4ed76096-16a8-4b58-869b-047fdbf1594c" name="Ignore" comment="" />
+      <changelist id="" name="Ignore" comment="" />
       <changelist id="3321a0e8-4e95-490b-816a-120d501c61cb" name="Default" comment="" />
       <created>1487949092004</created>
       <option name="number" value="Default" />
@@ -636,7 +645,7 @@
       <workItem from="1487955639695" duration="7974000" />
       <workItem from="1488012115614" duration="181000" />
       <workItem from="1488012318829" duration="168000" />
-      <workItem from="1488025356390" duration="7131000" />
+      <workItem from="1488025356390" duration="7192000" />
     </task>
     <task id="LOCAL-00001" summary="StockGainAnalyzer">
       <created>1488092922719</created>
@@ -708,11 +717,18 @@
       <option name="project" value="LOCAL" />
       <updated>1488094508374</updated>
     </task>
-    <option name="localTasksCounter" value="11" />
+    <task id="LOCAL-00011" summary="Ignore">
+      <created>1488094619005</created>
+      <option name="number" value="00011" />
+      <option name="presentableId" value="LOCAL-00011" />
+      <option name="project" value="LOCAL" />
+      <updated>1488094619005</updated>
+    </task>
+    <option name="localTasksCounter" value="12" />
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="19385000" />
+    <option name="totallyTimeSpent" value="19446000" />
   </component>
   <component name="TodoView">
     <todo-panel id="selected-file">
@@ -781,7 +797,8 @@
     <MESSAGE value="git ignore&#10;" />
     <MESSAGE value="StockStrategyAnalyzerWeb" />
     <MESSAGE value="root config&#10;" />
-    <option name="LAST_COMMIT_MESSAGE" value="root config&#10;" />
+    <MESSAGE value="Ignore" />
+    <option name="LAST_COMMIT_MESSAGE" value="Ignore" />
     <option name="MAKE_NEW_CHANGELIST_ACTIVE" value="true" />
   </component>
   <component name="XDebuggerManager">
@@ -1145,17 +1162,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/.idea/workspace.xml">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1357">
-          <caret line="59" column="41" lean-forward="false" selection-start-line="59" selection-start-column="41" selection-end-line="59" selection-end-column="41" />
-          <folding>
-            <element signature="e#9119#9123#0" expanded="true" />
-            <element signature="e#9129#9133#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/StockStrategyAnalyzer/src/main/main.iml">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="0">
@@ -1172,14 +1178,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/.gitignore">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="507">
-          <caret line="35" column="0" lean-forward="true" selection-start-line="35" selection-start-column="0" selection-end-line="35" selection-end-column="0" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/.idea/modules.xml">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="0">
@@ -1188,10 +1186,29 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/.idea/workspace.xml">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="622">
+          <caret line="59" column="14" lean-forward="true" selection-start-line="59" selection-start-column="14" selection-end-line="59" selection-end-column="14" />
+          <folding>
+            <element signature="e#9599#9603#0" expanded="true" />
+            <element signature="e#9609#9613#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/StockDataAnalyzer/src/djx/stockdataanalyzer/StockDataAnalyzer.java">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="244">
           <caret line="26" column="64" lean-forward="false" selection-start-line="26" selection-start-column="64" selection-end-line="26" selection-end-column="64" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/.gitignore">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="552">
+          <caret line="36" column="19" lean-forward="true" selection-start-line="36" selection-start-column="19" selection-end-line="36" selection-end-column="19" />
           <folding />
         </state>
       </provider>
