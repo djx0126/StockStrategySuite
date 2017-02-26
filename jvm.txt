@@ -1,0 +1,1 @@
+-server -XX:+AggressiveOpts -Xms4000m -Xmx4000m  -XX:+UseConcMarkSweepGC -XX:+UseFastAccessorMethods
