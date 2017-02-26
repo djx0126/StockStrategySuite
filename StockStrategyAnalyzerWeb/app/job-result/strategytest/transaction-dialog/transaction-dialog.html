@@ -1,0 +1,80 @@
+<div class='dialog transaction-dialog'>
+	<div class='dialog-title flex-container flex-container-column'>
+		<div class='flex-container flex-container-row transaction-dialog-title'>
+			<div>Transactions {{transactionDialog.strategy}}</div>
+			<!--<div ng-if="transactionDialog.strategyProperty">-->
+			<div>
+				<span ng-show="transactionDialog.changed">*</span>
+				<input type="text" ng-model="transactionDialog.strategyProperty.description"
+					   ng-change="transactionDialog.onChange()"
+					   class="description">
+				<input type="button" value="save" ng-click="transactionDialog.onSaveClicked()">
+			</div>
+		</div>
+
+		<div class='filtered-statistics flex-container flex-container-row'>
+			<div>
+				<select ng-model='transactionDialog.selectedFilterId'>
+					<option ng-repeat="filter in transactionDialog.filterTypes" value="{{filter.id}}" ng-selected="transactionDialog.selectedFilterId == filter.id">{{filter.label}}</option>
+				</select>
+				<input ng-if="transactionDialog.selectedFilterId !== 'no_filter'"
+					   class="filter-value"
+					   type="{{transactionDialog.filterTypes[transactionDialog.selectedFilterId].type}}"
+					   ng-model="transactionDialog.filterTypes[transactionDialog.selectedFilterId].value"
+					   ng-model-options="{debounce:1000}">
+				<input type="checkbox"
+					   ng-checked="!transactionDialog.showTransactionStatistics"
+					   ng-click="transactionDialog.showTransactionStatistics = !transactionDialog.showTransactionStatistics">
+				<span>By Day</span>
+			</div>
+
+
+			<div ng-show="transactionDialog.showTransactionStatistics">
+				<span>counter: {{transactionDialog.transactionStatistics.counter}}</span>
+				<span>accuracy: {{transactionDialog.transactionStatistics.accuracy|formatInt3}}</span>
+				<span>rate: {{transactionDialog.transactionStatistics.rate|formatInt3}}</span>
+				<span>avgGain: {{transactionDialog.transactionStatistics.avgGain|formatInt3}}</span>
+				<span>kaily: {{transactionDialog.transactionStatistics.kaily|formatInt2}}</span>
+			</div>
+
+			<div ng-show="!transactionDialog.showTransactionStatistics">
+				<span>counter: {{transactionDialog.dayStatistics.counter}}</span>
+				<span>accuracy: {{transactionDialog.dayStatistics.accuracy|formatInt3}}</span>
+				<span>rate: {{transactionDialog.dayStatistics.rate|formatInt3}}</span>
+				<span>avgGain: {{transactionDialog.dayStatistics.avgGain|formatInt3}}</span>
+				<span>kaily: {{transactionDialog.dayStatistics.kaily|formatInt2}}</span>
+			</div>
+
+		</div>
+	</div>
+	<div class='dialog-container'>
+
+
+		<div ng-repeat="trasactionDateItem in transactionDialog.transactions">
+			<div>
+				<a href="" ng-click='transactionDialog.toggleShowDetailList(trasactionDateItem)'>
+					<span>Buy date:</span><span>{{trasactionDateItem.buyDate}}</span>
+				</a>
+				<span>Count: </span><span>{{trasactionDateItem.count}}</span>
+				<span>Gain: </span><span>{{trasactionDateItem.sum|formatInt3}}</span>
+				<span>Avg gain: </span><span>{{trasactionDateItem.avgGain|formatInt3}}</span>
+			</div>
+			<div ng-if="transactionDialog.showDetailList(trasactionDateItem)">
+			   <div ng-repeat="transaction in trasactionDateItem.list">
+			   		<span>Stock Code:</span><span>{{transaction.stockCode}}</span>
+			   		<span>Buy date:</span><span>{{transaction.buyDate}}</span>
+			   		<span>Sell date:</span><span>{{transaction.sellDate}}</span>
+			   		<span>Buy price:</span><span>{{transaction.buyPrice|formatInt2}}</span>
+			   		<span>Sell price:</span><span>{{transaction.sellPrice|formatInt2}}</span>
+			   		<span>Gain:</span><span>{{(transaction.sellPrice-transaction.buyPrice)*100/transaction.buyPrice|formatInt3}}</span>
+			   </div>
+			</div>
+		</div>
+		
+	</div>
+	<div class='dialog-footer'>
+		
+		<input type="button" value="OK" ng-click='transactionDialog.okClicked()' class="dialog-footer-button"/>
+		
+	</div>
+</div>

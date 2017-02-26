@@ -1,0 +1,54 @@
+.modal-backdrop{
+	background-color: #ccc;
+position: absolute;
+top: 0;
+left: 0;
+height: 100%;
+width: 100%;
+opacity: 0.3;
+}
+
+.modal{
+	position: absolute;
+top: 0;
+left: 0;
+height: 50%;
+width: 50%;
+background-color: #fff;
+border: 1px solid;
+margin-left: 25%;
+margin-top: 12%;
+}
+
+.dialog{
+	display: flex;
+	flex-direction: column;
+	position: absolute;
+height: 100%;
+width: 100%;
+}
+
+.dialog-title{
+	flex: 0 0 30px;
+	border-bottom: 1px solid;
+	padding-left: 10px;
+	padding-top: 10px;
+	font-weight: 800;
+}
+.dialog-container{
+	flex: 1 1 100%;
+	padding: 10px;
+	overflow-y: auto;
+}
+.dialog-footer{
+	flex: 0 0 30px;
+	border-top: 1px solid;
+}
+
+.dialog-footer-button{
+	float: right;
+	margin-right: 40px;
+}
+.dialog .dialog-container label{
+	display: block;
+}

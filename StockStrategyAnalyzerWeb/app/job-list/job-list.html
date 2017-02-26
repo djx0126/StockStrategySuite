@@ -1,0 +1,22 @@
+<div  ng-controller='job-list-controller'>
+	<div class= 'job-item' ng-repeat='job in jobs track by job.id' ng-click="activeJob(job)"  
+	ng-class="{'running': job.state===1,'faild': job.state===3,'onestocktest':job.type===1,'findtobuy':job.type===2,'strategytest':job.type===3}" >
+		<div ng-class="{'active-job': isJobActive(job) }">
+			<div class='job-item-info flex-container flex-container-row flex-wrap'>
+				<div class='job-item-info-id'>{{job.id}}</div>
+				<div class='job-item-info-type'>{{jobTypes[job.type]}}</div>
+				<div class='job-item-info-state'>{{jobStates[job.state]}}</div>
+				<div class='job-item-info-creation-date'>{{job.creationDate}}</div>
+				<input type='button' class='job-item-info-delete-job' ng-show="isJobActive(job)" value='X' ng-click='removeJob(job)'>
+			</div>
+			<div class="job-param">
+				<div ng-show="!!job.param.startDate" class="job-param-item">Start Date: {{job.param.startDate}}</div>
+				<div ng-show="!!job.param.endDate" class="job-param-item">End Date: {{job.param.endDate}}</div>
+				<div ng-show="!!job.param.strategy" class="job-param-item">Strategy: {{job.param.strategy}}</div>
+				<div ng-show="!!job.param.stockCode" class="job-param-item">Stock Code: {{job.param.stockCode}}</div>
+			</div>
+		</div>
+		
+		
+	</div>
+</div>

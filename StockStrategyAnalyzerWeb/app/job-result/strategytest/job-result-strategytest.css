@@ -1,0 +1,20 @@
+.strateytest-result-detail-row{
+	border-bottom: 1px solid blue;
+	heigth: 26px;
+}
+
+
+
+.strategytest-result-chart{
+	height: 600px;
+	width: calc(100% - 2px);
+	border: 1px dotted blue;
+}
+
+.strategy-transaction-dialog{
+	width: 80%;
+	margin-left: 10%;
+	height: 80%;
+	margin-top: 5%;
+}
+

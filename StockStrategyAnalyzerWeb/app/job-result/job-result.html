@@ -1,0 +1,31 @@
+<div class='job-result'>
+
+	
+	<div ng-show="job.state ===0 || job.state ===1" class='waiting-info'>
+	Job {{job.id}} is not finished, waiting...
+	</div>
+	
+	<div ng-show="job.state === 2" >
+		<div ng-show="!vm.resultReady" class='waiting-info'>loading...</div>
+		<div ng-if="vm.resultReady">
+			
+			<div ng-switch='vm.job.type'>
+				<div ng-switch-when="1">
+					<job-result-onestocktest result='vm.result' job-id='{{job.id}}'></job-result-onestocktest>
+				</div>
+				<div ng-switch-when="2">
+					<job-result-findtobuy result='vm.result'></job-result-findtobuy>
+				</div>
+				<div ng-switch-when="3">
+					<job-result-strategytest result='vm.result' job-id='{{job.id}}'></job-result-strategytest>
+				</div>
+			</div>
+		</div>
+	</div>
+	
+	<div ng-show="job.state ===3" class='failed-info'>
+		<divclass='failed-info'>Ooooops, job {{job.id}} failed.</div>
+	</div>
+	
+	
+</div>

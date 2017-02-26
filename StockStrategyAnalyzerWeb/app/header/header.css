@@ -1,0 +1,19 @@
+.header-title{
+	flex: 1 1 auto;
+	font-size: 40px;
+}
+
+.header-right{
+	flex: 1 10 60%;
+	display: flex;
+	flex-direction: row-reverse;
+}
+
+.new-job-btn{
+flex: 0 1 25%;
+margin-right: 30px;
+width: 300px;
+height: 50px;
+margin-top: 90px;
+font-size: 30px;
+}

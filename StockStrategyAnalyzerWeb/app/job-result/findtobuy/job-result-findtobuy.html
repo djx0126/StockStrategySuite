@@ -1,0 +1,12 @@
+<div class="job-result-findtobuy">
+	<div>Find To Buy</div>
+	
+	<div ng-repeat="result in vm.resultFindToBuy" class="strategy-result">
+		<div><span class='result-expander' ng-click='vm.toggleExpandResult(result)'><span ng-show='result.expand'>-</span><span ng-show='!result.expand'>+</span>
+			</span>  Strategy: {{result.strategy}} ({{result.stockGain.length}})</div>
+		<div ng-show='result.expand' ng-repeat="stockGainItem in result.stockGain" class="result-stock-gain">
+			<span>{{$index}} - {{stockGainItem.stockCode}} - {{stockGainItem.gain}}</span>
+		</div>
+	</div>
+</div>
+

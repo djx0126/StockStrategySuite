@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html ng-app='main-module'>
+<head>
+<meta charset="UTF-8">
+<title>Stock Strategy Analyzer</title>
+
+<link rel="stylesheet" href="dialog.css" />
+<link rel="stylesheet" href="main-style.css" />
+<link rel="stylesheet" href="header/header.css" />
+<link rel="stylesheet" href="job-list/job-list.css" />
+<link rel="stylesheet" href="job-result/job-result.css" />
+<link rel="stylesheet" href="job-result/findtobuy/job-result-findtobuy.css" />
+<link rel="stylesheet" href="job-result/onestocktest/job-result-onestocktest.css" />
+<link rel="stylesheet" href="job-result/strategytest/job-result-strategytest.css" />
+<link rel="stylesheet" href="job-result/strategytest/transaction-dialog/transaction-dialog.css" />
+</head>
+<body ng-controller="main-controller" class="flex-container flex-container-column">
+
+<div ng-show='!initialized' class='backdrop'></div>
+
+<div class="header">
+	<div ng-include="'header/header.html'"></div>
+</div>
+
+<div class="main flex-container flex-container-row">
+	
+	<div class="joblist">
+		<div ng-include="'job-list/job-list.html'"></div>
+	</div>
+	<div class="jobdetail">
+		<div ng-if='!!context.activeJob' >
+			<job-result job='context.activeJob'></job-result>
+		</div>
+	</div>
+	
+</div>
+
+<div class="footer">footer</div>
+
+<script src="lib/jquery-2.1.1.js"></script>
+<script src="lib/angular.js"></script>
+<script src="lib/angular-ui-router.js"></script>
+<script src="lib/ui-bootstrap-tpls-0.12.0-SNAPSHOT.min.js"></script>
+<script src="lib/lodash.js"></script>
+
+<script src="lib/highcharts/highcharts.js"></script>
+
+
+<script src="main-module.js"></script>
+<script src="main-controller.js"></script>
+
+<script src="header/header-controller.js"></script>
+
+<script src="service/formatter.js"></script>
+<script src="service/job-factory.js"></script>
+<script src="service/job-meta-factory.js"></script>
+<script src="service/strategy-factory.js"></script>
+<script src="service/strategytest-job-result-factory.js"></script>
+<script src="service/transactions-factory.js"></script>
+<script src="service/url-service.js"></script>
+
+<script src="job-list/job-list-controller.js"></script>
+<script src="job-result/job-result-controller.js"></script>
+<script src="job-result/findtobuy/job-result-findtobuy.js"></script>
+<script src="job-result/onestocktest/job-result-onestocktest.js"></script>
+<script src="job-result/strategytest/job-result-strategytest.js"></script>
+<script src="job-result/strategytest/strategy-comparison-chart.js"></script>
+<script src="job-result/strategytest/transaction-dialog/transaction-dialog-controller.js"></script>
+
+
+
+<script src="new-job-dialog/new-job-dialog-controller.js"></script>
+
+
+</body>
+</html>

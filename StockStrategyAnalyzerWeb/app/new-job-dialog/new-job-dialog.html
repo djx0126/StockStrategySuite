@@ -1,0 +1,30 @@
+<div class='dialog'>
+	<div class='dialog-title'>New Job</div>
+	<div class='dialog-container'>
+		<label>
+			<span>Job Type: </span>
+			
+			<select name="" id="jobType" ng-model='vm.type'>
+				<option ng-repeat="type in vm.types" value="{{type.id}}" ng-selected="type.id == vm.type">{{type.name}}</option>
+			</select>
+		</label>
+			
+		<label>
+			<span>Start date: </span><input type="text" ng-model='vm.startDate'  ng-disabled="!vm.fieldNeeded(vm.type, 'startDate')"/>
+		</label>
+		<label>
+			<span>End date: </span><input type="text" ng-model='vm.endDate'   ng-disabled="!vm.fieldNeeded(vm.type, 'endDate')"/>
+		</label>
+		<label>
+			<span>Strategy:</span><input type="text" ng-model='vm.strategy'  ng-disabled="!vm.fieldNeeded(vm.type, 'strategy')"/>
+		</label>
+		<label>
+			<span>Stock code:</span><input type="text" ng-model='vm.stockCode'  ng-disabled="!vm.fieldNeeded(vm.type, 'stockCode')"/>
+		</label>
+	</div>
+	<div class='dialog-footer'>
+		<input type="button" value="Cancel" ng-click='vm.cancelClicked()' class="dialog-footer-button"/>
+		<input type="button" value="OK" ng-click='vm.okClicked()' class="dialog-footer-button"/>
+		
+	</div>
+</div>

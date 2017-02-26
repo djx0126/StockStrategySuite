@@ -1,0 +1,34 @@
+<div>
+	<div class='onestocktest-result-title'>One Stock Test</div>
+	<div class='onestocktest-result-general-info'>
+		
+		<label class='onestocktest-result-general-info-jobid'>
+			<span>Id: </span><span>{{vm.result.jobId}}</span>
+		</label>
+		<label class='onestocktest-result-general-info-startDate'>
+			<span>Start Date: </span><span>{{vm.result.startDate}}</span>
+		</label>
+		<label class='onestocktest-result-general-info-endDate'>
+			<span>End Date: </span><span>{{vm.result.endDate}}</span>
+		</label>
+		<label class='onestocktest-result-general-info-strategy'>
+			<span>Strategy: </span><span>{{vm.result.strategy}}</span>
+		</label>
+		<label class='onestocktest-result-general-info-stockCode'>
+			<span>Stock Code: </span><span>{{vm.result.stockCode}}</span>
+		</label>
+		<label class='onestocktest-result-general-info-gain'>
+			<span>Gain: </span><span>{{vm.result.gain}}</span>
+		</label>
+		<label class='onestocktest-result-general-info-lost'>
+			<span>Lost: </span><span>{{vm.result.lost}}</span>
+		</label>
+
+	</div>
+	<div class='onestocktest-result-detail-info'>
+		<div ng-repeat="resultItem in vm.detailResults" class="onestocktest-result-detail-item">
+			<span>Date: {{resultItem.date}}</span><span> Price: </span><span> {{resultItem.price}} </span> <span>  {{resultItem.buySellCode>0?'B':'S' }}</span>
+
+		</div>
+	</div>
+</div>

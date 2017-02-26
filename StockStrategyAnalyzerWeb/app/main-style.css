@@ -1,0 +1,68 @@
+body{
+	position: absolute;
+	height: 100%;
+	width: 100%;
+	margin: 0;
+	z-index: 0;
+}
+
+.flex-container{
+	display: flex;
+}
+
+.flex-container-column{
+	flex-direction: column;
+}
+
+.flex-container-row{
+	flex-direction: row;
+}
+
+.flex-wrap{
+	flex-wrap: wrap;
+}
+
+.header{
+	flex: 0 0 150px;
+}
+
+.footer{
+	flex: 0 0 20px;
+}
+
+.main{
+	flex: 1 1 0;
+	border: 1px solid blue;
+}
+
+.joblist{
+	flex: 0 0 25%;
+	border-right: 1px solid blue;
+	overflow: auto;
+}
+.jobdetail{
+	flex: 1 1 100%;
+	overflow: auto;
+}
+
+.backdrop{
+	background-color: #aaa;
+	opacity: 0.3;
+	position: absolute;
+	height: 100%;
+	width: 100%;
+	z-index:10;
+}
+
+.findtobuy{
+	background-color: rgba(0,255,255,0.6);
+}
+.onestocktest{
+	background-color: rgba(128,128,255,0.6);
+}
+.strategytest{
+	background-color: rgba(255,255,128,0.6);
+}
+.faild{
+	background-color: rgba(255,128,128,0.6);
+}

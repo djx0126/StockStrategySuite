@@ -1,0 +1,25 @@
+.transaction-dialog-title{
+    justify-content: space-between;
+    padding-right: 10px;
+}
+
+.transaction-dialog-title .description{
+    width: 350px;
+}
+
+.transaction-dialog .dialog-title {
+    flex: 0 0 60px;
+}
+
+.transaction-dialog .filtered-statistics {
+    margin-bottom: 3px;
+    padding-top: 5px;
+    margin-top: 10px;
+    border-top: 1px solid black;
+    margin-right: 10px;
+    justify-content: space-between;
+}
+
+.transaction-dialog .filtered-statistics input.filter-value {
+    width: 70px;
+}

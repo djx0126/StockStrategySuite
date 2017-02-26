@@ -1,0 +1,54 @@
+<div>
+	<div class='strateytest-result-title'>Strategy Test</div>
+	<div class='strateytest-result-general-info'>
+		
+		
+	</div>
+	<div class='strateytest-result-detail-info'>
+		<table>
+			<tr class="strateytest-result-detail-row">
+    			<th>Strategy</th>
+    			<th>Avg Gain</th>
+    			<th>Rate</th>
+    			<th>Net Gain</th>
+    			<th>All Lost</th>
+    			<th>Accuracy</th>
+    			<th>Gain count</th>
+    			<th>Lost count</th>
+    			<th>Trans count</th>
+    			<th>Trans Accuracy</th>
+    			<th>Trans Avg</th>
+    			<th>Trans Rate</th>
+    			<th>Trans Score</th>
+  			</tr>
+  			
+  			<div>
+  				<tr class="strateytest-result-detail-row" ng-repeat="resultItem in jobResultStrategytest.results">
+  				<td> <a ng-click="jobResultStrategytest.showTransactionDialog(resultItem)" href=''>{{resultItem.strategy}}</a></td>
+				<td>{{resultItem.meanGain}}</td>
+				<td>{{resultItem.rate|formatInt3}}</td>
+				<td>{{resultItem.netGain|formatInt3}}</td>
+				<td>{{resultItem.allLost|formatInt3}}</td>
+				<td>{{resultItem.accuracy|formatInt3}}</td>
+				<td>{{resultItem.gainCounter}}</td>
+				<td>{{resultItem.lostCounter}}</td>
+				<td>{{resultItem.transactionCounter}}</td>
+				<td>{{resultItem.transactionAccuracy|formatInt3}}</td>
+				<td>{{resultItem.transactionAvgGain|formatInt3}}</td>
+				<td>{{resultItem.transactionRate|formatInt3}}</td>
+				<td>{{resultItem.transScore|formatInt2}}</td>
+  				</tr>
+  			</div>
+  			
+  			
+
+			
+		</table>
+	
+		
+	</div>
+	
+	<!--<div class="strategytest-result-chart" ng-if="jobResultStrategytest.results">-->
+		<!--<strategy-comparison-chart data = "jobResultStrategytest.results"></strategy-comparison-chart>-->
+	<!--</div>-->
+</div>

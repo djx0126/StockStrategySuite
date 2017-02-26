@@ -1,0 +1,67 @@
+.job-item{
+	border-bottom: 2px solid blue;
+	padding: 5px 5px 5px 5px;
+	background-clip: padding-box;
+}
+.active-job{
+	outline: 4px solid gray;
+	
+}
+
+.job-item-info-id{
+	flex: 0 0 50px;
+}
+.job-item-info-type{
+	flex: 1 1 100px;
+}
+.job-item-info-state{
+	flex: 1 1 100px;
+}
+.job-item-info-creation-date{
+	flex: 1 1 100px;
+}
+
+
+.job-param-item{
+	width: 180px;
+	display: inline-block;
+}
+
+.job-item.running{
+	
+	animation: myfirst .5s;
+-moz-animation: myfirst .5s;	/* Firefox */
+-webkit-animation: myfirst .5s;	/* Safari �� Chrome */
+-o-animation: myfirst .5s;	/* Opera */
+
+animation-iteration-count:infinite;
+-webkit-animation-iteration-count:infinite; /* Safari �� Chrome */
+	
+	
+animation-direction:alternate;
+-webkit-animation-direction:alternate; /* Safari �� Chrome */
+}
+
+@keyframes myfirst
+{
+from {opacity: 0.9;}
+to {opacity: 0.2;}
+}
+
+@-moz-keyframes myfirst /* Firefox */
+{
+from {opacity: 0.9;}
+to {opacity: 0.2;}
+}
+
+@-webkit-keyframes myfirst /* Safari �� Chrome */
+{
+from {opacity: 0.9;}
+to {opacity: 0.2;}
+}
+
+@-o-keyframes myfirst /* Opera */
+{
+from {opacity: 0.9;}
+to {opacity: 0.2;}
+}

@@ -1,0 +1,14 @@
+.job-result-findtobuy .strategy-result{
+	border-top: 1px solid blue;
+	margin: 15px 15px 0px 15px;
+	padding-top: 5px;
+}
+
+.job-result-findtobuy  .result-stock-gain{
+	margin-left: 40px;
+	margin-top: 5px;
+}
+
+.result-expander{
+	width: 20px;
+}
