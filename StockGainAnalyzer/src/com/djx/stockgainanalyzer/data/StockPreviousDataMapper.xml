@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.djx.stockgainanalyzer.data.StockPreviousDataMapper">
+	<insert id="saveStock" parameterType="StockGainData">
+		insert into gain(stockcode, keyDate, gain10, id) values(#{stockCode}, #{keyDate}, #{gain},#{id})
+	</insert>
+	<insert id="saveBulkStock" parameterType="ArrayList">
+		insert into
+		gain(stockcode, keyDate,
+		gain10, id) values
+		<foreach collection="list" item="obj" index="index" separator=",">
+			(#{obj.stockCode},#{obj.keyDate},#{obj.gain},#{obj.id})
+		</foreach>
+	</insert>
+
+	<select id="loadStock" parameterType="StockGainData"
+		resultMap="StockGainDataFullResultMap">
+		select G.id as 'g_id', G.stockcode as 'g_stockcode',
+		G.keydate as 'g_keydate', G.gain10 as 'g_gain' , P.stockdatekey,
+		P.offset, P.price, P.vol,P.closeopen from gain G left join
+		previous P
+		on G.id=P.stockdatekey where
+		G.stockcode=#{stockCode} and
+		G.keydate=#{keyDate} order by P.offset
+	</select>
+	<select id="loadStocks" resultMap="StockGainDataFullResultMap">
+		select G.id as 'g_id',
+		G.stockcode as 'g_stockcode',
+		G.keydate as 'g_keydate', G.gain10 as
+		'g_gain' , P.stockdatekey,
+		P.offset, P.price, P.vol,P.closeopen from
+		gain G left join
+		previous P
+		on G.id=P.stockdatekey order by
+		G.id,P.offset
+	</select>
+	<resultMap type="StockGainData" id="StockGainDataFullResultMap">
+		<constructor>
+			<arg column="g_stockcode" javaType="String" />
+			<arg column="g_keydate" javaType="String" />
+			<arg column="g_gain" javaType="_double" />
+		</constructor>
+		<id property="id" column="g_id" javaType="_int" />
+		<collection property="previousData" ofType="PreviousData"
+			resultMap="PreviousDataResultMap" />
+	</resultMap>
+
+	<insert id="savePreviousData" parameterType="PreviousData">
+		insert into
+		previous(stockDateKey, offset, price, vol, closeOpen)
+		values(#{stockDateKey}, #{offset}, #{price}, #{vol}, #{closeOpen})
+	</insert>
+	<insert id="saveBulkPreviousData" parameterType="ArrayList">
+		insert into
+		previous(stockDateKey, offset, price, vol, closeOpen)
+		values
+		<foreach collection="list" item="obj" index="index" separator=",">
+			(#{obj.stockDateKey},#{obj.offset},#{obj.price},#{obj.vol},#{obj.closeOpen})
+		</foreach>
+	</insert>
+	<resultMap type="PreviousData" id="PreviousDataResultMap">
+		<constructor>
+			<arg column="price" javaType="_double" />
+			<arg column="vol" javaType="_double" />
+			<arg column="closeopen" javaType="_double" />
+		</constructor>
+		<result property="stockDateKey" column="stockdatekey" javaType="_int" />
+		<result property="offset" column="offset" javaType="_int" />
+	</resultMap>
+
+	<delete id="clearGainData">
+		truncate table Gain
+	</delete>
+	<delete id="clearPreviousData">
+		truncate table Previous
+	</delete>
+</mapper>
