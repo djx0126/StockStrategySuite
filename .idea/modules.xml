@@ -7,6 +7,7 @@
       <module fileurl="file://$PROJECT_DIR$/StockGainAnalyzer/StockGainAnalyzer.iml" filepath="$PROJECT_DIR$/StockGainAnalyzer/StockGainAnalyzer.iml" />
       <module fileurl="file://$PROJECT_DIR$/StockStrategy/StockStrategy.iml" filepath="$PROJECT_DIR$/StockStrategy/StockStrategy.iml" />
       <module fileurl="file://$PROJECT_DIR$/StockStrategyAnalyzer/StockStrategyAnalyzer.iml" filepath="$PROJECT_DIR$/StockStrategyAnalyzer/StockStrategyAnalyzer.iml" />
+      <module fileurl="file://$PROJECT_DIR$/StockStrategyAnalyzerWeb/StockStrategyAnalyzerWeb.iml" filepath="$PROJECT_DIR$/StockStrategyAnalyzerWeb/StockStrategyAnalyzerWeb.iml" />
       <module fileurl="file://$PROJECT_DIR$/StockStrategySuite.iml" filepath="$PROJECT_DIR$/StockStrategySuite.iml" />
     </modules>
   </component>

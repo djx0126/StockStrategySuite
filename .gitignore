@@ -33,5 +33,5 @@ node_modules
 *.jshintrc
 .settings
 
-.idea/
+
 workspace.xml
