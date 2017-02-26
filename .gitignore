@@ -34,4 +34,4 @@ node_modules
 .settings
 
 
-workspace.xml
+.idea/workspace.xml
