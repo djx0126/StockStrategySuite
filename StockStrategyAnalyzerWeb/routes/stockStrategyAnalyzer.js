@@ -1,6 +1,6 @@
 var http = require('http');
 
-exports.crud = function (req, res) {
+exports.crud = function (port, req, res) {
     // ��ȡ�����headers��ȥ��host��connection
     var getHeader = function (req) {
         var ret = {};
@@ -25,7 +25,7 @@ exports.crud = function (req, res) {
     };
 
     var newHost = 'localhost'; //req.headers.host.replace('8081', '8080');
-    var newPort = 8080;
+    var newPort = port; //8080;
     console.log('receive ' + req.method + ':' + req.url + ',request to:' + newHost + getPath(req));
 
     var opt = {
