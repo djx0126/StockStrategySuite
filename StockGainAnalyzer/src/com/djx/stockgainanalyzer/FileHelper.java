@@ -1,13 +1,15 @@
 package com.djx.stockgainanalyzer;
 
 import com.djx.stockgainanalyzer.data.Field;
-import com.stockstrategy.statistic.data.ConfigBasedStrategyFactory;
+import com.stockstrategy.constant.Constant;
 
-import java.io.*;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.PrintWriter;
 import java.text.SimpleDateFormat;
 import java.util.Arrays;
 import java.util.Date;
-import java.util.Properties;
 
 /**
  * Created by Administrator on 2015/6/28.
@@ -18,7 +20,7 @@ public class FileHelper {
         SimpleDateFormat formatter = new SimpleDateFormat("yyyyMMdd");
         String today = formatter.format(new Date());
 
-        File dir = new File(today);
+        File dir = new File(Constant.getResultsDir().replace("\\", "/") + "/" + today);
         if (!dir.exists()){
             dir.mkdir();
         }
