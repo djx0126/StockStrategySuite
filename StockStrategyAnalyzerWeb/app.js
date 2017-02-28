@@ -4,8 +4,7 @@
  */
 
 var express = require('express')
-  , routes = require('./routes')
-  , user = require('./routes/user')
+  // , routes = require('./routes')
   , stockStrategyAnalyzer = require('./routes/stockStrategyAnalyzer')
   , http = require('http')
   , path = require('path');
