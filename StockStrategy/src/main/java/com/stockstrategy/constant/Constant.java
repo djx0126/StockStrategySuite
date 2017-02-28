@@ -29,6 +29,7 @@ public class Constant
 	public static final String CUSBLKLIST="customedBlackList.txt";
 	public static final String STOCK_LIST = "stocklist.txt";
 	public static final String RANKLIST = "rankList.txt";
+	public static String STOCKCODE_PREFIX = "";
 	
 	public static final String PREFIX_SH = "sh";
 	public static final String PREFIX_SZ = "sz";

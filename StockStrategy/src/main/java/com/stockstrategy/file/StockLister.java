@@ -5,6 +5,7 @@ import com.stockstrategy.http.HttpClient;
 import com.stockstrategy.http.StockListItem;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -31,12 +32,18 @@ public class StockLister {
 		compositeCodeList = new ArrayList<>();
 		compositeIndexCodeMap = new HashMap<>();
 		String url = Constant.DATA_STORE_ADDRESS + "/list";
-		List<StockListItem> sharedStockListItemList = HttpClient.getInstance().getList(url, StockListItem.class);
-		sharedStockListItemList.stream().forEach(stockListItem -> {
+		List<StockListItem> stockListItems = HttpClient.getInstance().getList(url, StockListItem.class);
+
+		if (!Constant.STOCKCODE_PREFIX.isEmpty()) {
+			String[] prefixStrs = Constant.STOCKCODE_PREFIX.split(",");
+			stockListItems = stockListItems.stream().filter(li -> Arrays.stream(prefixStrs).anyMatch(pre->li.getCode().startsWith(pre))).collect(Collectors.toList());
+		}
+
+		stockListItems.stream().forEach(stockListItem -> {
 			compositeCodeList.add(stockListItem.getCompositeIndexCode());
 			compositeIndexCodeMap.put(stockListItem.getCode(), stockListItem.getCompositeIndexCode());
 		});
 
-		return sharedStockListItemList.stream().map(StockListItem::getCode).collect(Collectors.toList());
+		return stockListItems.stream().map(StockListItem::getCode).collect(Collectors.toList());
     }
 }
