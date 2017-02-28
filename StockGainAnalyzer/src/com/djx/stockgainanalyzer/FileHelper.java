@@ -22,7 +22,7 @@ public class FileHelper {
 
         File dir = new File(Constant.getResultsDir().replace("\\", "/") + "/" + today);
         if (!dir.exists()){
-            dir.mkdir();
+            dir.mkdirs();
         }
         return dir;
     }
