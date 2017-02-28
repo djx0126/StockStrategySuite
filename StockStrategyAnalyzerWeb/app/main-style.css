@@ -40,6 +40,9 @@ body{
 	border-right: 1px solid blue;
 	overflow: auto;
 }
+.joblist.collapsed{
+	flex: 0 0 20px;
+}
 .jobdetail{
 	flex: 1 1 100%;
 	overflow: auto;
