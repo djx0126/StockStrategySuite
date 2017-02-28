@@ -68,7 +68,7 @@ public class ArgParser {
     }
 
     private static String[] parseArrayString(String str) {
-        Pattern pattern = Pattern.compile("\\{(.*)\\}");
+        Pattern pattern = Pattern.compile("\\[(.*)\\]");
         Matcher matcher = pattern.matcher(str);
         if (matcher.find()) {
             str = matcher.group(1);
