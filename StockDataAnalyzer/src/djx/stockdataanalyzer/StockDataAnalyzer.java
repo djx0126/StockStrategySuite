@@ -3,11 +3,13 @@ package djx.stockdataanalyzer;
 import com.djx.stockgainanalyzer.*;
 import com.djx.stockgainanalyzer.data.IStockGain;
 import com.stockstrategy.constant.ArgParser;
-import com.stockstrategy.constant.Configurer;
 import com.stockstrategy.constant.Constant;
-import djx.stockdataanalyzer.data.*;
-import djx.stockdataanalyzer.learner.*;
 import com.stockstrategy.statistic.data.CollectDataStrategy;
+import djx.stockdataanalyzer.data.FieldModel;
+import djx.stockdataanalyzer.data.ModelWithStatistic;
+import djx.stockdataanalyzer.data.StockDataModel;
+import djx.stockdataanalyzer.data.StockDataModelHelper;
+import djx.stockdataanalyzer.learner.*;
 
 import java.text.SimpleDateFormat;
 import java.util.*;
@@ -23,7 +25,7 @@ public class StockDataAnalyzer {
     public static int GAIN = 2;
 
     public static int[] dayFields = {/*close*/3, /*open*/0, /*high*/0, /*low*/0, /*vol*/3};
-    public static int[] maFields = {5, 20, 30}; //{5, 10, 20, 30};
+    public static int[] maFields = {10, 20}; //{5, 10, 20, 30};
     public static int[] overAllmaFields = {}; //{5, 10, 20, 30};
 
     /*calc parameters*/
