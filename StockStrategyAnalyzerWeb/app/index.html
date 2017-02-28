@@ -26,12 +26,12 @@
 	
 	<div class="joblist" style="position: relative" ng-class="{'collapsed' : context.jobListCollapsed}">
 		<div ng-include="'job-list/job-list.html'" ng-show="!context.jobListCollapsed"></div>
-		<a href="" style="position: absolute;top:0px;right: 2px" ng-click="context.jobListCollapsed = !context.jobListCollapsed">
+	</div>
+	<div class="jobdetail flex-container flex-container-row" style="position: relative">
+		<a href="" style="" ng-click="context.jobListCollapsed = !context.jobListCollapsed">
 			<span ng-show="!context.jobListCollapsed">&lt;&lt;</span>
 			<span ng-show="context.jobListCollapsed">&gt;&gt;</span>
 		</a>
-	</div>
-	<div class="jobdetail">
 		<div ng-if='!!context.activeJob' >
 			<job-result job='context.activeJob'></job-result>
 		</div>
