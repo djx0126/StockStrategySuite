@@ -9,8 +9,9 @@
 		urlService.getBaseUrl = function(){
 			var url;
 			function getBackEndServiceUrl(){
+				var reqPort = $location.port();
 				var reg = new RegExp($location.port()+'.*');
-				var newUrl = $location.absUrl().replace(reg, BackEndPort);
+				var newUrl = $location.absUrl().replace(reg, reqPort);
 				newUrl += '/' + BackEndServiceName;
 				return newUrl;
 			}
