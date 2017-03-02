@@ -25,7 +25,7 @@ public class StockDataAnalyzer {
     public static int GAIN = 2;
 
     public static int[] dayFields = {/*close*/3, /*open*/0, /*high*/0, /*low*/0, /*vol*/3};
-    public static int[] maFields = {10, 20}; //{5, 10, 20, 30};
+    public static int[] maFields = {5, 20}; //{5, 10, 20, 30};
     public static int[] overAllmaFields = {}; //{5, 10, 20, 30};
 
     /*calc parameters*/
@@ -47,6 +47,7 @@ public class StockDataAnalyzer {
     public static final double E = 1e-4f;
     public static final int TEST_RUN_TIMES = 300;
 
+
     /*running data*/
     public static FieldModel fieldModel = new FieldModel(dayFields, maFields, overAllmaFields);
 
@@ -57,7 +58,7 @@ public class StockDataAnalyzer {
     public static StockDataModel[] testData;
 
     public static Normalizer.NormalizeInfo normalizeInfo;
-    public static final double TARGET_HIGH_GAIN = GAIN + 1.0d; //5.0d;
+    public static double TARGET_HIGH_GAIN = GAIN + 1.0d; //5.0d;
 
     public static List<StockDataModel> dataWithHighGain = new ArrayList<>();
     public static double[] paramsMax;
@@ -77,6 +78,8 @@ public class StockDataAnalyzer {
         long startTime = System.currentTimeMillis();
         ArgParser.loadInitConfigures(args, StockDataAnalyzer.class);
         ArgParser.loadInitConfigures(args, Constant.class);
+
+        init();
 
         int maxDayField = Arrays.stream(dayFields).max().getAsInt();
         if (maxDayField > PRE) {
@@ -101,6 +104,11 @@ public class StockDataAnalyzer {
         System.out.println("End at " + new Date());
     }
 
+    private static void init() {
+        TARGET_HIGH_GAIN = GAIN + 1.0d;
+        fieldModel = new FieldModel(dayFields, maFields, overAllmaFields);
+    }
+
     private static void generateData() {
         if (usingPreFilter){
             MIN_CLUSTER_SIZE = (int)(MIN_CLUSTER_SIZE * preFilterRate);
@@ -122,6 +130,7 @@ public class StockDataAnalyzer {
         System.out.println(Utils.getFieldArrayDefString("dayFields", dayFields));
         System.out.println(Utils.getFieldArrayDefString("maFields", maFields));
         System.out.println(Utils.getFieldArrayDefString("overAllmaFields", overAllmaFields));
+        System.out.println("limit=" + dataList.get(0).getDataArray().length);
 
     }
 
