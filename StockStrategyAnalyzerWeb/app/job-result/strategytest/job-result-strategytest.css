@@ -3,6 +3,11 @@
 	heigth: 26px;
 }
 
+.strateytest-result-detail-row.last-reviewed {
+	background-color: #ccc;
+	/*font-weight: bold;*/
+}
+
 
 
 .strategytest-result-chart{

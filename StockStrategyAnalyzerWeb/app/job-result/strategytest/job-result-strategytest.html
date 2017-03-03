@@ -23,8 +23,10 @@
   			</tr>
   			
   			<div>
-  				<tr class="strateytest-result-detail-row" ng-repeat="resultItem in jobResultStrategytest.results">
-  				<td> <a ng-click="jobResultStrategytest.showTransactionDialog(resultItem)" href=''>{{resultItem.strategy}}</a></td>
+  				<tr class="strateytest-result-detail-row"
+					ng-repeat="resultItem in jobResultStrategytest.results"
+				    ng-class="{'last-reviewed': jobResultStrategytest.lastReviewedItem === resultItem}">
+  				<td> <a ng-click="jobResultStrategytest.lastReviewedItem=resultItem;jobResultStrategytest.showTransactionDialog(resultItem)" href=''>{{resultItem.strategy}}</a></td>
 				<td>{{resultItem.meanGain}}</td>
 				<td>{{resultItem.rate|formatInt3}}</td>
 				<td>{{resultItem.netGain|formatInt3}}</td>
