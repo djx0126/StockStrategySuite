@@ -6,27 +6,56 @@
 	</div>
 	<div class='strateytest-result-detail-info'>
 		<table>
-			<tr class="strateytest-result-detail-row">
-    			<th>Strategy</th>
-    			<th>Avg Gain</th>
-    			<th>Rate</th>
-    			<th>Net Gain</th>
-    			<th>All Lost</th>
-    			<th>Accuracy</th>
-    			<th>Gain count</th>
-    			<th>Lost count</th>
-    			<th>Trans count</th>
-    			<th>Trans Accuracy</th>
-    			<th>Trans Avg</th>
-    			<th>Trans Rate</th>
-    			<th>Trans Score</th>
-  			</tr>
+			<div class="strateytest-result-table-header">
+				<tr class="strateytest-result-detail-row strateytest-result-table-title">
+					<th>Strategy</th>
+					<th>Avg Gain</th>
+					<th>Rate</th>
+					<th>Net Gain</th>
+					<th>All Lost</th>
+					<th>Accuracy</th>
+					<th>Gain count</th>
+					<th>Lost count</th>
+					<th>Trans count</th>
+					<th>Trans Accuracy</th>
+					<th>Trans Avg</th>
+					<th>Trans Rate</th>
+					<th>Trans Score</th>
+					<th>Last gain date</th>
+				</tr>
+
+				<tr class="strateytest-result-detail-row strateytest-result-table-filter">
+					<th></th>
+					<th></th>
+					<th>&gt;=5</th>
+					<th></th>
+					<th></th>
+					<th class="trans-accuracy-steady-filter"
+						ng-class="{'strateytest-result-filter':!jobResultStrategytest.transactionAccuracySteadyFilterOff}"
+						ng-click="jobResultStrategytest.transactionAccuracySteadyFilterOff=!jobResultStrategytest.transactionAccuracySteadyFilterOff">&lt;=10 to trans</th>
+					<th></th>
+					<th></th>
+					<th></th>
+					<th class="trans-accuracy-filter"
+						ng-class="{'strateytest-result-filter':!jobResultStrategytest.transactionAccuracyfilterOff}"
+						ng-click="jobResultStrategytest.transactionAccuracyfilterOff=!jobResultStrategytest.transactionAccuracyfilterOff">&gt;= 70</th>
+					<th></th>
+					<th class="trans-rate-filter"
+						ng-class="{'strateytest-result-filter':!jobResultStrategytest.transactionRatefilterOff}"
+						ng-click="jobResultStrategytest.transactionRatefilterOff=!jobResultStrategytest.transactionRatefilterOff">&gt;= 5</th>
+					<th></th>
+					<th></th>
+				</tr>
+			</div>
+
   			
   			<div>
   				<tr class="strateytest-result-detail-row"
 					ng-repeat="resultItem in jobResultStrategytest.results"
-				    ng-class="{'last-reviewed': jobResultStrategytest.lastReviewedItem === resultItem}">
-  				<td> <a ng-click="jobResultStrategytest.lastReviewedItem=resultItem;jobResultStrategytest.showTransactionDialog(resultItem)" href=''>{{resultItem.strategy}}</a></td>
+				    ng-class="{'last-reviewed': jobResultStrategytest.lastReviewedItem === resultItem, 'reviewed':resultItem.reviewed}"
+					ng-click="jobResultStrategytest.lastReviewedItem=resultItem;resultItem.reviewed=true"
+					ng-show="jobResultStrategytest.filterResultItem(resultItem)">
+  				<td> <a ng-click="jobResultStrategytest.showTransactionDialog(resultItem)" href=''>{{resultItem.strategy}}</a></td>
 				<td>{{resultItem.meanGain}}</td>
 				<td>{{resultItem.rate|formatInt3}}</td>
 				<td>{{resultItem.netGain|formatInt3}}</td>
@@ -39,6 +68,7 @@
 				<td>{{resultItem.transactionAvgGain|formatInt3}}</td>
 				<td>{{resultItem.transactionRate|formatInt3}}</td>
 				<td>{{resultItem.transScore|formatInt2}}</td>
+				<td>{{resultItem.lastGainDate}}</td>
   				</tr>
   			</div>
   			

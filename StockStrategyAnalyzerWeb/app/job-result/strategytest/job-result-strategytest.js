@@ -16,18 +16,23 @@ function JobResultStrategyTest(){
 		bindToController: true
 	};
 	
-	JobResultStrategytestController.$inject = ['$scope', '$http', '$timeout', '$modal', 'jobFactory', 'jobMetaFactory', 'transactionsFactory', 'stategytestJobResultFactory'];
+	JobResultStrategytestController.$inject = ['$scope', '$q', '$http', '$timeout', '$modal', 'jobFactory', 'jobMetaFactory', 'transactionsFactory', 'stategytestJobResultFactory'];
 	
-	function JobResultStrategytestController($scope, $http, $timeout, $modal, jobFactory, jobMetaFactory, transactionsFactory, stategytestJobResultFactory){
+	function JobResultStrategytestController($scope, $q, $http, $timeout, $modal, jobFactory, jobMetaFactory, transactionsFactory, stategytestJobResultFactory){
 		var jobResultStrategytest = this;
 		
 		jobResultStrategytest.results = initResults($scope.result.strategyResultMap);
 		
 		jobResultStrategytest.showTransactionDialog = showTransactionDialog;
+
+        jobResultStrategytest.filterResultItem = filterResultItem;
 		
 		jobResultStrategytest.previousResults = [];
-		
+
 		//loadPreviousJobResult(parseInt($scope.jobId, 10));
+
+
+		//////////////////////////////////////////////////////////////////////////////
 		
 		function loadPreviousJobResult(jobId){
 			jobFactory.getJobList().then(function(jobs){
@@ -46,6 +51,23 @@ function JobResultStrategyTest(){
 				}
 			});
 		}
+
+		function filterResultItem(resultItem) {
+			if (!jobResultStrategytest.transactionRatefilterOff && resultItem.transactionRate < 5.0) {
+				return false;
+			}
+			if (!jobResultStrategytest.transactionAccuracyfilterOff && resultItem.transactionAccuracy < 70) {
+				return false;
+			}
+			if (!jobResultStrategytest.transactionAccuracySteadyFilterOff) {
+			    var diff = Math.abs(resultItem.transactionAccuracy - resultItem.accuracy);
+                var base = Math.max(resultItem.transactionAccuracy, resultItem.accuracy);
+                if (diff > base * 0.1) {
+                    return false;
+                }
+            }
+			return true;
+        }
 		
 		function showTransactionDialog(resultItem){
 			var dialog = $modal.open({
@@ -56,10 +78,7 @@ function JobResultStrategyTest(){
 	            windowClass: 'strategy-transaction-dialog',
 				resolve:{
 					transactions: function(){
-						return transactionsFactory.getTransactionList($scope.jobId, resultItem.strategy).then(function(rawTransactionList){
-							resultItem.transactions = initTransactionList(rawTransactionList);
-							return resultItem.transactions;
-						});
+						return loadTransactions(resultItem);
 	            	},
 	            	strategy: function(){
 	            		return resultItem.strategy;
@@ -68,12 +87,38 @@ function JobResultStrategyTest(){
 	        });
 		}
 
+		function loadTransactions(resultItem) {
+            if (resultItem.transactions) {
+                return $q.when(resultItem.transactions);
+            }
+            return transactionsFactory.getTransactionList($scope.jobId, resultItem.strategy).then(function(rawTransactionList){
+                resultItem.transactions = initTransactionList(rawTransactionList);
+                resultItem.lastGainDate = _(resultItem.transactions).filter(function(transactionByDate) {return transactionByDate.avgGain > 0;}).map('buyDate').max().value();
+                return resultItem.transactions;
+            });
+        }
 		
 		function initResults(rawResults){
 			var results = _.map(rawResults, stategytestJobResultFactory.buildStrategyTestJobResult);
 			results = _.sortBy(results, 'strategy');
+			if (results.length > 0) {
+            	$timeout(function () {
+                    preloadTransactionsForResultItemByIndex(results, 0);
+                })
+            }
 			return results;
 		}
+
+		function preloadTransactionsForResultItemByIndex(results, index) {
+			var resultItem = results[index];
+            loadTransactions(resultItem).then(function () {
+				if (index < results.length - 1) {
+					$timeout(function () {
+                        preloadTransactionsForResultItemByIndex(results, index + 1);
+                    });
+				}
+            });
+        }
 		
 		function initTransactionList(rawTransactionList){
 			var result = [];
