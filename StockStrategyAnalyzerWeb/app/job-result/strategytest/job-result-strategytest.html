@@ -34,7 +34,9 @@
 						ng-class="{'strateytest-result-filter':!jobResultStrategytest.transactionAccuracySteadyFilterOff}"
 						ng-click="jobResultStrategytest.transactionAccuracySteadyFilterOff=!jobResultStrategytest.transactionAccuracySteadyFilterOff">&lt;=10 to trans</th>
 					<th></th>
-					<th></th>
+					<th class="trans-max-loss-count-filter"
+						ng-class="{'strateytest-result-filter':!jobResultStrategytest.transactionMaxLossCountFilterOff}"
+						ng-click="jobResultStrategytest.transactionMaxLossCountFilterOff=!jobResultStrategytest.transactionMaxLossCountFilterOff">count&lt;50 & loss&lt;100</th>
 					<th></th>
 					<th class="trans-accuracy-filter"
 						ng-class="{'strateytest-result-filter':!jobResultStrategytest.transactionAccuracyfilterOff}"

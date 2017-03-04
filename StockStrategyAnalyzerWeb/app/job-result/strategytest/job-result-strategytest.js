@@ -66,6 +66,23 @@ function JobResultStrategyTest(){
                     return false;
                 }
             }
+            if (!jobResultStrategytest.transactionMaxLossCountFilterOff) {
+                var gainTransactions = _.filter(resultItem.transactions, function(transactionsByDate) {
+                    return transactionsByDate.sum > 0;
+                });
+			    var lossTransactions = _.filter(resultItem.transactions, function(transactionsByDate) {
+			        return transactionsByDate.sum < 0;
+                });
+			    var maxGainCount = _.max(gainTransactions, 'count').count;
+			    var maxLossCount = _.max(lossTransactions, 'count').count;
+                var maxLoss = _.min(lossTransactions, 'sum').sum;
+                var countForMaxLoss = _.min(lossTransactions, 'sum').count;
+                if (maxLossCount > 0.25 * maxGainCount && maxLossCount > 50
+                    || countForMaxLoss > 0.25 * maxGainCount && maxLoss < -150) {
+                    return false;
+                }
+
+            }
 			return true;
         }
 		
