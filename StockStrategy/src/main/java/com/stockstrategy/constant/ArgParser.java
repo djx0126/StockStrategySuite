@@ -73,6 +73,11 @@ public class ArgParser {
         if (matcher.find()) {
             str = matcher.group(1);
         }
+
+        if (str.length() == 0) {
+            return new String[]{};
+        }
+
         return str.split(",");
     }
 
