@@ -1,9 +1,6 @@
 package com.stockstrategy.simulator;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.LinkedList;
-import java.util.List;
+import java.util.*;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -15,16 +12,12 @@ import com.stockstrategy.statistic.data.StatisticManager;
 import com.stockstrategy.statistic.result.StatisticResultManager;
 
 public class SimulatorRunner {
-	// protected static ExecutorService threadPool =
-	// Executors.newFixedThreadPool(Constant.THREADNUM);
-
 	protected String stockCode = "null";
 	protected String startDate = "-"; // modify start date here
 	protected String endDate = "-";
 	protected List<String> stockCodes = null;
 	protected int stockExcuted = 0;
 	protected int stockThreadFinished = 0;
-	protected int lock = 0;
 	protected int stockToExcute;
 	public List<String> resultList = null; // sorted on statistic's
 													// gain, String statistic
@@ -37,13 +30,6 @@ public class SimulatorRunner {
 
 	protected final static int NUMSTOCKSPRINT = 50;
 
-	
-	/*
-	 * public static void main(String[] args) { TestApp app = new TestApp();
-	 * app.init(); app.run(); app.resultInit(); app.printResult();
-	 * app.printDetailResult(); }
-	 */
-
 	public List<String> doSimulate(String startDate, String endDate) {
 		init(startDate, endDate);
 		run();
@@ -53,20 +39,32 @@ public class SimulatorRunner {
 	}
 
 	protected void run() {
-		ExecutorService threadPool = Executors
-				.newFixedThreadPool(Constant.THREADNUM);
-		//System.out.println("Test app start run");
 		stockThreadFinished = 0;
-		for (stockExcuted = 0; stockExcuted < stockToExcute; stockExcuted++) {
-			stockCode = stockCodes.get(stockExcuted);
+		stockCodes.stream().parallel().forEach(stockCode -> {
+            if (Constant.debug == true) {
+                System.out.println("executor started for code: " + stockCode);
+            }
 
-			threadPool.submit(new ExecuteThread(stockCode, startDate, endDate));
+			execute(stockCode, startDate, endDate);
+            if (Constant.debug == true) {
+                System.out.println("calc done for code: " + stockCode);
+            }
 
-		}
-		threadPool.shutdown();
+			AggregateMgr.getInstance().updateAggregates(stockCode, startDate, endDate);
+            if (Constant.debug == true) {
+                System.out.println("aggregator done for code: " + stockCode);
+            }
+
+            StockDataHolder.getInstance().remove(stockCode);
+            OneStockExecuted();
+            if (Constant.debug == true) {
+                System.out.println("executor done for code: " + stockCode);
+            }
+		});
 
 		while (stockThreadFinished < stockToExcute) {
 			try {
+			    System.out.println("waiting runner executing: " + stockThreadFinished + "/" + stockToExcute + ", time: " + new Date());
 				Thread.sleep(500);
 			} catch (InterruptedException e) {
 				e.printStackTrace();
@@ -82,11 +80,8 @@ public class SimulatorRunner {
 	}
 
 	protected void OneStockExecuted() {
-		synchronized (this) {
+		synchronized (SimulatorRunner.class) {
 			stockThreadFinished++;
-			// if (stockThreadFinished>=stockToExcute){
-			// SimulatorRunner.this.notifyAll();
-			// }
 		}
 		
 		if (stockThreadFinished % 10 == 0) {
@@ -95,15 +90,12 @@ public class SimulatorRunner {
 	}
 
 	protected void resultInit() {
-		// System.out.println("Test app result init");
-		//stockCount = DataAnalyzer.stockCount;
-		
 		resultList = DataAnalyzer.sortStrategy();
-		meanGainList = new LinkedList<Float>();
-		allNetGainList = new LinkedList<Float>();
-		meanGainDelayList = new LinkedList<Float>();
-		allLostList = new LinkedList<Float>();
-		allLostDelayList = new LinkedList<Float>();
+		meanGainList = new LinkedList<>();
+		allNetGainList = new LinkedList<>();
+		meanGainDelayList = new LinkedList<>();
+		allLostList = new LinkedList<>();
+		allLostDelayList = new LinkedList<>();
 		for (int i = 0; i < resultList.size(); i++) {
 			String statisticType = resultList.get(i);
 			meanGainList.add(DataAnalyzer.getMeanGain(statisticType));

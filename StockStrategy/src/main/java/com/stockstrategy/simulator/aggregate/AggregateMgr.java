@@ -13,8 +13,7 @@ public class AggregateMgr {
 		}
 	}
 	
-	public synchronized void updateAggregates(String stockCode,
-            String startDate, String endDate){
+	public synchronized void updateAggregates(String stockCode, String startDate, String endDate){
 		for (AbstractAggregate aggregate: aggregates){
 			if (aggregate.isActive()){
 				aggregate.update(stockCode, startDate, endDate);
@@ -61,7 +60,7 @@ public class AggregateMgr {
 	}
 	
 	private AggregateMgr(){
-		aggregates = new ArrayList<AbstractAggregate>();
+		aggregates = new ArrayList<>();
 	}
 	
 	public static AggregateMgr getInstance(){

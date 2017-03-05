@@ -261,6 +261,6 @@ public class Constant
 	public static final int DELAY0  = 0; //action buy or sell delayed by 1 day ---- 
 	public static final int ACCOUNTINITMONEY = 1000000; //Initial money for the account
 	
-	
+	public static boolean debug = false;
 	
 }

@@ -88,12 +88,15 @@ public class ConfigBasedStrategyFactory {
 
     }
 
-    public final static AbstractStatisticData buildConfigBasedStrategy(String statisticType){
+    public final synchronized static AbstractStatisticData buildConfigBasedStrategy(String statisticType){
         AbstractStatisticData strategy = null;
         Properties properties;
         if (strategies.containsKey(statisticType)){
             properties = strategies.get(statisticType);
         }else{
+            if (Constant.debug == true) {
+                System.out.println("build config based strategy:" + statisticType);
+            }
             String fileFullPath = Constant.getStrategyDir() + "/" + statisticType;
             fileFullPath = fileFullPath.replace(".", "/") + ".txt";
             properties = new Properties();

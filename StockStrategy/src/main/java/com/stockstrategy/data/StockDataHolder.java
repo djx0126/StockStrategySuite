@@ -3,8 +3,8 @@
  */
 package com.stockstrategy.data;
 
-import java.util.HashMap;
-import java.util.Set;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * @author Administrator
@@ -14,21 +14,7 @@ import java.util.Set;
 public class StockDataHolder {
 	private static StockDataHolder mStockDataHolder= null;
 	
-	private HashMap<String, DataMap> stockData = null;
-	
-	
-	
-	public synchronized void fetchStockData(String stockCode, String startDate, String endDate){
-		
-	}
-	
-	public synchronized void fetchStockData(String stockCode, String startDate){
-		
-	}
-	
-	public synchronized void fetchStockData(String stockCode){
-		//new Thread(new Simulator(stockCode)).start();
-	}
+	private Map<String, DataMap> stockData = null;
 	
 	public static synchronized StockDataHolder getInstance(){
 		if (mStockDataHolder == null)
@@ -38,36 +24,27 @@ public class StockDataHolder {
 		return mStockDataHolder;
 	}
 	private StockDataHolder(){
-		stockData = new HashMap<String, DataMap>();
+		stockData = new ConcurrentHashMap<>();
 	}
 	
-	public synchronized void clear(){
+	public void clear(){
 		stockData.clear();
 	} 
 	
-	public synchronized void put(String stockCode,DataMap dataMap){
+	public void put(String stockCode,DataMap dataMap){
 		stockData.put(stockCode, dataMap);
 	}
 	
-	public synchronized void remove(String stockCode){
+	public void remove(String stockCode){
 		if (stockData.containsKey(stockCode)){
 			stockData.remove(stockCode);
 		}
+
 	}
 	
-	public synchronized Set<String> getStocks(){
-		return stockData.keySet();
-	}
-	
-	public synchronized DataMap get(String stockCode)
+	public DataMap get(String stockCode)
 	{
-		if (stockData.containsKey(stockCode))
-		{
-			return stockData.get(stockCode);
-		}else
-		{
-			return null;
-		}
+		return stockData.getOrDefault(stockCode, null);
 	}
 	
 	public  boolean containStock(String stockCode){

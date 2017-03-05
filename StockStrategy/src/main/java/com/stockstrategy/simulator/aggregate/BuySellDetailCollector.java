@@ -12,7 +12,7 @@ import com.stockstrategy.data.StockDataHolder;
 
 public class BuySellDetailCollector extends AbstractAggregate {
 	
-	private Map<String, List<Transaction>> statisticsTransactionMap = new HashMap<String, List<Transaction>>();
+	private Map<String, List<Transaction>> statisticsTransactionMap = new HashMap<>();
 	
 	
 	public BuySellDetailCollector() {
