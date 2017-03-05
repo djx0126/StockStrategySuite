@@ -23,6 +23,10 @@
 		transactionDialog.toggleShowDetailList = toggleShowDetailList;
 		transactionDialog.showTransactionStatistics = true;
 
+		transactionDialog.gainMaxCountTransaction = getGainMaxCountTransaction(transactions);
+		transactionDialog.lossMaxCountTransaction = getLossMaxCountTransaction(transactions);
+		transactionDialog.maxLossTransaction = getMaxLossTransaction(transactions);
+
 		$scope.$watch('transactionDialog.selectedFilterId', function(newValue, oldValue) {
 			if (newValue !== oldValue) {
 				updateTransactionsWithFilter();
@@ -35,6 +39,24 @@
 			}
 		});
 		///////////////
+
+        function getLossMaxCountTransaction(transactions) {
+            var gainItems = _.filter(transactions, function (transactionDateItem) {
+                return transactionDateItem.avgGain < 0;
+            });
+            return _.max(gainItems, 'count');
+        }
+
+		function getGainMaxCountTransaction(transactions) {
+			var lossItems = _.filter(transactions, function (transactionDateItem) {
+				return transactionDateItem.avgGain > 0;
+            });
+			return _.max(lossItems, 'count');
+        }
+
+        function getMaxLossTransaction(transactions) {
+            return _.min(transactions, 'sum');
+        }
 
 		function updateTransactionsWithFilter() {
 			var filterValue = transactionDialog.filterTypes[transactionDialog.selectedFilterId].value;

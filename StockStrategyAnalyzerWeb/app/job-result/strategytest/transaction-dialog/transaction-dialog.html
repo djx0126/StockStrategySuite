@@ -28,6 +28,18 @@
 				<span>By Day</span>
 			</div>
 
+			<div>
+				<span>GainMaxCount:</span><span>{{transactionDialog.gainMaxCountTransaction.count}}</span>
+				<span>({{transactionDialog.gainMaxCountTransaction.sum|formatInt2}})</span>
+
+				<span>LossMaxCount:</span><span>{{transactionDialog.lossMaxCountTransaction.count}}</span>
+				<span>({{transactionDialog.lossMaxCountTransaction.sum|formatInt2}})</span>
+
+				<span ng-show="transactionDialog.lossMaxCountTransaction!=transactionDialog.maxLossTransaction">
+					MaxLoss:{{transactionDialog.maxLossTransaction.sum|formatInt2}}({{transactionDialog.maxLossTransaction.count}})
+				</span>
+			</div>
+
 
 			<div ng-show="transactionDialog.showTransactionStatistics">
 				<span>counter: {{transactionDialog.transactionStatistics.counter}}</span>
@@ -48,16 +60,20 @@
 		</div>
 	</div>
 	<div class='dialog-container'>
-
-
-		<div ng-repeat="trasactionDateItem in transactionDialog.transactions">
-			<div>
+		<div ng-repeat="trasactionDateItem in transactionDialog.transactions" class="transaction-dialog-transaction-date-item">
+			<div ng-class="{'loss': trasactionDateItem.avgGain < 0}">
 				<a href="" ng-click='transactionDialog.toggleShowDetailList(trasactionDateItem)'>
 					<span>Buy date:</span><span>{{trasactionDateItem.buyDate}}</span>
 				</a>
-				<span>Count: </span><span>{{trasactionDateItem.count}}</span>
-				<span>Gain: </span><span>{{trasactionDateItem.sum|formatInt3}}</span>
-				<span>Avg gain: </span><span>{{trasactionDateItem.avgGain|formatInt3}}</span>
+				<span>Count: </span>
+				<span class="count"
+					  ng-class="{'max': trasactionDateItem === transactionDialog.gainMaxCountTransaction ||
+					  trasactionDateItem === transactionDialog.lossMaxCountTransaction ||
+					  trasactionDateItem === transactionDialog.maxLossTransaction}">
+					{{trasactionDateItem.count}}
+				</span>
+				<span>Gain: </span><span class="sum">{{trasactionDateItem.sum|formatInt3}}</span>
+				<span>Avg gain: </span><span class="avg-gain">{{trasactionDateItem.avgGain|formatInt3}}</span>
 			</div>
 			<div ng-if="transactionDialog.showDetailList(trasactionDateItem)">
 			   <div ng-repeat="transaction in trasactionDateItem.list">

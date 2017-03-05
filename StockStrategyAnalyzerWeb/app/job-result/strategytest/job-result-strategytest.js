@@ -26,6 +26,8 @@ function JobResultStrategyTest(){
 		jobResultStrategytest.showTransactionDialog = showTransactionDialog;
 
         jobResultStrategytest.filterResultItem = filterResultItem;
+
+        jobResultStrategytest.markVisibleAsReviewed = markVisibleAsReviewed;
 		
 		jobResultStrategytest.previousResults = [];
 
@@ -34,6 +36,14 @@ function JobResultStrategyTest(){
 
 		//////////////////////////////////////////////////////////////////////////////
 		
+        function markVisibleAsReviewed() {
+            _.forEach(jobResultStrategytest.results, function (resultItem) {
+                if (resultItem.transactions && filterResultItem(resultItem)) {
+                    resultItem.reviewed = true;
+                }
+            })
+        }
+        
 		function loadPreviousJobResult(jobId){
 			jobFactory.getJobList().then(function(jobs){
 				var currentJob = _.find(jobs, {id: jobId});

@@ -23,3 +23,13 @@
 .transaction-dialog .filtered-statistics input.filter-value {
     width: 70px;
 }
+
+.transaction-dialog-transaction-date-item .loss .count,
+.transaction-dialog-transaction-date-item .loss .sum,
+.transaction-dialog-transaction-date-item .loss .avg-gain{
+    color: #00bb00;
+}
+
+.transaction-dialog-transaction-date-item .count.max {
+    font-weight: bolder;
+}
