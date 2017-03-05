@@ -1,8 +1,10 @@
 <div class='dialog transaction-dialog'>
 	<div class='dialog-title flex-container flex-container-column'>
 		<div class='flex-container flex-container-row transaction-dialog-title'>
-			<div>Transactions {{transactionDialog.strategy}}</div>
-			<!--<div ng-if="transactionDialog.strategyProperty">-->
+			<div>
+				<span ng-click="transactionDialog.showStrategyProperty = !transactionDialog.showStrategyProperty">+</span>
+				<span>Transactions {{transactionDialog.strategy}}</span>
+			</div>
 			<div>
 				<span ng-show="transactionDialog.changed">*</span>
 				<input type="text" ng-model="transactionDialog.strategyProperty.description"
@@ -10,6 +12,14 @@
 					   class="description">
 				<input type="button" value="save" ng-click="transactionDialog.onSaveClicked()">
 			</div>
+		</div>
+
+		<div ng-show="transactionDialog.showStrategyProperty">
+			<span>pre: {{transactionDialog.strategyProperty.pre}}</span>
+			<span>gain: {{transactionDialog.strategyProperty.gain}}</span>
+			<span>dayFields: {{transactionDialog.strategyProperty.dayFields}}</span>
+			<span>maFields: {{transactionDialog.strategyProperty.maFields}}</span>
+			<span>overAllmaFields: {{transactionDialog.strategyProperty.overAllmaFields}}</span>
 		</div>
 
 		<div class='filtered-statistics flex-container flex-container-row'>

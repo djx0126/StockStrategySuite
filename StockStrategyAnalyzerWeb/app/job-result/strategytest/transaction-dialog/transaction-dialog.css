@@ -8,7 +8,7 @@
 }
 
 .transaction-dialog .dialog-title {
-    flex: 0 0 60px;
+    flex: 0 0 auto;
 }
 
 .transaction-dialog .filtered-statistics {
