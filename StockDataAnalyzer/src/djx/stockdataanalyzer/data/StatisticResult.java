@@ -1,5 +1,7 @@
 package djx.stockdataanalyzer.data;
 
+import djx.stockdataanalyzer.StockDataAnalyzer;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -49,7 +51,7 @@ public class StatisticResult {
 //        return score>0 && accuracy>=70.0d && count>10 && overFit<0.4d;
 //        return score>0 && accuracy>=70.0d && count>10;
 
-        return (score>100 && accuracy>=70) && this.count>10 && this.rate > 2.0d;
+        return (score>100 && accuracy>=70) && this.count>10 && this.rate > 2.0d && this.avgGain >= StockDataAnalyzer.GAIN/2;
     }
 
     @Override
