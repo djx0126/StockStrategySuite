@@ -141,6 +141,13 @@ public class ConfigBasedStrategyFactory {
         return doubleArray;
     }
 
+    private static boolean parseBooleanFromString(String booleanString) {
+        if (booleanString.equalsIgnoreCase("true") || booleanString.equalsIgnoreCase("y")) {
+            return true;
+        }
+        return false;
+    }
+
     private static int[] parseIntArrayFromString(String intArrayString){
         if (intArrayString == null){
             return null;
@@ -230,7 +237,7 @@ public class ConfigBasedStrategyFactory {
 
     private static class ConfigBasedPreGainStrategy{
         public static AbstractSPreGain build(Properties properties){
-            return new AbstractSPreGain(
+            AbstractSPreGain strategy = new AbstractSPreGain(
                     properties.getProperty("name"),
                     Integer.parseInt(properties.getProperty("pre")),
                     Integer.parseInt(properties.getProperty("gain")),
@@ -246,6 +253,10 @@ public class ConfigBasedStrategyFactory {
                     parseDoubleArrayFromString(properties.getProperty("highScale")),
                     parseDoubleArrayFromString(properties.getProperty("lowScale"))
             ){};
+
+            parseSkipBigChangeProperty(properties, strategy);
+
+            return strategy;
         }
     }
 
@@ -263,13 +274,16 @@ public class ConfigBasedStrategyFactory {
                 return null;
             }
 
-            return new AbstractAggregatedPreGain(
+            AbstractAggregatedPreGain strategy =  new AbstractAggregatedPreGain(
                     properties.getProperty("name"),
                     Integer.parseInt(properties.getProperty("pre")),
                     Integer.parseInt(properties.getProperty("gain")),
                     strategyArray
             ){};
 
+            parseSkipBigChangeProperty(properties, strategy);
+
+            return strategy;
         }
     }
 
@@ -288,7 +302,17 @@ public class ConfigBasedStrategyFactory {
             double[] offsets = parseDoubleArrayFromString(properties.getProperty("offsets"));
             double[] scales = parseDoubleArrayFromString(properties.getProperty("scales"));
             strategy.setConfigArray(offsets, scales, dayFields, maFields, overAllmaFields);
+
+            parseSkipBigChangeProperty(properties, strategy);
+
             return strategy;
+        }
+    }
+
+    private static void parseSkipBigChangeProperty(Properties properties, AbstractSPreGain strategy) {
+        String skipBigChangeStr = properties.getProperty("skipBigChange");
+        if (skipBigChangeStr != null) {
+            strategy.setSkipBigChange(parseBooleanFromString(skipBigChangeStr));
         }
     }
 }

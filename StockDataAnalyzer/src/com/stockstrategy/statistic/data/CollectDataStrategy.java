@@ -82,7 +82,7 @@ public class CollectDataStrategy extends AbstractSPreGain{
                     continue;
                 }
 
-                if (hasBigChange(i, close, open)) {
+                if (StockDataAnalyzer.skipBigChange && hasBigChange(i, close, open)) {
                     continue;
                 }
 

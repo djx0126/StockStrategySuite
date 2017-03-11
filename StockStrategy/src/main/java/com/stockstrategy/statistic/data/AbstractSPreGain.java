@@ -62,6 +62,8 @@ public abstract class AbstractSPreGain extends AbstractStrategyStatisticData {
 
 	private double[] mean = null;
 	private double[] stdV = null;
+
+	private boolean skipBigChange = true;
 	
 	public AbstractSPreGain(String myStatisticType, int pre, int gain, double limit){
 		this(myStatisticType, pre, gain, limit, null, null, null, null, null,
@@ -188,7 +190,7 @@ public abstract class AbstractSPreGain extends AbstractStrategyStatisticData {
 				continue;
 			}
 //
-			if (hasBigChange(i, close, open)) {
+			if (skipBigChange && hasBigChange(i, close, open)) {
 				continue;
 			}
 //
@@ -404,6 +406,10 @@ public abstract class AbstractSPreGain extends AbstractStrategyStatisticData {
 			this.maxOverAllMa = Arrays.stream(this.overAllmaFields).max().getAsInt();
 		}
 		return this;
+	}
+
+	public void setSkipBigChange(boolean skipBigChange) {
+		this.skipBigChange = skipBigChange;
 	}
 
 	protected boolean hasBigChange(int i, DataArray close, DataArray open) throws Exception{

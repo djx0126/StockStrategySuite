@@ -28,6 +28,8 @@ public class StockDataAnalyzer {
     public static int[] maFields = {5, 20}; //{5, 10, 20, 30};
     public static int[] overAllmaFields = {}; //{5, 10, 20, 30};
 
+    public static boolean skipBigChange = true;
+
     /*calc parameters*/
     public static int MIN_CLUSTER_SIZE = 150;     // 150
     public static double TARGET_GAIN = 0.0d;
@@ -131,6 +133,7 @@ public class StockDataAnalyzer {
         System.out.println(Utils.getFieldArrayDefString("maFields", maFields));
         System.out.println(Utils.getFieldArrayDefString("overAllmaFields", overAllmaFields));
         System.out.println("limit=" + dataList.get(0).getDataArray().length);
+        System.out.println("skipBigChange=" + StockDataAnalyzer.skipBigChange);
 
     }
 
@@ -243,6 +246,7 @@ public class StockDataAnalyzer {
                 + "pre=" + PRE + "\n"
                 + "gain=" + GAIN + "\n"
                 + "limit=" + modelWithStatistic.model.offsets.length + "\n"
+                + (!skipBigChange ? "skipBigChange=" + skipBigChange + "\n" : "") // default true, save for false
                 + (NORMALIZE ? Utils.getArrayString("mean", normalizeInfo.mean).replaceAll("\\{", "").replaceAll("}", "") + "\n" : "")
                 + (NORMALIZE ? Utils.getArrayString("stdV", normalizeInfo.stdV).replaceAll("\\{", "").replaceAll("}", "") + "\n" : "")
                 + Utils.getArrayString("dayFields", dayFields).replaceAll("\\{", "").replaceAll("}", "") + "\n"
