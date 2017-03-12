@@ -54,7 +54,13 @@ public class ArgParser {
                     } else if (fieldTypeName.equalsIgnoreCase("float")) {
                         field.setFloat(clazz, Float.parseFloat(value));
                     } else if (fieldTypeName.equalsIgnoreCase("boolean")) {
-                        field.setBoolean(clazz, Boolean.parseBoolean(value));
+                        if (value.equalsIgnoreCase("y") ||
+                                value.equalsIgnoreCase("true") ||
+                                value.equalsIgnoreCase("yes")) {
+                            field.setBoolean(clazz, true);
+                        } else {
+                            field.setBoolean(clazz, false);
+                        }
                     } else if (fieldTypeName.equalsIgnoreCase("string")) {
                         field.set(clazz, value);
                     }
