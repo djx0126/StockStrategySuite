@@ -2,6 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
+      <module fileurl="file://$PROJECT_DIR$/DataLoader/DataLoader.iml" filepath="$PROJECT_DIR$/DataLoader/DataLoader.iml" />
       <module fileurl="file://$PROJECT_DIR$/StockDataAnalyzer/StockDataAnalyzer.iml" filepath="$PROJECT_DIR$/StockDataAnalyzer/StockDataAnalyzer.iml" />
       <module fileurl="file://$PROJECT_DIR$/StockDataStoreJava/StockDataStoreJava.iml" filepath="$PROJECT_DIR$/StockDataStoreJava/StockDataStoreJava.iml" />
       <module fileurl="file://$PROJECT_DIR$/StockGainAnalyzer/StockGainAnalyzer.iml" filepath="$PROJECT_DIR$/StockGainAnalyzer/StockGainAnalyzer.iml" />
