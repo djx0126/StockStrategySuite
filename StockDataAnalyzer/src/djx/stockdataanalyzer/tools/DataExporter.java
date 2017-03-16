@@ -26,17 +26,17 @@ import java.util.stream.Collectors;
 public class DataExporter {
 
     /*model parameters*/
-    public static final int PRE = 15;
-    public static final int GAIN = 2;
+    public static final int PRE = 30;
+    public static final int GAIN = 10;
 
-    public static final int[] dayFields = {/*close*/15, /*open*/15, /*high*/15, /*low*/15, /*vol*/15};
+    public static final int[] dayFields = {/*close*/30, /*open*/30, /*high*/30, /*low*/30, /*vol*/30};
     public static final int[] maFields = {5, 10, 20, 30, 60}; //{5, 10, 20, 30};
     public static final int[] overAllmaFields = {5, 10, 20, 30, 60}; //{5, 10, 20, 30};
 
     /*calc parameters*/
     public static boolean NORMALIZE = true;
     public static boolean usingPreFilter = true;
-    public static float preFilterRate = 0.1f;
+    public static float preFilterRate = 0.05f;
 
     static {
         StockDataAnalyzer.PRE = PRE;
@@ -50,7 +50,7 @@ public class DataExporter {
     }
 
     private static float TARGET = 3.0f;
-    private static String fileName = "raw_data_pre15_gain2_20150101_20160101.txt";
+    private static String fileName = "raw_data_pre30_gain10_20070101_20140101_min.txt";
 
     public static List<StockDataModel> dataList = new ArrayList<>();
     public static StockDataModel[] rawData;
@@ -95,7 +95,7 @@ public class DataExporter {
     }
 
     private static void transformOutput() {
-        dataList.stream().forEach(dataModel -> dataModel.setGain(dataModel.getPercentageGain() >= TARGET ? 1.0 : 0));
+        dataList.stream().forEach(dataModel -> dataModel.setGain(dataModel.getPercentageGain()));
     }
 
     private static String toExportFormat(StockDataModel dataModel){
