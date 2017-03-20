@@ -29,6 +29,7 @@ public class StockDataAnalyzer {
     public static int[] overAllmaFields = {}; //{5, 10, 20, 30};
 
     public static boolean skipBigChange = true;
+    public static boolean forceBuy = false;
 
     /*calc parameters*/
     public static int MIN_CLUSTER_SIZE = 150;     // 150

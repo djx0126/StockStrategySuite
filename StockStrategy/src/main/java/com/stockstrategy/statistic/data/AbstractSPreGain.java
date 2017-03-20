@@ -64,6 +64,7 @@ public abstract class AbstractSPreGain extends AbstractStrategyStatisticData {
 	private double[] stdV = null;
 
 	private boolean skipBigChange = true;
+	private boolean forceBuy = false;
 	
 	public AbstractSPreGain(String myStatisticType, int pre, int gain, double limit){
 		this(myStatisticType, pre, gain, limit, null, null, null, null, null,
@@ -146,6 +147,10 @@ public abstract class AbstractSPreGain extends AbstractStrategyStatisticData {
 
 		} catch (Exception e) {
 			e.printStackTrace();
+		}
+
+		if (this.forceBuy) {
+			statisticArray.setBuyStatisticType(Constant.ForceBuyPrice);
 		}
 
 		return statisticArray;
@@ -410,6 +415,10 @@ public abstract class AbstractSPreGain extends AbstractStrategyStatisticData {
 
 	public void setSkipBigChange(boolean skipBigChange) {
 		this.skipBigChange = skipBigChange;
+	}
+
+	public void setForceBuy(boolean forceBuy) {
+		this.forceBuy = forceBuy;
 	}
 
 	protected boolean hasBigChange(int i, DataArray close, DataArray open) throws Exception{

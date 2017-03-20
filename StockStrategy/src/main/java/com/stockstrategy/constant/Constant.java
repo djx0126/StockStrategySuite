@@ -90,9 +90,10 @@ public class Constant
 	public static final String KDJJ = "KDJJ";
 	
 	public static final String Percentage3OneDayOrClose = "Percentage3OneDayOrClose";
+	public static final String ForceBuyPrice = "ForceBuyPrice";
 	public static final String RiseStopPrice = "RiseStopPrice";
 		
-	public static final String [] ADVANCEDTATISTICSTYPES = {MACDDIF, MACDDEA, MACD, KDJRSV,KDJK,KDJD,KDJJ, Percentage3OneDayOrClose, RiseStopPrice};
+	public static final String [] ADVANCEDTATISTICSTYPES = {MACDDIF, MACDDEA, MACD, KDJRSV,KDJK,KDJD,KDJJ, Percentage3OneDayOrClose, RiseStopPrice, ForceBuyPrice};
 	
 	
 	

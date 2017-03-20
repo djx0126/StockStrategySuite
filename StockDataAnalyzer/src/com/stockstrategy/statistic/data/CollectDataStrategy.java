@@ -41,6 +41,7 @@ public class CollectDataStrategy extends AbstractSPreGain{
             DataArray high = dataMap.getDataArray(Constant.HIGH);
             DataArray low = dataMap.getDataArray(Constant.LOW);
             DataArray vol = dataMap.getDataArray(Constant.VOL);
+            DataArray forceBuyPrice = dataMap.getDataArray(Constant.ForceBuyPrice);
 
             for (int i = 0; i < close.size(); i++) {
                 RawData data = new RawData(close.getDate(i), 0);
@@ -90,7 +91,7 @@ public class CollectDataStrategy extends AbstractSPreGain{
                     continue;
                 }
 
-                if (i<close.size()-1){
+                if (!StockDataAnalyzer.forceBuy && i<close.size()-1){
                     double nextLow = low.getValue(i + 1);
                     double todayClose = close.getValue(i);
                     if (nextLow > todayClose){
@@ -112,6 +113,11 @@ public class CollectDataStrategy extends AbstractSPreGain{
                 double keyDayClose = close.getValue(key);
 
                 float gain = (float) (close.getValue(end) / close.getValue(key));
+
+                if (StockDataAnalyzer.forceBuy) {
+                    double buyPrice = forceBuyPrice.getValue(key);
+                    gain = (float) (close.getValue(end) / buyPrice);
+                }
 
                 StockGainData data = new StockGainData(stockCode, keyDate, gain);
                 for (int j = key; j > start; j--) {

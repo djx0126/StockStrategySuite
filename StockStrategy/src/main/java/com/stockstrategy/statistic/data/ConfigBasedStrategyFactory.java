@@ -255,6 +255,7 @@ public class ConfigBasedStrategyFactory {
             ){};
 
             parseSkipBigChangeProperty(properties, strategy);
+            parseForceBuyProperty(properties, strategy);
 
             return strategy;
         }
@@ -282,6 +283,7 @@ public class ConfigBasedStrategyFactory {
             ){};
 
             parseSkipBigChangeProperty(properties, strategy);
+            parseForceBuyProperty(properties, strategy);
 
             return strategy;
         }
@@ -304,8 +306,16 @@ public class ConfigBasedStrategyFactory {
             strategy.setConfigArray(offsets, scales, dayFields, maFields, overAllmaFields);
 
             parseSkipBigChangeProperty(properties, strategy);
+            parseForceBuyProperty(properties, strategy);
 
             return strategy;
+        }
+    }
+
+    private static void parseForceBuyProperty(Properties properties, AbstractSPreGain strategy) {
+        String forceBuyStr = properties.getProperty("forceBuy");
+        if (forceBuyStr != null) {
+            strategy.setForceBuy(parseBooleanFromString(forceBuyStr));
         }
     }
 
