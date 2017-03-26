@@ -7,11 +7,8 @@ import com.stockstrategy.constant.ArgParser;
 import com.stockstrategy.constant.Constant;
 import com.stockstrategy.statistic.data.CollectDataStrategy;
 import djx.stockdataanalyzer.Normalizer;
-import djx.stockdataanalyzer.StatisticResultCalculator;
 import djx.stockdataanalyzer.StockDataAnalyzer;
 import djx.stockdataanalyzer.data.*;
-import djx.stockdataanalyzer.learner.ILeaner;
-import djx.stockdataanalyzer.learner.IterativeLearner;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -26,12 +23,12 @@ import java.util.stream.Collectors;
 public class DataExporter {
 
     /*model parameters*/
-    public static final int PRE = 30;
-    public static final int GAIN = 10;
+    public static final int PRE = 120;
+    public static final int GAIN = 20;
 
-    public static final int[] dayFields = {/*close*/30, /*open*/30, /*high*/30, /*low*/30, /*vol*/30};
-    public static final int[] maFields = {5, 10, 20, 30, 60}; //{5, 10, 20, 30};
-    public static final int[] overAllmaFields = {5, 10, 20, 30, 60}; //{5, 10, 20, 30};
+    public static final int[] dayFields = {/*close*/120, /*open*/0, /*high*/0, /*low*/0, /*vol*/0};
+    public static final int[] maFields = {}; //{5, 10, 20, 30};
+    public static final int[] overAllmaFields = {}; //{5, 10, 20, 30};
 
     /*calc parameters*/
     public static boolean NORMALIZE = true;
@@ -49,13 +46,14 @@ public class DataExporter {
         StockDataAnalyzer.fieldModel = new FieldModel(dayFields, maFields, overAllmaFields);
     }
 
-    private static float TARGET = 3.0f;
-    private static String fileName = "raw_data_pre30_gain10_20070101_20140101_min.txt";
+    private static float TARGET = 10.0f;
+    private static String fileNameTemplate = "raw_data_pre" + PRE + "_gain" + GAIN + "_%s_%s%s.txt";
+    private static String splitByDate = "20140701"; // if null, don't split
 
     public static List<StockDataModel> dataList = new ArrayList<>();
     public static StockDataModel[] rawData;
 
-    public static void main(String[] args){
+    public static void main(String[] args) {
         System.out.println("Start");
         long startTime = System.currentTimeMillis();
         ArgParser.loadInitConfigures(args, Constant.class);
@@ -67,11 +65,11 @@ public class DataExporter {
         dataList.toArray(rawData);
 
         System.out.println("Total " + dataList.size() + " records loaded.");
-        if (dataList.size()<=0){
+        if (dataList.size() <= 0) {
             return;
         }
 
-        System.out.println("pre="+PRE);
+        System.out.println("pre=" + PRE);
         System.out.println("gain=" + GAIN);
         System.out.println(Utils.getFieldArrayDefString("dayFields", dayFields));
         System.out.println(Utils.getFieldArrayDefString("maFields", maFields));
@@ -81,8 +79,23 @@ public class DataExporter {
         normalizeData(dataList);
         transformOutput();
 
-        for(StockDataModel dataModel: DataExporter.dataList) {
-            FileHelper.writeLog(fileName, toExportFormat(dataModel));
+        String startDate = rawData[0].getKeyDate();
+        String endDate = rawData[rawData.length - 1].getKeyDate();
+        String minSuffix = usingPreFilter ? "_min" : "";
+        String fileName = String.format(fileNameTemplate, startDate, endDate, minSuffix);
+
+        for (StockDataModel dataModel : DataExporter.dataList) {
+            String fileNameToWrite = fileName;
+            if (splitByDate != null) {
+                if (dataModel.getKeyDate().compareTo(splitByDate) > 0) {
+                    // after
+                    fileNameToWrite = String.format(fileNameTemplate, splitByDate, endDate, minSuffix);
+                } else {
+                    // before
+                    fileNameToWrite = String.format(fileNameTemplate, startDate, splitByDate, minSuffix);
+                }
+            }
+            FileHelper.writeLog(fileNameToWrite, toExportFormat(dataModel));
         }
 
         long endTime = System.currentTimeMillis();
@@ -98,40 +111,41 @@ public class DataExporter {
         dataList.stream().forEach(dataModel -> dataModel.setGain(dataModel.getPercentageGain()));
     }
 
-    private static String toExportFormat(StockDataModel dataModel){
+    private static String toExportFormat(StockDataModel dataModel) {
         StringBuilder sb = new StringBuilder();
         sb.append(Arrays.toString(dataModel.getDataArray()).replace("[", "").replace("]", "").replace(',', ' '));
         sb.append(" " + dataModel.getGain());
         return sb.toString();
     }
 
-    private static double[] getMax(List<StockDataModel> dataList) {
-        double[] max = new double[dataList.get(0).getDataArray().length];
-        for(int i=0;i<max.length;i++) {
-            final int index = i;
-            max[i] = dataList.stream().mapToDouble(d -> d.getDataArray()[index]).max().getAsDouble();
-        }
-        return max;
-    }
-
-    private static double[] getMin(List<StockDataModel> dataList) {
-        double[] min = new double[dataList.get(0).getDataArray().length];
-        for(int i=0;i<min.length;i++) {
-            final int index = i;
-            min[i] = dataList.stream().mapToDouble(d -> d.getDataArray()[index]).min().getAsDouble();
-        }
-        return min;
-    }
-
     private static void normalizeData(List<StockDataModel> dataList) {
-        double[] max = getMax(dataList);
-        double[] min = getMin(dataList);
-        dataList.forEach(dataModel -> {
-            double[] dataArray = dataModel.getDataArray();
-            for (int i=0;i < dataArray.length; i++) {
-                dataArray[i] = (dataArray[i] - min[i]) / (max[i] - min[i]);
-            }
-        });
+        double[] mean;
+        double[] stdV;
+        mean = Normalizer.getMean(rawData);
+        stdV = Normalizer.getStdV(rawData, mean);
+        double[] meanTemp = mean;
+        double[] stdVTemp = stdV;
+        dataList.stream().forEach(d -> Normalizer.normalizeDataModel(d, meanTemp, stdVTemp));
+
+        Normalizer.NormalizeInfo normalizeInfo = Normalizer.buildNormalizeInfo(mean, stdV);
+
+        String today = (new SimpleDateFormat("yyyyMMdd")).format(new Date());
+
+        String startDate = rawData[0].getKeyDate();
+        String endDate = rawData[rawData.length - 1].getKeyDate();
+        String suffix = "_meta";
+        String fileNameString = String.format(fileNameTemplate, startDate, endDate, suffix);
+
+        FileHelper.writeLog(fileNameString, "#" + "\n"
+                + "#creationDate=" + today + "\n"
+                + "pre=" + PRE + "\n"
+                + "gain=" + GAIN + "\n"
+                + (NORMALIZE ? Utils.getArrayString("mean", normalizeInfo.mean).replaceAll("\\{", "").replaceAll("}", "") + "\n" : "")
+                + (NORMALIZE ? Utils.getArrayString("stdV", normalizeInfo.stdV).replaceAll("\\{", "").replaceAll("}", "") + "\n" : "")
+                + Utils.getArrayString("dayFields", dayFields).replaceAll("\\{", "").replaceAll("}", "") + "\n"
+                + Utils.getArrayString("maFields", maFields).replaceAll("\\{", "").replaceAll("}", "") + "\n"
+                + Utils.getArrayString("overAllmaFields", overAllmaFields).replaceAll("\\{", "").replaceAll("}", "") + "\n"
+        );
 
     }
 }
