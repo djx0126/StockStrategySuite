@@ -10,15 +10,18 @@ import java.util.HashMap;
 import java.util.List;
 
 public class StockLister {
+	public static final String SH000001 = "999999";
+	public static final String SZ000001 = "399001";
+	public static final String CY000001 = "399006";
 
 	protected static final HashMap<String, String> stockFilePathMap = new HashMap<>();
 	
 	
 	public List<StockListItem> getSharedStockList(){
 		List<StockListItem> stockCodes = new ArrayList<>();
-		stockCodes.add(new StockListItem(Constant.SH000001));
-		stockCodes.add(new StockListItem(Constant.SZ000001));
-		stockCodes.add(new StockListItem(Constant.CY000001));
+		stockCodes.add(new StockListItem(SH000001));
+		stockCodes.add(new StockListItem(SZ000001));
+		stockCodes.add(new StockListItem(CY000001));
 		return stockCodes;
 	} 
 	
@@ -100,15 +103,15 @@ public class StockLister {
     }
 
 	protected static String getCompositeCode(String stockCode) {
-		String StockCode001 = Constant.SH000001;
+		String StockCode001 = SH000001;
 		if (stockCode.startsWith("600") ||
 				stockCode.startsWith("601")||
 				stockCode.startsWith("603")) {
-			StockCode001 = Constant.SH000001;
+			StockCode001 = SH000001;
 		} else if (stockCode.startsWith("000") || stockCode.startsWith("002")) {
-			StockCode001 = Constant.SZ000001;
+			StockCode001 = SZ000001;
 		} else if (stockCode.startsWith("300")) {
-			StockCode001 = Constant.CY000001;
+			StockCode001 = CY000001;
 		}
 		return StockCode001;
 	}

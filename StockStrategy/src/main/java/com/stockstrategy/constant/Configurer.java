@@ -17,11 +17,6 @@ public class Configurer {
 		return myConfigurer;
 	}
 	
-	public static Configurer setRankLimit(int rank){
-		Constant.RANKLIMIT=rank;
-		return myConfigurer;
-	}
-	
 	public static Configurer enableSZ(){
 		Constant.ENABLE_SZ=true;
 		return myConfigurer;

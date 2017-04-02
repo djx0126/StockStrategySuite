@@ -19,39 +19,28 @@ public class Constant
 	public static boolean ENABLE_SH=true;
 	public static boolean ENABLE_SZ=true;
 	
-	public static int RANKLIMIT=-5;
-	
 	public static final String START = "20080101";
 	public static final String END   = "20111231";
-	
-	
+
 	public static final String SP = "/";
-	public static final String CUSBLKLIST="customedBlackList.txt";
 	public static final String STOCK_LIST = "stocklist.txt";
-	public static final String RANKLIST = "rankList.txt";
 	public static String STOCKCODE_PREFIX = "";
 	
 	public static final String PREFIX_SH = "sh";
 	public static final String PREFIX_SZ = "sz";
 	public static final String SUFFIX = ".day";
-	public static final int ELEM_SIZE = 32;  
-	
+
 	public static int THREADNUM=1;
 
 	public static String DATA_STORE_ADDRESS = "http://127.0.0.1:8012/StockDataStore";
 	
-	public static final String SH000001 = "999999";
-	public static final String SZ000001 = "399001";
-	public static final String CY000001 = "399006";
-
 	public static final String OPEN = "OPEN";
 	public static final String CLOSE = "CLOSE";
 	public static final String HIGH = "HIGH";
 	public static final String LOW = "LOW";
 	public static final String VOL = "VOL";
 	public static final String [] rawTypes = {OPEN,CLOSE,HIGH,LOW ,VOL };
-	
-	
+
 	
 	public static final String MA3 = "MA3";
 	public static final String MA5 = "MA5";

@@ -48,10 +48,8 @@ public class CollectDataStrategy extends AbstractSPreGain{
                 dLine.addData(data);
             }
 
-            DataArray SHClose = null;
-
             String StockCode001 = getStockCode001(stockCode);
-            SHClose = SharedStockDataHolder.getInstance().get(StockCode001).getDataArray(Constant.CLOSE);
+            DataArray SHClose = StockCode001 != null ? SharedStockDataHolder.getInstance().get(StockCode001).getDataArray(Constant.CLOSE) : null;
 
             for (int i = 0; i < close.size(); i++) {
                 if (i < PREVIOUS || i + GAIN >= close.size()) {
@@ -74,9 +72,13 @@ public class CollectDataStrategy extends AbstractSPreGain{
                 }
 
                 String keyDate = close.getDate(i);
-                int overAllIndex = SHClose.getIndexByDate(keyDate);
-                if (OVER_ALL_MAX_MA_DAYS > 0 && overAllIndex < OVER_ALL_MAX_MA_DAYS || overAllIndex >= SHClose.size() || overAllIndex < 0) {
-                    continue;
+
+                int overAllIndex;
+                if (SHClose != null) {
+                    overAllIndex = SHClose.getIndexByDate(keyDate);
+                    if (OVER_ALL_MAX_MA_DAYS > 0 && overAllIndex < OVER_ALL_MAX_MA_DAYS || overAllIndex >= SHClose.size() || overAllIndex < 0) {
+                        continue;
+                    }
                 }
 
                 if (hasAllotment(i, close, open)) {
@@ -87,7 +89,7 @@ public class CollectDataStrategy extends AbstractSPreGain{
                     continue;
                 }
 
-                if (hasRecentBreakDay(i, close, SHClose)){
+                if (SHClose !=null && hasRecentBreakDay(i, close, SHClose)){
                     continue;
                 }
 
@@ -102,11 +104,15 @@ public class CollectDataStrategy extends AbstractSPreGain{
                 int key = i;
                 int start = key - PREVIOUS;
                 int maStart = key - MAX_MA_DAYS;
-                int keyInOverAll = SHClose.getIndexByDate(keyDate);
+                int keyInOverAll = SHClose !=null ? SHClose.getIndexByDate(keyDate):0;
                 int overAllmaStart = keyInOverAll - OVER_ALL_MAX_MA_DAYS;
                 int end = key + GAIN;
 
-                if (start <0 || maStart<0 || overAllmaStart<0 || end >= close.size()){
+                if (start <0 || maStart<0 || end >= close.size()){
+                    continue;
+                }
+
+                if (SHClose !=null && overAllmaStart<0) {
                     continue;
                 }
 
@@ -140,10 +146,11 @@ public class CollectDataStrategy extends AbstractSPreGain{
                 RelativeMAData relativeMAData = buildStockRelativeMA(dataMap, key, keyDayClose, StockDataAnalyzer.fieldModel.maList, StockDataAnalyzer.fieldModel.maFields);
                 data.setRelativeMA(relativeMAData);
 
-                double overAllKeyDayClose = SHClose.getValue(keyInOverAll);
-                RelativeMAData relativeOverAllMAData = buildStockRelativeMA(SharedStockDataHolder.getInstance().get(StockCode001), keyInOverAll, overAllKeyDayClose, StockDataAnalyzer.fieldModel.overAllMaList, StockDataAnalyzer.fieldModel.overAllMaFields);
-
-                data.setRelativeOverAllMAData(relativeOverAllMAData);
+                if (SHClose != null) {
+                    double overAllKeyDayClose = SHClose.getValue(keyInOverAll);
+                    RelativeMAData relativeOverAllMAData = buildStockRelativeMA(SharedStockDataHolder.getInstance().get(StockCode001), keyInOverAll, overAllKeyDayClose, StockDataAnalyzer.fieldModel.overAllMaList, StockDataAnalyzer.fieldModel.overAllMaFields);
+                    data.setRelativeOverAllMAData(relativeOverAllMAData);
+                }
 
                 if ( /*no PreFilter*/!StockDataAnalyzer.usingPreFilter ||
                         /*PreFilter*/random.nextFloat()<StockDataAnalyzer.preFilterRate){

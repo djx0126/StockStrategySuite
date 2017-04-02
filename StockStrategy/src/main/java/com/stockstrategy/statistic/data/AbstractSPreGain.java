@@ -170,10 +170,13 @@ public abstract class AbstractSPreGain extends AbstractStrategyStatisticData {
 		
 		
 		DataArray SHClose = null;
+		DataMap overAllDataMap = null;
 		String overAllStockCode = this.getStockCode001(statisticArray.getStockCode());
-		DataMap overAllDataMap = SharedStockDataHolder.getInstance().get(overAllStockCode);
-		SHClose = overAllDataMap.getDataArray(Constant.CLOSE);
-		
+		if (overAllStockCode != null) {
+			overAllDataMap = SharedStockDataHolder.getInstance().get(overAllStockCode);
+			SHClose = overAllDataMap.getDataArray(Constant.CLOSE);
+		}
+
 		for (int i = 0; i < close.size(); i++) {
 			boolean tobuy = false;
 
@@ -186,9 +189,11 @@ public abstract class AbstractSPreGain extends AbstractStrategyStatisticData {
 			}
 
 			String keyDate = close.getDate(i);
-			int overAllIndex = SHClose.getIndexByDate(keyDate);
-			if (maxOverAllMa > 0 && overAllIndex < maxOverAllMa || overAllIndex >= SHClose.size() || overAllIndex < 0) {
-				continue;
+			if (SHClose != null) {
+				int overAllIndex = SHClose.getIndexByDate(keyDate);
+				if (maxOverAllMa > 0 && overAllIndex < maxOverAllMa || overAllIndex >= SHClose.size() || overAllIndex < 0) {
+					continue;
+				}
 			}
 
 			if (hasAllotment(i, close, open, this.PREVIOUS + 1)) {
@@ -199,7 +204,7 @@ public abstract class AbstractSPreGain extends AbstractStrategyStatisticData {
 				continue;
 			}
 //
-			if (hasRecentBreakDay(i, close, SHClose)){
+			if (SHClose != null && hasRecentBreakDay(i, close, SHClose)){
 				continue;
 			}
 
@@ -324,7 +329,7 @@ public abstract class AbstractSPreGain extends AbstractStrategyStatisticData {
 			dataArray[idxDataArray++] = logValue;
 		}
 
-		if (this.overAllmaFields.length > 0) {
+		if (this.overAllmaFields.length > 0 && overAllDataMap != null) {
             String keyDate = close.getDate(i);
             DataArray SHClose = overAllDataMap.getDataArray(Constant.CLOSE);
             int overAllIndex = SHClose.getIndexByDate(keyDate);
@@ -445,10 +450,6 @@ public abstract class AbstractSPreGain extends AbstractStrategyStatisticData {
 			hasRecentBreakDay = true;
 		}
 		return hasRecentBreakDay;
-	}
-
-	protected String getStockCode001(String stockCode) {
-		return StockLister.getCompositeIndexCode(stockCode);
 	}
 
 }

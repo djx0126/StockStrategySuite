@@ -5,6 +5,7 @@ import com.stockstrategy.data.DataArray;
 import com.stockstrategy.data.DataMap;
 import com.stockstrategy.data.SharedStockDataHolder;
 import com.stockstrategy.data.StockDataHolder;
+import com.stockstrategy.file.StockLister;
 
 public  abstract class AbstractStrategyStatisticData extends AbstractStatisticData {
 	private DataArray dataArray = null;
@@ -57,17 +58,25 @@ public  abstract class AbstractStrategyStatisticData extends AbstractStatisticDa
 		
 		try {
 			String lastDate = buysellArray.getDate(buysellArray.size()-1);
-			
-			DataMap sh000001 = SharedStockDataHolder.getInstance().get(Constant.SH000001);
-			DataArray shCloseArray = sh000001.getDataArray(Constant.CLOSE);
-			String shLastDate = shCloseArray.getDate(shCloseArray.size()-1);
-			
-			if (lastDate.compareTo(shLastDate)<0){
-				buysellArray.setValue(buysellArray.size()-1, 0);
+
+			String code001 = this.getStockCode001(stockCode);
+			if (code001 != null) {
+				DataMap sh000001 = SharedStockDataHolder.getInstance().get(code001);
+				DataArray shCloseArray = sh000001.getDataArray(Constant.CLOSE);
+				String shLastDate = shCloseArray.getDate(shCloseArray.size()-1);
+
+				if (lastDate.compareTo(shLastDate)<0){
+					buysellArray.setValue(buysellArray.size()-1, 0);
+				}
 			}
+
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
+	}
+
+	protected String getStockCode001(String stockCode) {
+		return StockLister.getCompositeIndexCode(stockCode);
 	}
 	
 

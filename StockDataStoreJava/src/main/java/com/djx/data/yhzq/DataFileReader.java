@@ -16,6 +16,7 @@ import java.util.List;
  * Created by dave on 2016/12/29.
  */
 public class DataFileReader {
+    public static final int ELEM_SIZE = 32;
     private DataMap dataMap = null;
     private DataArray open = null;
     private DataArray close = null;
@@ -72,7 +73,7 @@ public class DataFileReader {
             if (bis != null) {
                 byte[] buffer = new byte[32];
 
-                while (bis.read(buffer) == Constant.ELEM_SIZE) {
+                while (bis.read(buffer) == ELEM_SIZE) {
                     processByteBuffer(buffer);
                 }
                 result = true;
