@@ -4,6 +4,10 @@ stock_data_url = 'http://money.finance.sina.com.cn/quotes_service/api/jsonp_v2.p
                  '=sh000001&scale=30&datalen=10&ma=no'
 
 
+def get_url():
+    return stock_data_url
+
+
 def parse_response(data):
     stock_data = data.replace('(', '').replace(')', '')
     stock_data = stock_data.replace(':"', '#').replace(':', '')
