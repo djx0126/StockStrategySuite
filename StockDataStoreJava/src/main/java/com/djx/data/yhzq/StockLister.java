@@ -1,5 +1,6 @@
 package com.djx.data.yhzq;
 
+import com.djx.data.DataLister;
 import com.stockstrategy.http.StockListItem;
 import com.stockstrategy.constant.Constant;
 import com.stockstrategy.tools.FileUtils;
@@ -9,22 +10,23 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-public class StockLister {
+public class StockLister implements DataLister {
 	public static final String SH000001 = "999999";
 	public static final String SZ000001 = "399001";
 	public static final String CY000001 = "399006";
 
 	protected static final HashMap<String, String> stockFilePathMap = new HashMap<>();
-	
-	
+
+	@Override
 	public List<StockListItem> getSharedStockList(){
 		List<StockListItem> stockCodes = new ArrayList<>();
 		stockCodes.add(new StockListItem(SH000001));
 		stockCodes.add(new StockListItem(SZ000001));
 		stockCodes.add(new StockListItem(CY000001));
 		return stockCodes;
-	} 
-	
+	}
+
+	@Override
     public List<StockListItem> getStockList() {
         List<StockListItem> stockCodes = new ArrayList<>();
         if (Constant.ENABLE_SH){

@@ -1,5 +1,6 @@
 package com.djx.data.yhzq;
 
+import com.djx.data.DataReader;
 import com.stockstrategy.constant.Constant;
 import com.stockstrategy.data.DataArray;
 import com.stockstrategy.data.DataMap;
@@ -15,7 +16,7 @@ import java.util.List;
 /**
  * Created by dave on 2016/12/29.
  */
-public class DataFileReader {
+public class DataFileReader implements DataReader{
     public static final int ELEM_SIZE = 32;
     private DataMap dataMap = null;
     private DataArray open = null;
@@ -23,19 +24,13 @@ public class DataFileReader {
     private DataArray high = null;
     private DataArray low = null;
     private DataArray volume = null;
-    private String stockCode = null;
-    private String startDate = null;
-    private String endDate = null;
 
-    public DataFileReader(String stockCode, String startDate, String endDate) {
-        this.stockCode = stockCode;
-        this.startDate = startDate;
-        this.endDate = endDate;
-    }
+    public DataFileReader() {}
 
-    public List<RawDayDataItem> readData() {
+    @Override
+    public List<RawDayDataItem> readData(String stockCode, String startDate, String endDate) {
 
-        readFromFile();
+        readFromFile(stockCode, startDate, endDate);
         List<RawDayDataItem> data = new ArrayList<>();
 
         try {
@@ -56,7 +51,7 @@ public class DataFileReader {
         return data;
     }
 
-    private boolean readFromFile() {
+    private boolean readFromFile(String stockCode, String startDate, String endDate) {
         boolean result = false;
         dataMap = new DataMap(stockCode);
         open = new DataArray(stockCode, Constant.OPEN, dataMap);
@@ -74,7 +69,7 @@ public class DataFileReader {
                 byte[] buffer = new byte[32];
 
                 while (bis.read(buffer) == ELEM_SIZE) {
-                    processByteBuffer(buffer);
+                    processByteBuffer(buffer, startDate, endDate);
                 }
                 result = true;
             }
@@ -100,7 +95,7 @@ public class DataFileReader {
         return result;
     }
 
-    private void processByteBuffer(byte[] buffer) {
+    private void processByteBuffer(byte[] buffer, String startDate, String endDate) {
         long d1, d2, d3, d4, temp_date;
         long o1, o2, o3, o4, temp_open;
         long c1, c2, c3, c4, temp_close;

@@ -1,5 +1,7 @@
 package com.djx.job.list;
 
+import com.djx.data.DataLister;
+import com.djx.data.DataReader;
 import com.djx.data.yhzq.DataFileReader;
 import com.djx.data.yhzq.StockLister;
 import com.stockstrategy.http.RawDayDataItem;
@@ -19,6 +21,8 @@ import java.util.List;
 @RestController
 @RequestMapping("/StockDataStore")
 public class ListJobController {
+    public static String DATA_SOURCE_YHZQ = "yhzq";
+    public static String DATA_SOURCE = DATA_SOURCE_YHZQ;
 
     public static final String LIST_PATH = "/list";
 
@@ -29,21 +33,30 @@ public class ListJobController {
     @RequestMapping(value=LIST_PATH, method= RequestMethod.GET)
     public ResponseEntity<List<StockListItem>> readList(){
         System.out.println("create a new job to list ");
-        StockLister lister = new StockLister();
+        DataLister lister = new StockLister();
+        if (DATA_SOURCE.equals(DATA_SOURCE_YHZQ)) {
+            lister = new StockLister();
+        }
         return new ResponseEntity<>(lister.getStockList(), HttpStatus.OK);
     }
 
     @RequestMapping(value=SHARED_LIST_PATH, method= RequestMethod.GET)
     public ResponseEntity<List<StockListItem>> readSharedList(){
         System.out.println("create a new job to shared list ");
-        StockLister lister = new StockLister();
+        DataLister lister = new StockLister();
+        if (DATA_SOURCE.equals(DATA_SOURCE_YHZQ)) {
+            lister = new StockLister();
+        }
         return new ResponseEntity<>(lister.getSharedStockList(), HttpStatus.OK);
     }
 
     @RequestMapping(value=DATA_PATH, method= RequestMethod.GET)
     public ResponseEntity<List<RawDayDataItem>> readData(@RequestParam String code, @RequestParam String start, @RequestParam String end){
         System.out.println("create a new job to read data for code: " + code + ", between [" + start + "," + end + "]");
-        DataFileReader dataReader = new DataFileReader(code, start, end);
-        return new ResponseEntity<>(dataReader.readData(), HttpStatus.OK);
+        DataReader dataReader = new DataFileReader();
+        if (DATA_SOURCE.equals(DATA_SOURCE_YHZQ)) {
+            dataReader = new DataFileReader();
+        }
+        return new ResponseEntity<>(dataReader.readData(code, start, end), HttpStatus.OK);
     }
 }
