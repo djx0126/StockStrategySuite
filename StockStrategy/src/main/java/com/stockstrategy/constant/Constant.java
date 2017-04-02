@@ -4,6 +4,7 @@ package com.stockstrategy.constant;
 
 public class Constant
 {
+	public static String DATA_DIR = "C:/dave/new_yhzq_v21/vipdoc/sh/lday";
 	public static String DATA_DIR_SH = "C:/dave/new_yhzq_v21/vipdoc/sh/lday";
 	public static String DATA_DIR_SZ = "C:/dave/new_yhzq_v21/vipdoc/sz/lday";
 	public static String MGMT_DIR = "F:/documents/android/SimulatorDesignFiles/mgmt";

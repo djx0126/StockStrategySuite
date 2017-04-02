@@ -69,17 +69,6 @@ public class Configurer {
 		return myConfigurer;
 	}
 	
-	public static Configurer setShDataDir(String pShDataDir){
-		Constant.DATA_DIR_SH = pShDataDir;
-		return myConfigurer;
-	}
-
-	public static Configurer setSzDataDir(String pSzDataDir){
-		Constant.DATA_DIR_SZ = pSzDataDir;
-		return myConfigurer;
-	}
-	
-	
 	public static Configurer getInstance(){
 		if (myConfigurer==null){
 			myConfigurer= new Configurer();

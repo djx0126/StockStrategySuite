@@ -2,6 +2,8 @@ package com.djx.job.list;
 
 import com.djx.data.DataLister;
 import com.djx.data.DataReader;
+import com.djx.data.future1m.Future1mCsvReader;
+import com.djx.data.future1m.FutureLister;
 import com.djx.data.yhzq.DataFileReader;
 import com.djx.data.yhzq.StockLister;
 import com.stockstrategy.http.RawDayDataItem;
@@ -22,6 +24,7 @@ import java.util.List;
 @RequestMapping("/StockDataStore")
 public class ListJobController {
     public static String DATA_SOURCE_YHZQ = "yhzq";
+    public static String DATA_SOURCE_FUTURE_1M_TEST = "future_1m";
     public static String DATA_SOURCE = DATA_SOURCE_YHZQ;
 
     public static final String LIST_PATH = "/list";
@@ -36,6 +39,8 @@ public class ListJobController {
         DataLister lister = new StockLister();
         if (DATA_SOURCE.equals(DATA_SOURCE_YHZQ)) {
             lister = new StockLister();
+        } else if (DATA_SOURCE.equals(DATA_SOURCE_FUTURE_1M_TEST)) {
+            lister = new FutureLister();
         }
         return new ResponseEntity<>(lister.getStockList(), HttpStatus.OK);
     }
@@ -46,6 +51,8 @@ public class ListJobController {
         DataLister lister = new StockLister();
         if (DATA_SOURCE.equals(DATA_SOURCE_YHZQ)) {
             lister = new StockLister();
+        } else if (DATA_SOURCE.equals(DATA_SOURCE_FUTURE_1M_TEST)) {
+            lister = new FutureLister();
         }
         return new ResponseEntity<>(lister.getSharedStockList(), HttpStatus.OK);
     }
@@ -56,6 +63,8 @@ public class ListJobController {
         DataReader dataReader = new DataFileReader();
         if (DATA_SOURCE.equals(DATA_SOURCE_YHZQ)) {
             dataReader = new DataFileReader();
+        } else if (DATA_SOURCE.equals(DATA_SOURCE_FUTURE_1M_TEST)) {
+            dataReader = new Future1mCsvReader();
         }
         return new ResponseEntity<>(dataReader.readData(code, start, end), HttpStatus.OK);
     }
