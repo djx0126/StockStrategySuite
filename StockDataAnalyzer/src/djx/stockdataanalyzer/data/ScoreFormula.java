@@ -26,8 +26,11 @@ public class ScoreFormula {
 //            adjustedGain = oriGain * (500*Math.log10( (Math.pow(dayCount, 0.25)+29)/30) + 5)/dayCount; //y=500log((x^0.25+29)/30)+5 x>10
 //        }
 
-        if (oriGain < 0) {
-            adjustedGain *= 5;
+//        if (oriGain < 0) {
+//            adjustedGain *= 5;
+//        }
+        if (oriGain > 0) {
+            adjustedGain = oriGain / dayCount;
         }
 
         return adjustedGain;

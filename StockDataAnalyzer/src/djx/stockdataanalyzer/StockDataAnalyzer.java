@@ -39,7 +39,7 @@ public class StockDataAnalyzer {
     public static final int scale_steps = 20;     //     20,  17   ,    20
     public static final double scale_step = 0.125d;// 0.125,  0.025,  0.05
     public static final int MAX_ITER_PER_RUN = 100;
-    public static final boolean ADJUST_COUNT_BY_DAY = false;
+    public static boolean ADJUST_COUNT_BY_DAY = false;
 
     /*running parameters*/
     public static final boolean debug = false;
