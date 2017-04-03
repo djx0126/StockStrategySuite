@@ -19,7 +19,7 @@ public class ArgParser {
     public static void loadInitConfigures(String[] args, Class clazz, String... argNamesToConfig) {
         Properties staticConfigures = new Properties();
 
-        Arrays.stream(args).forEach(s -> parseArgsString(s.toLowerCase(), staticConfigures));
+        Arrays.stream(args).forEach(s -> parseArgsString(s, staticConfigures));
 
         tryLoadFromLocalFile(staticConfigures);
 
@@ -111,7 +111,7 @@ public class ArgParser {
     private static void parseArgsString(String argString, Properties properties) {
         String[] propertyPair = argString.split("=");
         if (propertyPair.length == 2) {
-            properties.put(propertyPair[0], propertyPair[1]);
+            properties.put(propertyPair[0].toLowerCase(), propertyPair[1].equalsIgnoreCase("null") ? null : propertyPair[1]);
         }
     }
 

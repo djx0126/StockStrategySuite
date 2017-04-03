@@ -46,11 +46,11 @@ public class RemoteDataReader implements IDataReader {
 
     private void parseRemoteDataItem(RawDayDataItem dataItem) {
         String date = (String) dataItem.get("date");
-        double closeValue = (double) dataItem.get(Constant.CLOSE);
-        double openValue = (double) dataItem.get(Constant.OPEN);
-        double highValue = (double) dataItem.get(Constant.HIGH);
-        double lowValue = (double) dataItem.get(Constant.LOW);
-        double volValue = (double) dataItem.get(Constant.VOL);
+        double closeValue = Double.parseDouble(dataItem.get(Constant.CLOSE).toString());
+        double openValue = Double.parseDouble(dataItem.get(Constant.OPEN).toString());
+        double highValue = Double.parseDouble(dataItem.get(Constant.HIGH).toString());
+        double lowValue = Double.parseDouble(dataItem.get(Constant.LOW).toString());
+        double volValue = Double.parseDouble(dataItem.get(Constant.VOL).toString());
         close.addRawData(date, closeValue);
         open.addRawData(date, openValue);
         high.addRawData(date, highValue);

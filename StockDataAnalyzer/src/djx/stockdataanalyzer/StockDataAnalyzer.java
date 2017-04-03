@@ -42,13 +42,13 @@ public class StockDataAnalyzer {
     public static boolean ADJUST_COUNT_BY_DAY = false;
 
     /*running parameters*/
-    public static final boolean debug = false;
+    public static boolean debug = false;
     public static boolean usingPreFilter = false;
     public static float preFilterRate = 0.5f;
-    public static final int THREAD_NUM = 12;
-    public static final String SELECT_TEST_DATA_BY_DATE_STRING = "20140101"; // if set to null, will use a random selector by stock code
+    public static String SELECT_TEST_DATA_BY_DATE_STRING = "20140101"; // if set to null, will use a random selector by stock code
     public static final double E = 1e-4f;
     public static final int TEST_RUN_TIMES = 300;
+    public static final int THREAD_NUM = 12;
 
 
     /*running data*/
@@ -62,6 +62,7 @@ public class StockDataAnalyzer {
 
     public static Normalizer.NormalizeInfo normalizeInfo;
     public static double TARGET_HIGH_GAIN = GAIN + 1.0d; //5.0d;
+    public static boolean LOOSE_VALID = false;
 
     public static List<StockDataModel> dataWithHighGain = new ArrayList<>();
     public static double[] paramsMax;
@@ -144,6 +145,7 @@ public class StockDataAnalyzer {
             System.out.println("Set test data after date: " + SELECT_TEST_DATA_BY_DATE_STRING);
             dataSelector = new StockDateSelector(dataList, SELECT_TEST_DATA_BY_DATE_STRING);
         }else{
+            System.out.println("Randomly select test data");
             dataSelector = new StockRandomSelector(dataList);
         }
 
@@ -164,6 +166,9 @@ public class StockDataAnalyzer {
             testData[i] = (StockDataModel)testList.get(i);
             rawData[index++] = testData[i];
         }
+
+        System.out.println("Train data size: " + trainData.length);
+        System.out.println("Test data size: " + testData.length);
     }
 
     private static void normalizeData() {
@@ -191,6 +196,19 @@ public class StockDataAnalyzer {
                 dataWithHighGain.add(data);
             }
         }
+
+        if (dataWithHighGain.size() == 0) {
+            LOOSE_VALID = true;
+            for (int i = 0; i < dataModels.length; i++) {
+                StockDataModel data = dataModels[i];
+                double percentageGain = data.getPercentageGain();
+                if(percentageGain >= 0.0){
+                    dataWithHighGain.add(data);
+                }
+            }
+            System.out.println("loose valid used!!!");
+        }
+
         dataWithHighGain = dataWithHighGain.stream().sorted((o1, o2) -> o1.getPercentageGain() > o2.getPercentageGain() ? 1 : o1.getPercentageGain() < o2.getPercentageGain() ? -1: 0).collect(Collectors.toList());
         System.out.println(dataWithHighGain.size() + " records have high gain.");
     }
