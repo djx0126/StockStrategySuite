@@ -31,7 +31,7 @@ public class Future1mCsvReader implements DataReader {
                         String high = items[3];
                         String low = items[4];
                         String close = items[5];
-                        String vol = items[7];
+                        String vol = items[6];
 
                         RawDayDataItem dataItem = new RawDayDataItem();
                         dataItem.put("date", date);
