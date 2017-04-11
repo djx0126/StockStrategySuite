@@ -59,13 +59,19 @@ public class StockFinder extends SimulatorFinder {
 		for (int i =0 ;i<resultList.size(); i++){
 			if (i<resultList.size()){
 				String statisticType = resultList.get(i);
-				System.out.println(statisticType+": ");
+
 				
 				List<String> stockList = null; //sorted on statistic's gain, String statistic Type
 				LinkedList<Float> gainList = null;
 				
 				stockList = DataAnalyzer.sortStock(statisticType, NUMSTOCKSPRINT);
+				if (stockList.size() == 0) {
+					continue;
+				}
+
 				gainList = new LinkedList<Float>();
+				System.out.println(statisticType+": ");
+
 				for (int j = 0;j<stockList.size();j++){
 					if (j<NUMSTOCKSPRINT){
 						String stock = stockList.get(j);
