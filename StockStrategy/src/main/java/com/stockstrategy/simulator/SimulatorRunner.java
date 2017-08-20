@@ -40,6 +40,7 @@ public class SimulatorRunner {
 
 	protected void run() {
 		stockThreadFinished = 0;
+		System.setProperty("java.util.concurrent.ForkJoinPool.common.parallelism", String.valueOf(Constant.THREADNUM));
 		stockCodes.stream().parallel().forEach(stockCode -> {
             if (Constant.debug == true) {
                 System.out.println("executor started for code: " + stockCode);

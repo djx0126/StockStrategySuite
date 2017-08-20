@@ -8,6 +8,11 @@ import djx.stockdataanalyzer.StockDataAnalyzer;
 public class ScoreFormula {
 
     public static double calcScore(StatisticResult statisticResult) {
+        if (StockDataAnalyzer.ADJUST_COUNT_BY_DAY) {
+            return statisticResult.getScore();
+        }
+
+
         double score = statisticResult.getAvgGain() * statisticResult.getAvgGain();
         score = statisticResult.getAvgGain() > 0 ? score : -score;
 

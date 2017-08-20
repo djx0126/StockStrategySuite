@@ -3,7 +3,7 @@
     <extension name="coverage" enabled="false" merge="false" sample_coverage="true" runner="idea" />
     <option name="MAIN_CLASS_NAME" value="com.stockstrategyanalyzer.Application" />
     <option name="VM_PARAMETERS" value="-server -XX:+AggressiveOpts -Xms10g -Xmx10g -XX:+UseConcMarkSweepGC -XX:+UseFastAccessorMethods" />
-    <option name="PROGRAM_PARAMETERS" value="DATA_DIR_SH=$PROJECT_DIR$/../../new_yhzq_v21/vipdoc/sh/lday DATA_DIR_SZ=$PROJECT_DIR$/../../new_yhzq_v21/vipdoc/sz/lday MGMT_DIR=D:/djx/documents/android/SimulatorDesignFiles/mgmt THREADNUM=12" />
+    <option name="PROGRAM_PARAMETERS" value="DATA_DIR_SH=$PROJECT_DIR$/../../new_yhzq_v21/vipdoc/sh/lday DATA_DIR_SZ=$PROJECT_DIR$/../../new_yhzq_v21/vipdoc/sz/lday MGMT_DIR=D:/djx/documents/android/SimulatorDesignFiles/mgmt THREADNUM=4" />
     <option name="WORKING_DIRECTORY" value="file://$PROJECT_DIR$/StockStrategyAnalyzer" />
     <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="false" />
     <option name="ALTERNATIVE_JRE_PATH" />
