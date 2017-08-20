@@ -87,6 +87,10 @@ public  abstract class AbstractStrategyStatisticData extends AbstractStatisticDa
 	 * 
 	 */
 	protected void patchAllotment(String stockCode, DataArray buysellArray){//送配股补丁
+		patchAllotment(stockCode, buysellArray, 6);
+	}
+
+	protected void patchAllotment(String stockCode, DataArray buysellArray, int daysToClearBayPoint){//送配股补丁
 		try {
 			StockDataHolder dataHolder = StockDataHolder.getInstance();
 			DataMap stockData = dataHolder.get(stockCode);
@@ -100,7 +104,7 @@ public  abstract class AbstractStrategyStatisticData extends AbstractStatisticDa
 					if (lastDayPrice*0.82f > todayPrice || todayPrice > lastDayPrice * 1.15f){ //送配股, 清除前一个买入点
 						//buysellArray.setValue(i-1, -1);
 						int k = i;
-						for (int j = 1;j<6;j++){
+						for (int j = 1;j<daysToClearBayPoint;j++){
 							k = i-j;
 							if (k >=0 && k < buysellArray.size()){
 								buysellArray.setValue(k, 0);
