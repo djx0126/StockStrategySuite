@@ -384,9 +384,9 @@ public abstract class DataAnalyzer {
                     list.addLast(stockCode);
                     inserted = true;
                 }
-                while (list.size() > length) {
-                    list.removeLast();
-                }
+//                while (list.size() > length) {
+//                    list.removeLast();
+//                }
             }
         }
 

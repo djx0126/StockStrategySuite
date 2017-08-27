@@ -54,22 +54,23 @@ public class FindToBuy extends StockFinder implements ITask {
 				stockList = DataAnalyzer.sortStock(statisticType, NUMSTOCKSPRINT);
 				gainList = new LinkedList<>();
 				for (int j = 0;j<stockList.size();j++){
-					if (j<NUMSTOCKSPRINT){
+//					if (j<NUMSTOCKSPRINT){
 						String stock = stockList.get(j);
 						StockStatisticResult stockResult = StatisticResultManager.getInstance().getResult(stock);
 						StatisticResult statisticResult = stockResult.getResult(statisticType);
 						gainList.add(statisticResult.getGain());
-					}else {
-						break;
-					}
+//					}else {
+//						break;
+//					}
 				}
-				for (int j =0 ;j<NUMSTOCKSPRINT; j++){
-					if (j < stockList.size()){
+//				for (int j =0 ;j<NUMSTOCKSPRINT; j++){
+				for (int j =0 ;j<stockList.size(); j++){
+//					if (j < stockList.size()){
 						String stock = stockList.get(j);
 						float gain = gainList.get(j);
 						
 						strategyFindResult.addStockWithGain(stock, gain);
-					}
+//					}
 				}
 				result.addStrategyFindResult(strategyFindResult);
 			}
