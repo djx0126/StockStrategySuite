@@ -52,7 +52,7 @@ public class StatisticResult {
 //        return score>0 && accuracy>=70.0d && count>10;
 
         if (StockDataAnalyzer.LOOSE_VALID) {
-            return (score>0 && this.avgGain > 0) && this.count>3;
+            return (score>0 && this.avgGain > 0) && this.count>=1;
         }
 
         return (score>100 && accuracy>=70) && this.count>10 && this.rate > 2.0d && this.avgGain >= StockDataAnalyzer.GAIN/2;
