@@ -24,22 +24,22 @@ public class StockDataAnalyzer {
     public static int PRE = 3;
     public static int GAIN = 2;
 
-    public static int[] dayFields = {/*close*/3, /*open*/0, /*high*/0, /*low*/0, /*vol*/3};
-    public static int[] maFields = {5, 20}; //{5, 10, 20, 30};
+    public static int[] dayFields = {/*close*/30, /*open*/0, /*high*/0, /*low*/0, /*vol*/0};
+    public static int[] maFields = {5, 20, 60}; //{5, 10, 20, 30};
     public static int[] overAllmaFields = {}; //{5, 10, 20, 30};
 
-    public static boolean skipBigChange = true;
+    public static boolean skipBigChange = false;
     public static boolean forceBuy = false;
 
     /*calc parameters*/
-    public static int MIN_CLUSTER_SIZE = 150;     // 150
+    public static int MIN_CLUSTER_SIZE = 50;     // 150
     public static double TARGET_GAIN = 0.0d;
     public static boolean NORMALIZE = true;
-    public static final int offset_steps = 130;   //    130,  15   ,    15
-    public static final int scale_steps = 20;     //     20,  17   ,    20
+    public static final int offset_steps = 7;   //    130,  15   ,    15
+    public static final int scale_steps = 7;     //     20,  17   ,    20
     public static final double scale_step = 0.125d;// 0.125,  0.025,  0.05
     public static final int MAX_ITER_PER_RUN = 100;
-    public static boolean ADJUST_COUNT_BY_DAY = false;
+    public static boolean ADJUST_COUNT_BY_DAY = true;
 
     /*running parameters*/
     public static boolean debug = false;
@@ -62,7 +62,7 @@ public class StockDataAnalyzer {
 
     public static Normalizer.NormalizeInfo normalizeInfo;
     public static double TARGET_HIGH_GAIN = GAIN + 1.0d; //5.0d;
-    public static boolean LOOSE_VALID = false;
+    public static boolean LOOSE_VALID = true;
 
     public static List<StockDataModel> dataWithHighGain = new ArrayList<>();
     public static double[] paramsMax;
