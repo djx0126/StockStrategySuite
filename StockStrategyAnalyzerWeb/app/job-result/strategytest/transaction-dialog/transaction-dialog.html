@@ -33,8 +33,8 @@
 					   ng-model="transactionDialog.filterTypes[transactionDialog.selectedFilterId].value"
 					   ng-model-options="{debounce:1000}">
 				<input type="checkbox"
-					   ng-checked="!transactionDialog.showTransactionStatistics"
-					   ng-click="transactionDialog.showTransactionStatistics = !transactionDialog.showTransactionStatistics">
+					   ng-checked="!transactionDialog.showByDay"
+					   ng-click="transactionDialog.showByDay = !transactionDialog.showByDay">
 				<span>By Day</span>
 			</div>
 
@@ -51,19 +51,19 @@
 			</div>
 
 
-			<div ng-show="transactionDialog.showTransactionStatistics">
+			<div ng-show="transactionDialog.showByDay">
 				<span>counter: {{transactionDialog.transactionStatistics.counter}}</span>
 				<span>accuracy: {{transactionDialog.transactionStatistics.accuracy|formatInt3}}</span>
 				<span>rate: {{transactionDialog.transactionStatistics.rate|formatInt3}}</span>
-				<span>avgGain: {{transactionDialog.transactionStatistics.avgGain|formatInt3}}</span>
+				<span>avgGain: {{transactionDialog.transactionStatistics.avgGain|formatInt3}} ({{transactionDialog.transactionStatistics.multiGain|formatInt3}}) </span>
 				<span>kaily: {{transactionDialog.transactionStatistics.kaily|formatInt2}}</span>
 			</div>
 
-			<div ng-show="!transactionDialog.showTransactionStatistics">
+			<div ng-show="!transactionDialog.showByDay">
 				<span>counter: {{transactionDialog.dayStatistics.counter}}</span>
 				<span>accuracy: {{transactionDialog.dayStatistics.accuracy|formatInt3}}</span>
 				<span>rate: {{transactionDialog.dayStatistics.rate|formatInt3}}</span>
-				<span>avgGain: {{transactionDialog.dayStatistics.avgGain|formatInt3}}</span>
+				<span>avgGain: {{transactionDialog.dayStatistics.avgGain|formatInt3}} ({{transactionDialog.dayStatistics.multiGain|formatInt3}}) </span>
 				<span>kaily: {{transactionDialog.dayStatistics.kaily|formatInt2}}</span>
 			</div>
 

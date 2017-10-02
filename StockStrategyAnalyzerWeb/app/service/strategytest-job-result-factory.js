@@ -34,6 +34,7 @@
         function calcTransactionStatistics(transactions, gainExtractFn) {
             var gainCounter = 0, gainAll = 0;
             var lostCounter = 0, lostAll = 0;
+            var multiGain = 1.0;
             _.forEach(transactions, function(transaction) {
                 var gain = angular.isFunction(gainExtractFn)? gainExtractFn(transaction) : (transaction.sellPrice-transaction.buyPrice)*100/transaction.buyPrice;
                 if (gain > 0) {
@@ -43,9 +44,13 @@
                     lostCounter++;
                     lostAll += (-gain);
                 }
+                multiGain *= (gain + 100) / 100;
             });
+            var transactionStatistics = buildTransactionStatistics(gainCounter, gainAll, lostCounter, lostAll);
 
-            return buildTransactionStatistics(gainCounter, gainAll, lostCounter, lostAll);
+            return _.extend(transactionStatistics, {
+                multiGain: multiGain
+            });
         }
 
         function buildTransactionStatistics(transactionGainCounter, transactionGain, transactionLostCounter, transactionLost) {

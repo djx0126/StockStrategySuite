@@ -21,7 +21,7 @@
 		transactionDialog.onSaveClicked = saveStrategyProperty;
 		transactionDialog.showDetailList = showDetailList;
 		transactionDialog.toggleShowDetailList = toggleShowDetailList;
-		transactionDialog.showTransactionStatistics = true;
+		transactionDialog.showByDay = true;
 
 		transactionDialog.gainMaxCountTransaction = getGainMaxCountTransaction(transactions);
 		transactionDialog.lossMaxCountTransaction = getLossMaxCountTransaction(transactions);
