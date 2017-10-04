@@ -24,16 +24,16 @@ public class DataExporter {
 
     /*model parameters*/
     public static final int PRE = 120;
-    public static final int GAIN = 20;
+    public static final int GAIN = 5;
 
-    public static final int[] dayFields = {/*close*/120, /*open*/0, /*high*/0, /*low*/0, /*vol*/0};
+    public static final int[] dayFields = {/*close*/60, /*open*/0, /*high*/0, /*low*/0, /*vol*/0};
     public static final int[] maFields = {}; //{5, 10, 20, 30};
     public static final int[] overAllmaFields = {}; //{5, 10, 20, 30};
 
     /*calc parameters*/
     public static boolean NORMALIZE = true;
     public static boolean usingPreFilter = true;
-    public static float preFilterRate = 0.05f;
+    public static float preFilterRate = 0.1f;
 
     static {
         StockDataAnalyzer.PRE = PRE;
@@ -48,7 +48,7 @@ public class DataExporter {
 
     private static float TARGET = 10.0f;
     private static String fileNameTemplate = "raw_data_pre" + PRE + "_gain" + GAIN + "_%s_%s%s.txt";
-    private static String splitByDate = "20140701"; // if null, don't split
+    private static String splitByDate = null; //"20140701"; // if null, don't split
 
     public static List<StockDataModel> dataList = new ArrayList<>();
     public static StockDataModel[] rawData;
