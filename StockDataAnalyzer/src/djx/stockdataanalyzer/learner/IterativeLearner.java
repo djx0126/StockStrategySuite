@@ -33,7 +33,9 @@ public class IterativeLearner extends HierarchyLearner{
             System.out.println(String.format(">>>>>>>>>>>>>>>>>>>>>>>iter: %d, high gain left: %d ", iter, highGainLeftCount));
 
             // choose start point
-            StockDataModel centerPoint = pickRandomDataModel();
+            int randomIdx = StockDataAnalyzer.random.nextInt(dataWithHighGain.size());
+            StockDataModel centerPoint = dataWithHighGain.get(randomIdx);
+            dataWithHighGain.remove(randomIdx);
 
             if (StockDataAnalyzer.debug) {
                 System.out.println("pick center point: " + centerPoint);
@@ -122,11 +124,6 @@ public class IterativeLearner extends HierarchyLearner{
             scaleParam[i] = StockDataAnalyzer.scaleParamList[i][StockDataAnalyzer.scale_steps/4];
         }
         return scaleParam;
-    }
-
-    private StockDataModel pickRandomDataModel() {
-//        return StockDataAnalyzer.dataWithHighGain.get(StockDataAnalyzer.random.nextInt(StockDataAnalyzer.dataWithHighGain.size()));
-        return dataWithHighGain.get(StockDataAnalyzer.random.nextInt(dataWithHighGain.size()));
     }
 
     private void shrinkAccumulativeModel(StockDataModel[] cvData) {
