@@ -35,8 +35,8 @@ public class StockDataAnalyzer {
     public static int MIN_CLUSTER_SIZE = 50;     // 150
     public static double TARGET_GAIN = 0.0d;
     public static boolean NORMALIZE = true;
-    public static final int offset_steps = 7;   //    130,  15   ,    15
-    public static final int scale_steps = 7;     //     20,  17   ,    20
+    public static final int offset_steps = 5;   //    130,  15   ,    15
+    public static final int scale_steps = 5;     //     20,  17   ,    20
     public static final double scale_step = 0.125d;// 0.125,  0.025,  0.05
     public static final int MAX_ITER_PER_RUN = 100;
     public static boolean ADJUST_COUNT_BY_DAY = true;
@@ -45,7 +45,7 @@ public class StockDataAnalyzer {
     public static boolean debug = false;
     public static boolean usingPreFilter = false;
     public static float preFilterRate = 0.5f;
-    public static String SELECT_TEST_DATA_BY_DATE_STRING = "20140101"; // if set to null, will use a random selector by stock code
+    public static String SELECT_TEST_DATA_BY_DATE_STRING = null; //"20140101"; // if set to null, will use a random selector by stock code
     public static final double E = 1e-4f;
     public static final int TEST_RUN_TIMES = 300;
     public static final int THREAD_NUM = 12;
