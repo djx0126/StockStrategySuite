@@ -16,9 +16,9 @@ function JobResultStrategyTest(){
 		bindToController: true
 	};
 	
-	JobResultStrategytestController.$inject = ['$scope', '$q', '$http', '$timeout', '$modal', 'jobFactory', 'jobMetaFactory', 'transactionsFactory', 'stategytestJobResultFactory'];
+	JobResultStrategytestController.$inject = ['$scope', '$q', '$http', '$timeout', '$modal', 'jobFactory', 'jobMetaFactory', 'transactionsFactory', 'stategytestJobResultFactory', 'strategyFactory'];
 	
-	function JobResultStrategytestController($scope, $q, $http, $timeout, $modal, jobFactory, jobMetaFactory, transactionsFactory, stategytestJobResultFactory){
+	function JobResultStrategytestController($scope, $q, $http, $timeout, $modal, jobFactory, jobMetaFactory, transactionsFactory, stategytestJobResultFactory, strategyFactory){
 		var jobResultStrategytest = this;
 		
 		jobResultStrategytest.results = initResults($scope.result.strategyResultMap);
@@ -31,10 +31,36 @@ function JobResultStrategyTest(){
 		
 		jobResultStrategytest.previousResults = [];
 
+		jobResultStrategytest.expandAggregatingStrategies = expandAggregatingStrategies;
+		jobResultStrategytest.collapseAggregatingStrategies = collapseAggregatingStrategies;
+
 		//loadPreviousJobResult(parseInt($scope.jobId, 10));
 
 
 		//////////////////////////////////////////////////////////////////////////////
+		
+		function getAggregatingStrategy(resultItem) {
+			var strategyName = resultItem.strategy;
+
+            var strategy = strategyFactory.getStrategy(strategyName);
+            if (isAggregatedStrategy(strategy)) {
+                return null;
+            }
+
+            var stategyies = strategyFactory.getStrategies();
+            var aggregatingStrategy = _.find(stategyies, function(aStrategy) {
+                if (isAggregatedStrategy(aStrategy)) {
+                    if (strategyName.startsWith(aStrategy.strategyprefix)) {
+                        return true;
+                    }
+                }
+            });
+            return aggregatingStrategy;
+        }
+
+        function isAggregatedStrategy(strategy) {
+            return !!strategy && !!strategy.strategyprefix;
+        }
 		
         function markVisibleAsReviewed() {
             _.forEach(jobResultStrategytest.results, function (resultItem) {
@@ -133,8 +159,40 @@ function JobResultStrategyTest(){
                     preloadTransactionsForResultItemByIndex(results, 0);
                 })
             }
+
+            _.forEach(results, function(resultItem) {
+                var strategyName = resultItem.strategy;
+                var strategy = strategyFactory.getStrategy(strategyName);
+                resultItem.isAggregatedStrategy = isAggregatedStrategy(strategy);
+                resultItem.aggregatingExpanded = false;
+                var aggregatingStrategy = getAggregatingStrategy(resultItem);
+                if (aggregatingStrategy) {
+                    resultItem.aggregatingStrategyName = aggregatingStrategy.name;
+                }
+            });
+
 			return results;
 		}
+		
+		function expandAggregatingStrategies(resultItem) {
+            var strategyName = resultItem.strategy;
+            _.forEach(jobResultStrategytest.results, function (resultItem) {
+                if (resultItem.aggregatingStrategyName === strategyName) {
+                    resultItem.aggregatingExpanded = true;
+                }
+            });
+            resultItem.aggregatingExpanded = true;
+        }
+
+        function collapseAggregatingStrategies(resultItem) {
+            var strategyName = resultItem.strategy;
+            _.forEach(jobResultStrategytest.results, function (resultItem) {
+                if (resultItem.aggregatingStrategyName === strategyName) {
+                    resultItem.aggregatingExpanded = false;
+                }
+            });
+            resultItem.aggregatingExpanded = false;
+        }
 
 		function preloadTransactionsForResultItemByIndex(results, index) {
 			var resultItem = results[index];

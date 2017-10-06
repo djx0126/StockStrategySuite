@@ -8,6 +8,7 @@
 		<table>
 			<div class="strateytest-result-table-header">
 				<tr class="strateytest-result-detail-row strateytest-result-table-title">
+					<th></th>
 					<th>Strategy</th>
 					<th>Avg Gain</th>
 					<th>Rate</th>
@@ -25,6 +26,7 @@
 				</tr>
 
 				<tr class="strateytest-result-detail-row strateytest-result-table-filter">
+					<th></th>
 					<th ng-click="jobResultStrategytest.markVisibleAsReviewed()">mark visible as reviewed</th>
 					<th></th>
 					<th>&gt;=5</th>
@@ -56,8 +58,16 @@
 					ng-repeat="resultItem in jobResultStrategytest.results"
 				    ng-class="{'last-reviewed': jobResultStrategytest.lastReviewedItem === resultItem, 'reviewed':resultItem.reviewed}"
 					ng-click="jobResultStrategytest.lastReviewedItem=resultItem;resultItem.reviewed=true"
-					ng-show="jobResultStrategytest.filterResultItem(resultItem)">
-  				<td> <a ng-click="jobResultStrategytest.showTransactionDialog(resultItem)" href=''>{{resultItem.strategy}}</a></td>
+					ng-show="(resultItem.isAggregatedStrategy ||
+					!resultItem.aggregatingStrategyName ||
+					resultItem.aggregatingExpanded)
+					 && jobResultStrategytest.filterResultItem(resultItem)">
+  				<td ng-show="!resultItem.isAggregatedStrategy"></td>
+                <td ng-show="resultItem.isAggregatedStrategy && resultItem.aggregatingExpanded"
+                    ng-click="jobResultStrategytest.collapseAggregatingStrategies(resultItem)">-</td>
+  				<td ng-show="resultItem.isAggregatedStrategy && !resultItem.aggregatingExpanded"
+                    ng-click="jobResultStrategytest.expandAggregatingStrategies(resultItem)">+</td>
+				<td> <a ng-click="jobResultStrategytest.showTransactionDialog(resultItem)" href=''>{{resultItem.strategy}}</a></td>
 				<td>{{resultItem.meanGain}}</td>
 				<td>{{resultItem.rate|formatInt3}}</td>
 				<td>{{resultItem.netGain|formatInt3}}</td>
