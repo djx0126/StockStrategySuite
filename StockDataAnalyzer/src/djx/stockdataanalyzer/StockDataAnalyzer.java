@@ -35,7 +35,7 @@ public class StockDataAnalyzer {
     public static int MIN_CLUSTER_SIZE = 50;     // 150
     public static double TARGET_GAIN = 0.0d;
     public static boolean NORMALIZE = true;
-    public static final int offset_steps = 5;   //    130,  15   ,    15
+    public static final int offset_steps = 13;   //    130,  15   ,    15
     public static final int scale_steps = 5;     //     20,  17   ,    20
     public static final double scale_step = 0.125d;// 0.125,  0.025,  0.05
     public static final int MAX_ITER_PER_RUN = 100;
@@ -49,6 +49,7 @@ public class StockDataAnalyzer {
     public static final double E = 1e-4f;
     public static final int TEST_RUN_TIMES = 300;
     public static final int THREAD_NUM = 12;
+    public static final int continueFrom = 0;
 
 
     /*running data*/
@@ -211,6 +212,11 @@ public class StockDataAnalyzer {
 
         dataWithHighGain = dataWithHighGain.stream().sorted((o1, o2) -> o1.getPercentageGain() > o2.getPercentageGain() ? 1 : o1.getPercentageGain() < o2.getPercentageGain() ? -1: 0).collect(Collectors.toList());
         System.out.println(dataWithHighGain.size() + " records have high gain.");
+
+        if (continueFrom > 0) {
+            dataWithHighGain = dataWithHighGain.subList(continueFrom, dataWithHighGain.size());
+            System.out.println("Continued from " + continueFrom + " with " + dataWithHighGain.size() + " records left.");
+        }
     }
 
     private static void setParamsMaxAndMin(StockDataModel[] dataModels) {
@@ -258,7 +264,8 @@ public class StockDataAnalyzer {
 
     public static void writeModel(ModelWithStatistic modelWithStatistic) {
         String type = "ConfigArrayPreGainStrategy";
-        String fileNameString = Utils.nowStr() + "_" + String.valueOf((int)modelWithStatistic.statisticResult.getScore());
+//        String fileNameString = Utils.nowStr() + "_" + String.valueOf((int)modelWithStatistic.statisticResult.getScore());
+        String fileNameString = String.valueOf((int)modelWithStatistic.statisticResult.getScore()) + "_" + Utils.nowStr();
         FileHelper.writeLog(fileNameString, "#" + modelWithStatistic.statisticResult.toString() + "\n"
                 + "#creationDate=" + today + "\n"
                 + "type=" + type + "\n"
