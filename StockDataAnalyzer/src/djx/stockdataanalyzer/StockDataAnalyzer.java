@@ -49,7 +49,7 @@ public class StockDataAnalyzer {
     public static final double E = 1e-4f;
     public static final int TEST_RUN_TIMES = 300;
     public static final int THREAD_NUM = 12;
-    public static final int continueFrom = 0;
+    public static int continueFrom = 0;
 
 
     /*running data*/
