@@ -125,14 +125,19 @@ public abstract class AbstractSPreGain extends AbstractStrategyStatisticData {
 			
 			DataArray close = dataMap.getDataArray(Constant.CLOSE);
 			statisticArray = new DataArray(stockCode, myStatisticType, dataMap);
-			
+            DataArray sellArray = new DataArray(stockCode, getSellArrayStatisticName(), dataMap);
+            dataMap.putDataArray(getSellArrayStatisticName(), sellArray);
+
 			for (int i = 0; i < close.size(); i++) {
 				RawData data = new RawData(close.getDate(i), 0);
 				statisticArray.addData(data);
+				RawData sellData = new RawData(close.getDate(i), 0);
+				sellArray.addData(sellData);
 			}
 			
 			for (int i = 0; i < close.size(); i++) {
 				statisticArray.setValue(i, 0);
+				sellArray.setValue(i, 0);
 			}
 
 			// buy: 1.cross ma5 ma10
@@ -143,7 +148,7 @@ public abstract class AbstractSPreGain extends AbstractStrategyStatisticData {
 			
 			// sell: cross ma5 ma10
 			
-			setSell(statisticArray, dataMap);
+			setSell(statisticArray, sellArray, dataMap);
 
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -260,14 +265,18 @@ public abstract class AbstractSPreGain extends AbstractStrategyStatisticData {
 		}
 	}
 	
-	protected void setSell(DataArray statisticArray, DataMap dataMap) throws Exception {
+	protected void setSell(DataArray statisticArray, DataArray sellArray, DataMap dataMap) throws Exception {
 		DataArray close = dataMap.getDataArray(Constant.CLOSE);
 		
 		for (int i = 0; i < close.size(); i++) {
 			if (statisticArray.getValue(i) > 0 && i + this.GAIN < close.size()) {
-				statisticArray.setValue(i + this.GAIN, -1);
+				sellArray.setValue(i + this.GAIN, -1);
 			}
 		}
+	}
+
+	protected String getSellArrayStatisticName() {
+		return this.myStatisticType + Constant.SELL_ARRAY_SUFFIX;
 	}
 
 	protected double calcWithData(double[] closeList, double[] openList, double[] highList, double[] lowList, double[] volList) {

@@ -86,7 +86,7 @@ public class Constant
 	public static final String [] ADVANCEDTATISTICSTYPES = {MACDDIF, MACDDEA, MACD, KDJRSV,KDJK,KDJD,KDJJ, Percentage3OneDayOrClose, RiseStopPrice, ForceBuyPrice};
 	
 	
-	
+	public static final String SELL_ARRAY_SUFFIX = "_sell";
 	
 	public static final String SCROSS510 = "SCROSS510"; //ma5 and ma10 cross 
 	public static final String SCROSS510UP = "SCROSS510UP"; //buy: ma5up and ma10up cross; sell: ma5 and ma10 cross 

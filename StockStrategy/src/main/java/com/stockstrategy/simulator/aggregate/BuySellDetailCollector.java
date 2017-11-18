@@ -46,6 +46,12 @@ public class BuySellDetailCollector extends AbstractAggregate {
 		
 		DataArray buySellArray = StockDataHolder.getInstance().get(stockCode)
                 .getDataArray(statisticType);
+
+		DataArray sellArray = StockDataHolder.getInstance().get(stockCode)
+				.getDataArray(statisticType + Constant.SELL_ARRAY_SUFFIX);
+		if (sellArray == null) {
+			sellArray = buySellArray;
+		}
         
         String buyStatisticType = buySellArray.getBuyStatisticType();
         DataArray buyPriceArray = StockDataHolder.getInstance().get(stockCode)
@@ -88,6 +94,15 @@ public class BuySellDetailCollector extends AbstractAggregate {
         	}
         	
         	double actionCode = buySellArray.getValue(i);
+        	double sellCode = sellArray.getValue(i);
+            if(inHand && sellCode<0){
+                Transaction t = inHandList.remove(0);
+                inHand = inHandList.size() > 0;
+                t.sellDate = date;
+                t.sellPrice = sellPriceArray.getValue(i);
+                transactions.add(t);
+            }
+
         	if (actionCode>0){
 				boolean toSkip = false;
 				buyPrice = buyPriceArray.getValue(i);
@@ -106,12 +121,6 @@ public class BuySellDetailCollector extends AbstractAggregate {
                     inHand = true;
                     inHandList.add(t);
                 }
-        	}else if(inHand && actionCode<0){
-                Transaction t = inHandList.remove(0);
-                inHand = inHandList.size() > 0;
-                t.sellDate = date;
-                t.sellPrice = sellPriceArray.getValue(i);
-                transactions.add(t);
         	}
         }
         

@@ -39,14 +39,14 @@ public class DataMap implements IStock {
 		dataMap.put(statisticType, statisticDataArray);
 	}
 	
-	public DataArray getDataArray(String statisticType) throws Exception
+	public DataArray getDataArray(String statisticType)
 	{
 		if (containArray(statisticType))
 		{
 			return dataMap.get(statisticType);
 		}else
 		{
-			throw new Exception("The Statistic Type doesn't exist");
+			return null;
 		}
 	}
 

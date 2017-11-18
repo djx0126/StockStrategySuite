@@ -40,12 +40,24 @@ public class OneStockTestTask implements ITask{
 		
 		try {
 			DataArray buySellArray = StockDataHolder.getInstance().get(stockCode).getDataArray(strategy);
+
+			DataArray sellArray = StockDataHolder.getInstance().get(stockCode)
+					.getDataArray(strategy + Constant.SELL_ARRAY_SUFFIX);
+			if (sellArray == null) {
+				sellArray = buySellArray;
+			}
 			DataArray close = StockDataHolder.getInstance().get(stockCode).getDataArray(Constant.CLOSE);
 			for (int i=0;i<=buySellArray.size()-1;i++){
 				String date = buySellArray.getDate(i);
 				double actionCode = buySellArray.getValue(i);
-				
-				if (actionCode<0 || actionCode>0){
+				double sellCode = sellArray.getValue(i);
+
+				if (sellCode<0){
+					OneStockTestDetailItem detailItem = new OneStockTestDetailItem(jobId, date, sellCode, close.getValue(i));
+					taskResult.addDetailItem(detailItem);
+				}
+
+				if (actionCode>0){
 					OneStockTestDetailItem detailItem = new OneStockTestDetailItem(jobId, date, actionCode, close.getValue(i));
 					taskResult.addDetailItem(detailItem);
 				}

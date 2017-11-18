@@ -35,13 +35,11 @@ public abstract class AbstractAggregatedPreGain extends AbstractSPreGain {
 	@Override
 	protected void setBuy(DataArray statisticArray, DataMap dataMap)  throws Exception{
 		DataArray close = dataMap.getDataArray(Constant.CLOSE);
-		List<DataArray> dataArrays = new ArrayList<DataArray>();
-		for (String strategey: strategies){
-			try{
-				DataArray dataArray = dataMap.getDataArray(strategey);
+		List<DataArray> dataArrays = new ArrayList<>();
+		for (String strategy: strategies){
+			DataArray dataArray = dataMap.getDataArray(strategy);
+			if (dataArray != null) {
 				dataArrays.add(dataArray);
-			}catch(Exception e){
-				// do nothing
 			}
 		}
 		

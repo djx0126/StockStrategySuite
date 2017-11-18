@@ -142,6 +142,12 @@ public abstract class DataAnalyzer {
         try {
             buySellArray = StockDataHolder.getInstance().get(stockCode)
                     .getDataArray(statisticType);
+
+            DataArray sellArray = StockDataHolder.getInstance().get(stockCode)
+                    .getDataArray(statisticType + Constant.SELL_ARRAY_SUFFIX);
+            if (sellArray == null) {
+                sellArray = buySellArray;
+            }
             
             String buyStatisticType = buySellArray.getBuyStatisticType();
             DataArray buyPriceArray = StockDataHolder.getInstance().get(stockCode)
@@ -159,7 +165,7 @@ public abstract class DataAnalyzer {
             if (buySellArray != null && buyPriceArray != null && sellPriceArray!=null
                     && buySellArray.size() > 0) {
                 StatisticResult result = new StatisticResult();
-                float gain = gainWithDelay(buySellArray, buyPriceArray, sellPriceArray, closePriceArray, openPriceArray,
+                float gain = gainWithDelay(buySellArray, sellArray, buyPriceArray, sellPriceArray, closePriceArray, openPriceArray,
                         Constant.DELAY0);
                 
 
@@ -241,7 +247,7 @@ public abstract class DataAnalyzer {
         }
     }
 
-    private static float gainWithDelay(DataArray buySellArray, DataArray buyPrice, DataArray sellPrice, DataArray closePrice, DataArray openPrice,
+    private static float gainWithDelay(DataArray buySellArray, DataArray sellArray, DataArray buyPrice, DataArray sellPrice, DataArray closePrice, DataArray openPrice,
             int delay) throws Exception {
 
 
@@ -251,6 +257,12 @@ public abstract class DataAnalyzer {
         if (closePrice.size() > delay) {
             for (int i = delay; i < closePrice.size(); i++) {
             	int keyDay = i-delay;
+                if (sellArray.getValue(keyDay) < 0) {
+                    // to sell
+                    account.sell(sellArray.getStockCode(),
+                            sellPrice.getValue(i), sellArray.getValue(keyDay));
+                }
+
                 boolean toSkip = false;
                 if (buySellArray.getValue(keyDay) > 0) {
                     // to buy
@@ -267,10 +279,6 @@ public abstract class DataAnalyzer {
                         account.buy(buySellArray.getStockCode(), toBuyPrice,
                                 buySellArray.getValue(keyDay));
                     }
-                } else if (buySellArray.getValue(keyDay) < 0) {
-                    // to sell
-                    account.sell(buySellArray.getStockCode(),
-                    		sellPrice.getValue(i), buySellArray.getValue(keyDay));
                 }
             }
 
@@ -327,35 +335,6 @@ public abstract class DataAnalyzer {
     public static List<String> sortStock(String statisticType, int length) { // sort on gain by default
         if (length <= 0)
             return new ArrayList<>();
-
-//        Map<String, Double> stockGain = new HashMap<>();
-//        Map<String, Integer> stockIndex = new HashMap<>();
-//        Set<String> treeSet = new TreeSet<>((s1, s2) -> {
-//            Double g1 = stockGain.get(s1);
-//            Double g2 = stockGain.get(s2);
-//            Integer i1 = stockIndex.get(s1);
-//            Integer i2 = stockIndex.get(s2);
-//            int gainCompare = g1.compareTo(g2);
-//            if (gainCompare != 0) {
-//                return -gainCompare; // desc
-//            } else {
-//                return i1.compareTo(i2);
-//            }
-//        });
-//
-//        int i = 0;
-//        for (String stockCode : StatisticResultManager.getInstance().getStatisticResults().keySet()) {
-//            StockStatisticResult stockResult = StatisticResultManager.getInstance().getResult(stockCode);
-//            if (!stockResult.contains(statisticType)) {
-//                continue;
-//            }
-//            stockIndex.put(stockCode, i++);
-//            double gain = stockResult.getResult(statisticType).getGain();
-//            stockGain.put(stockCode, gain);
-//            treeSet.add(stockCode);
-//        }
-//        List<String> list = treeSet.stream().collect(Collectors.toList());
-//        return list.subList(0, Math.min(list.size(), length));
 
         LinkedList<String> list = new LinkedList<>(); // String for stock code
         for (String stockCode : StatisticResultManager.getInstance()

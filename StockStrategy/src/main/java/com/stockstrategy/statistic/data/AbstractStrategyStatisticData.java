@@ -97,6 +97,13 @@ public  abstract class AbstractStrategyStatisticData extends AbstractStatisticDa
 			//DataArray close = StockDataHolder.getInstance().get(stockCode).getDataArray(Constant.CLOSE);
 			DataArray close = stockData.getDataArray(Constant.CLOSE);
 			DataArray open = StockDataHolder.getInstance().get(stockCode).getDataArray(Constant.OPEN);
+
+            DataArray sellArray = StockDataHolder.getInstance().get(stockCode)
+                    .getDataArray(buysellArray.getStatisticType() + Constant.SELL_ARRAY_SUFFIX);
+            if (sellArray == null) {
+                sellArray = buysellArray;
+            }
+
 			for (int i=0;i<buysellArray.size();i++){
 				if (close !=null && i>1 ){
 					double lastDayPrice = close.getValue(i-1);
@@ -111,7 +118,7 @@ public  abstract class AbstractStrategyStatisticData extends AbstractStatisticDa
 							}
 						}
 						if (k>=0 ){
-							buysellArray.setValue(k, -1);
+                            sellArray.setValue(k, -1);
 						} 
 					}
 				}
