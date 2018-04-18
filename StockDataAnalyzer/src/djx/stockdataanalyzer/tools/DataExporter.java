@@ -23,10 +23,10 @@ import java.util.stream.Collectors;
 public class DataExporter {
 
     /*model parameters*/
-    public static final int PRE = 120;
-    public static final int GAIN = 5;
+    public static final int PRE = 32;
+    public static final int GAIN = 1;
 
-    public static final int[] dayFields = {/*close*/60, /*open*/0, /*high*/0, /*low*/0, /*vol*/0};
+    public static final int[] dayFields = {/*close*/32, /*open*/0, /*high*/0, /*low*/0, /*vol*/0};
     public static final int[] maFields = {}; //{5, 10, 20, 30};
     public static final int[] overAllmaFields = {}; //{5, 10, 20, 30};
 
@@ -81,7 +81,7 @@ public class DataExporter {
 
         String startDate = rawData[0].getKeyDate();
         String endDate = rawData[rawData.length - 1].getKeyDate();
-        String minSuffix = usingPreFilter ? "_min" : "";
+        String minSuffix = usingPreFilter ? "_small" : "";
         String fileName = String.format(fileNameTemplate, startDate, endDate, minSuffix);
 
         for (StockDataModel dataModel : DataExporter.dataList) {

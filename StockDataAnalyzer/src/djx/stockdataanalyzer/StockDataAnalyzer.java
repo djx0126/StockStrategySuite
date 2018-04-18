@@ -47,7 +47,7 @@ public class StockDataAnalyzer {
     public static float preFilterRate = 0.5f;
     public static String SELECT_TEST_DATA_BY_DATE_STRING = null; //"20140101"; // if set to null, will use a random selector by stock code
     public static final double E = 1e-4f;
-    public static final int TEST_RUN_TIMES = 500;
+    public static final int TEST_RUN_TIMES = 1000;
     public static final int THREAD_NUM = 12;
     public static int continueFrom = 0;
 
