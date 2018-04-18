@@ -71,7 +71,7 @@
 	</div>
 	<div class='dialog-container'>
 		<div ng-repeat="trasactionDateItem in transactionDialog.transactions" class="transaction-dialog-transaction-date-item">
-			<div ng-class="{'loss': trasactionDateItem.avgGain < 0}">
+			<div>
 				<a href="" ng-click='transactionDialog.toggleShowDetailList(trasactionDateItem)'>
 					<span>Buy date:</span><span>{{trasactionDateItem.buyDate}}</span>
 				</a>
@@ -82,8 +82,9 @@
 					  trasactionDateItem === transactionDialog.maxLossTransaction}">
 					{{trasactionDateItem.count}}
 				</span>
-				<span>Gain: </span><span class="sum">{{trasactionDateItem.sum|formatInt3}}</span>
-				<span>Avg gain: </span><span class="avg-gain">{{trasactionDateItem.avgGain|formatInt3}}</span>
+				<span>Gain: </span><span class="sum" ng-class="{'loss': trasactionDateItem.sum < 0}">{{trasactionDateItem.sum|formatInt3}}</span>
+				<span class="transaction-day-item">Avg gain: </span><span class="avg-gain" ng-class="{'loss': trasactionDateItem.avgGain < 0}">{{trasactionDateItem.avgGain|formatInt3}}</span>
+				<span class="transaction-day-item">Ma Avg gain: </span><span class="avg-gain" ng-class="{'loss': trasactionDateItem.maAvgGain < 0}">{{trasactionDateItem.maAvgGain|formatInt3}}</span>
 			</div>
 			<div ng-if="transactionDialog.showDetailList(trasactionDateItem)">
 			   <div ng-repeat="transaction in trasactionDateItem.list">

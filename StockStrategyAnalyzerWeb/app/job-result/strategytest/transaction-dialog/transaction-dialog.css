@@ -26,10 +26,14 @@
 
 .transaction-dialog-transaction-date-item .loss .count,
 .transaction-dialog-transaction-date-item .loss .sum,
-.transaction-dialog-transaction-date-item .loss .avg-gain{
+.transaction-dialog-transaction-date-item .loss .avg-gain, .transaction-dialog-transaction-date-item .loss.avg-gain{
     color: #00bb00;
 }
 
 .transaction-dialog-transaction-date-item .count.max {
     font-weight: bolder;
+}
+
+.transaction-dialog-transaction-date-item .transaction-day-item {
+    padding-left: 20px;
 }

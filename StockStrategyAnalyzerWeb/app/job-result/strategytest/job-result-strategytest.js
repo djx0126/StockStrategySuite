@@ -206,7 +206,6 @@ function JobResultStrategyTest(){
         }
 		
 		function initTransactionList(rawTransactionList){
-			var result = [];
 			var resultByDateMap = {};
 			angular.forEach(rawTransactionList, function(transcation){
 				var buyDate= transcation.buyDate;
@@ -224,16 +223,44 @@ function JobResultStrategyTest(){
 				dateList.sum += gain;
 				dateList.list.push(transcation);
 			});
-			
+
+			var result = [];
 			angular.forEach(resultByDateMap, function(dateList){
 				dateList.avgGain = dateList.count>0?dateList.sum/dateList.count:0;
 				result.push(dateList);
 			});
-			result = _.sortBy(result, 'buyDate');
+			result = _.sortBy(result, 'buyDate'); // asc
+
+            calcMaAvgGain(result);
+
 			return result;
 		}
 		
-		
+		function calcMaAvgGain(result) {
+            _.forEach(result, function (dateResult, index) {
+                var year = dateResult.buyDate.substr(0, 4);
+                var month = dateResult.buyDate.substr(4, 2);
+                var day = dateResult.buyDate.substr(6, 2);
+                var buyDate = new Date(year + '-' + month + '-' + day);
+                buyDate.setMonth( buyDate.getMonth() - 1);
+                var month = buyDate.getMonth() + 1;
+                month = month < 10 ? '0' + month : month;
+                var date = buyDate.getDate();
+                date = date < 10 ? '0' + date : date;
+                var lastMonth = '' + buyDate.getFullYear() + month + date;
+
+                var maCount = 0;
+                var maSum = 0;
+                for (var i = index; i >=0 ; i--) {
+                    if (result[i].buyDate < lastMonth) {
+                        break;
+                    }
+                    maCount++;
+                    maSum += result[i].avgGain;
+                }
+                dateResult.maAvgGain = maSum / maCount;
+            });
+        }
 	}
 }
 
