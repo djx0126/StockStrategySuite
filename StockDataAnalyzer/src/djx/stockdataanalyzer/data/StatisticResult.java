@@ -16,6 +16,7 @@ public class StatisticResult {
     private int count;
     private double accuracy;
     private double overFit;
+    private ScoreFormula scoreFormula = new ScoreFormula();
 
     protected double score = 0.0d;
 
@@ -26,6 +27,10 @@ public class StatisticResult {
     }
 
     public StatisticResult(double sum, double lost, double avgGain, double rate, int count, double accuracy, double overFit, List<StockDataModel> dataInResult) {
+        this(new ScoreFormula(), sum, lost, avgGain, rate, count, accuracy, overFit, dataInResult);
+    }
+
+    public StatisticResult(ScoreFormula formula, double sum, double lost, double avgGain, double rate, int count, double accuracy, double overFit, List<StockDataModel> dataInResult) {
         this.sum = sum;
         this.lost = lost;
         this.avgGain = avgGain;
@@ -34,11 +39,17 @@ public class StatisticResult {
         this.accuracy = accuracy;
         this.overFit = overFit;
         this.dataInResult = dataInResult;
-        this.calcScore();
+        this.scoreFormula = formula;
+        calcScore();
+    }
+
+    public void setScoreFormula(ScoreFormula scoreFormula) {
+        this.scoreFormula = scoreFormula;
+        this.score = calcScore();
     }
 
     private double calcScore() {
-        this.score = ScoreFormula.calcScore(this);
+        this.score = scoreFormula.calcScore(this);
         return score;
     }
 
@@ -55,7 +66,7 @@ public class StatisticResult {
             return (score>0 && this.avgGain > 0) && this.count>=1;
         }
 
-        return (score>100 && accuracy>=50) && this.count>10 && this.rate > 2.0d && this.avgGain >= StockDataAnalyzer.GAIN/2;
+        return (score>1.0 && accuracy>=30) && this.count>10 && this.rate > 2.0d && this.avgGain >= StockDataAnalyzer.GAIN/2;
     }
 
     @Override

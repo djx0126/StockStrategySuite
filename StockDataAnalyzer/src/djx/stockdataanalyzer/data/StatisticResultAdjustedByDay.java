@@ -9,9 +9,12 @@ public class StatisticResultAdjustedByDay extends StatisticResult{
     private double sumAdjustedByDay;
 
     public StatisticResultAdjustedByDay(double sum, double lost, double avgGain, double rate, int count, double accuracy, double overFit, double sumAdjustedByDay, List<StockDataModel> dataInResult) {
-        super(sum, lost, avgGain, rate, count, accuracy, overFit, dataInResult);
+        this(new ScoreFormula.SimpleScoreFormula(sumAdjustedByDay), sum, lost, avgGain, rate, count, accuracy, overFit, sumAdjustedByDay, dataInResult);
+    }
+
+    public StatisticResultAdjustedByDay(ScoreFormula formula, double sum, double lost, double avgGain, double rate, int count, double accuracy, double overFit, double sumAdjustedByDay, List<StockDataModel> dataInResult) {
+        super(formula, sum, lost, avgGain, rate, count, accuracy, overFit, dataInResult);
         this.sumAdjustedByDay = sumAdjustedByDay;
-        this.score = this.sumAdjustedByDay;
     }
 
 }

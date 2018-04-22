@@ -20,49 +20,34 @@ public class StatisticResultCalculator {
     }
 
     public StatisticResult calcStatisticResult(ResultModel model, StockDataModel[] testingData){
-        double sum = 0d;
-        double sumAdjustedByDay = 0d;
-        double gainSum = 0;
-        double lostSum = 0;
-        int count = 0;
-        int countHigherThanTarget = 0;
-        Map<String, Integer> dateCount = new HashMap<>();
+        return calcStatisticResult(model, testingData, null);
+    }
+
+    public StatisticResult calcStatisticResult(ResultModel model, StockDataModel[] testingData, ScoreFormula scoreFormula) {
         List<StockDataModel> dataInResult = Arrays.stream(testingData).filter(d -> model.testOnData(d)).collect(Collectors.toList());
 
-        dataInResult.stream().forEach(data -> {
-            String keyDate = data.getKeyDate();
-            if (!dateCount.containsKey(keyDate)) {
-                dateCount.put(keyDate, 1);
-            } else {
-                int oldDateCount = dateCount.get(keyDate);
-                dateCount.replace(keyDate, oldDateCount + 1);
-            }
-        });
+        Map<String, List<StockDataModel>> dataByKeyDate = dataInResult.stream().collect(Collectors.groupingBy(d -> d.getKeyDate()));
+        Map<String, Integer> dateCount = dataByKeyDate.keySet().stream().collect(Collectors.toMap(d -> d, d -> dataByKeyDate.get(d).size()));
 
+        List<Double> gainList = dataInResult.stream().map(StockDataModel::getPercentageGain).collect(Collectors.toList());
+
+        int count = dataInResult.size();
+        double sum = gainList.stream().mapToDouble(Double::new).sum();
+        int countHigherThanTarget = (int) gainList.stream().filter(d -> d>StockDataAnalyzer.TARGET_GAIN ).count();
+        double gainSum = gainList.stream().filter(d -> d > 0L).mapToDouble(Double::new).sum();
+        double lostSum = gainList.stream().filter(d -> d < 0L).mapToDouble(d -> -d).sum();
+
+        double sumAdjustedByDay = 0d;
         for (StockDataModel data: dataInResult) {
             if (debug){
                 System.out.println(data);
             }
             double gain = data.getPercentageGain();
 
-            if (gain>0){
-                gainSum+=gain;
-            }else{
-                lostSum+= (-gain);
-            }
-
-            sum += gain;
-
             String keyDate = data.getKeyDate();
             int dayBuyCount = dateCount.get(keyDate);
             double adjustedGain = ScoreFormula.adjustGainByDate(gain, dayBuyCount);
             sumAdjustedByDay += adjustedGain;
-
-            count++;
-            if (gain > StockDataAnalyzer.TARGET_GAIN){
-                countHigherThanTarget++;
-            }
-
         }
 
         double avgGain = count>0? (sum/count):0;
@@ -71,11 +56,17 @@ public class StatisticResultCalculator {
 
         double overFit = getOverFit(dateCount);
 
+
+        ScoreFormula formula = StockDataAnalyzer.ADJUST_COUNT_BY_DAY ? new ScoreFormula.SimpleScoreFormula(sumAdjustedByDay) : new ScoreFormula();
+        if (scoreFormula != null) {
+            formula = scoreFormula;
+        }
+
         StatisticResult statisticResult;
         if (StockDataAnalyzer.ADJUST_COUNT_BY_DAY) {
-            statisticResult = new StatisticResultAdjustedByDay(sum, lostSum, avgGain, rate, count, accuracy, overFit, sumAdjustedByDay, dataInResult);
+            statisticResult = new StatisticResultAdjustedByDay(formula, sum, lostSum, avgGain, rate, count, accuracy, overFit, sumAdjustedByDay, dataInResult);
         } else {
-            statisticResult = new StatisticResult(sum, lostSum, avgGain, rate, count, accuracy, overFit, dataInResult);
+            statisticResult = new StatisticResult(formula, sum, lostSum, avgGain, rate, count, accuracy, overFit, dataInResult);
         }
 
         return statisticResult;
@@ -101,5 +92,4 @@ public class StatisticResultCalculator {
             return ((double)mostPart)/((double)sum);
         }
     }
-
 }

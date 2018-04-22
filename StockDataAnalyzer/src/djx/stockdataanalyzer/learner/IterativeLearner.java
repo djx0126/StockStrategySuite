@@ -162,7 +162,7 @@ public class IterativeLearner extends HierarchyLearner{
     private void validateModel(ModelWithStatistic model, StockDataModel[] cvData) {
         if (model.statisticResult.isValid() || StockDataAnalyzer.debug) {
             // validate on cvData
-            model.statisticResult = resultCalculator.calcStatisticResult(model.model, cvData);
+            model.statisticResult = resultCalculator.calcStatisticResult(model.model, cvData, new ScoreFormula.CumulativeGainScoreFormula());
             System.out.println("//validating result: " + model.statisticResult);
 
             if (model.statisticResult.isValid() || StockDataAnalyzer.debug) {

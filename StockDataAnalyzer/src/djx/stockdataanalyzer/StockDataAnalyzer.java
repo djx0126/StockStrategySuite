@@ -24,8 +24,8 @@ public class StockDataAnalyzer {
     public static int PRE = 3;
     public static int GAIN = 2;
 
-    public static int[] dayFields = {/*close*/30, /*open*/0, /*high*/0, /*low*/0, /*vol*/0};
-    public static int[] maFields = {5, 20, 60}; //{5, 10, 20, 30};
+    public static int[] dayFields = {/*close*/10, /*open*/0, /*high*/0, /*low*/0, /*vol*/0};
+    public static int[] maFields = {5, 20}; //{5, 10, 20, 30};
     public static int[] overAllmaFields = {}; //{5, 10, 20, 30};
 
     public static boolean skipBigChange = false;
@@ -101,8 +101,8 @@ public class StockDataAnalyzer {
         prepareHighGainData(rawData);
 
         LearnerFactory factory = LearnerFactory.prepare(RepeatLearner.class).append(IterativeLearner.class).append(ParamLearner.class).get();
-        ILeaner repeatLearner = factory.buildLearner();
-        repeatLearner.learnForModelAndStatistic(trainData,testData);
+        ILeaner learner = factory.buildLearner();
+        learner.learnForModelAndStatistic(trainData,testData);
 
         long endTime = System.currentTimeMillis();
         System.out.println("time passed:" + (endTime - startTime) / 1000 + " seconds.");

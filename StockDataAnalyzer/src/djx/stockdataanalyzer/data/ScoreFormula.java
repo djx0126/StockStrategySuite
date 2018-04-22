@@ -2,16 +2,19 @@ package djx.stockdataanalyzer.data;
 
 import djx.stockdataanalyzer.StockDataAnalyzer;
 
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
+
 /**
  * Created by dave on 2015/11/15.
  */
 public class ScoreFormula {
 
-    public static double calcScore(StatisticResult statisticResult) {
+    public double calcScore(StatisticResult statisticResult) {
         if (StockDataAnalyzer.ADJUST_COUNT_BY_DAY) {
             return statisticResult.getScore();
         }
-
 
         double score = statisticResult.getAvgGain() * statisticResult.getAvgGain();
         score = statisticResult.getAvgGain() > 0 ? score : -score;
@@ -51,5 +54,36 @@ public class ScoreFormula {
         value = avgGain*avgGain*avgGain*Math.pow(count, 0.25f);
 
         return value >0 ?value*accuracy/100 : value;
+    }
+
+    public static class CumulativeGainScoreFormula extends ScoreFormula{
+        @Override
+        public double calcScore(StatisticResult statisticResult) {
+            double cumulativeGain = 1.0d;
+            List<StockDataModel> dataModels = statisticResult.getDataInResult();
+            List<Double> gainList = dataModels.stream().map(StockDataModel::getGain).collect(Collectors.toList());
+
+            if (StockDataAnalyzer.ADJUST_COUNT_BY_DAY) {
+                Map<String, List<StockDataModel>> dataModelsByKeyDate = dataModels.stream().collect(Collectors.groupingBy(StockDataModel::getKeyDate));
+                gainList = dataModelsByKeyDate.values().stream().map(l -> l.stream().map(StockDataModel::getGain).mapToDouble(Double::new).average().getAsDouble()).collect(Collectors.toList());
+            }
+
+            for(Double gain: gainList) {
+                cumulativeGain *= gain;
+            }
+
+            return cumulativeGain;
+        }
+    }
+
+    public static class SimpleScoreFormula extends ScoreFormula {
+        private double score;
+
+        public SimpleScoreFormula(double score) {this.score = score;}
+
+        @Override
+        public double calcScore(StatisticResult statisticResult) {
+            return this.score;
+        }
     }
 }
