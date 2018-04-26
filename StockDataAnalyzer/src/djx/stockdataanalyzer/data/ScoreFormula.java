@@ -63,6 +63,9 @@ public class ScoreFormula {
             List<StockDataModel> dataModels = statisticResult.getDataInResult();
             List<Double> gainList = dataModels.stream().map(StockDataModel::getGain).collect(Collectors.toList());
 
+            double penalty = 2.0d;
+            gainList = gainList.stream().mapToDouble(d -> d < 1.0 ? Math.pow(d, penalty) : d).boxed().collect(Collectors.toList());
+
             if (StockDataAnalyzer.ADJUST_COUNT_BY_DAY) {
                 Map<String, List<StockDataModel>> dataModelsByKeyDate = dataModels.stream().collect(Collectors.groupingBy(StockDataModel::getKeyDate));
                 gainList = dataModelsByKeyDate.values().stream().map(l -> l.stream().map(StockDataModel::getGain).mapToDouble(Double::new).average().getAsDouble()).collect(Collectors.toList());

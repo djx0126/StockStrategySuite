@@ -3,10 +3,7 @@ package djx.stockdataanalyzer.learner;
 import com.djx.stockgainanalyzer.Utils;
 import djx.stockdataanalyzer.StatisticResultCalculator;
 import djx.stockdataanalyzer.StockDataAnalyzer;
-import djx.stockdataanalyzer.data.ModelWithStatistic;
-import djx.stockdataanalyzer.data.ResultModel;
-import djx.stockdataanalyzer.data.StatisticResult;
-import djx.stockdataanalyzer.data.StockDataModel;
+import djx.stockdataanalyzer.data.*;
 import javafx.util.Pair;
 
 import java.util.*;
@@ -39,7 +36,7 @@ public class ParamLearner implements ILeaner{
         if (StockDataAnalyzer.debug) {
             System.out.println("Start Params: " + startParam);
         }
-        StatisticResult statisticResult = resultCalculator.calcStatisticResult(startParam, trainData);
+        StatisticResult statisticResult = resultCalculator.calcStatisticResult(startParam, trainData, new ScoreFormula.CumulativeGainScoreFormula());
         ModelWithStatistic bestModel = new ModelWithStatistic(new ResultModel(startParam), statisticResult);
 
         int fieldLength = trainData[0].getDataArray().length;
@@ -207,7 +204,7 @@ public class ParamLearner implements ILeaner{
     private static Future<ModelWithStatistic> prepareExecuteThread(ExecutorService threadPool, CountDownLatch latch, ResultModel model, StockDataModel[] trainData){
         Future<ModelWithStatistic> future = threadPool.submit(() -> {
             StatisticResultCalculator calculator = new StatisticResultCalculator();
-            StatisticResult statisticResult = calculator.calcStatisticResult(model, trainData);
+            StatisticResult statisticResult = calculator.calcStatisticResult(model, trainData, new ScoreFormula.CumulativeGainScoreFormula());
             latch.countDown();
             return new ModelWithStatistic(model, statisticResult);
         });
