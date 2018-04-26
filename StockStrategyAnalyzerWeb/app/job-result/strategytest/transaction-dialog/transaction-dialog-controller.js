@@ -79,7 +79,10 @@
 
         function drawGainLine() {
             $timeout(function () {
-                var dailyAvgGain = _.map(transactionDialog.transactions, function (t) {
+            	var orderedTransactions = _.sortBy(transactionDialog.transactions, function (t) {
+					return t.buyDate;
+                });
+                var dailyAvgGain = _.map(orderedTransactions, function (t) {
                     return (t.avgGain+100) / 100;
                 });
                 gainLine.clear("#visualisation");
