@@ -28,7 +28,8 @@ public class ResultModel {
         for (int j=0;j<offsets.length;j++){
             if (value<=limit){
                 double temp = dataValue[j]+offsets[j];
-                value += (temp*temp)/(scales[j]*scales[j]);
+                double scale = Math.max(scales[j], 0.0001d);
+                value += (temp*temp)/(scale*scale);
             }
         }
 
