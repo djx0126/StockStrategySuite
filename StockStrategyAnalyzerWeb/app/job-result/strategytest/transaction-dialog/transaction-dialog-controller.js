@@ -3,29 +3,39 @@
 	
 	
 	angular.module('main-module').controller('transaction-dialog-controller', TransactionDialogController);
-	TransactionDialogController.$inject = ['$scope', '$window', '$modal', 'jobFactory', '$modalInstance', 'transactions', 'strategy', 'strategyFactory', 'stategytestJobResultFactory'];
+	TransactionDialogController.$inject = ['$scope', '$window', '$modal', '$timeout', 'jobFactory', '$modalInstance', 'transactions', 'strategy', 'size', 'index', 'strategyFactory', 'stategytestJobResultFactory', 'gainLine'];
 	
-	function TransactionDialogController($scope, $window, $modal, jobFactory, $modalInstance, transactions, strategy, strategyFactory, stategytestJobResultFactory){
+	function TransactionDialogController($scope, $window, $modal, $timeout, jobFactory, $modalInstance, transactions, strategy, size, index, strategyFactory, stategytestJobResultFactory, gainLine){
 		var transactionDialog = this;
-		transactionDialog.strategy = strategy;
-		transactionDialog.strategyProperty = strategyFactory.getStrategy(strategy);
-
+        transactionDialog.initiated = false;
+        transactionDialog.index = index;
 		transactionDialog.filterTypes = prepareFilters();
 		transactionDialog.selectedFilterId = 'count_more_than';
-		updateTransactionsWithFilter();
+        transactionDialog.showByDay = true;
+        init(strategy.name, transactions);
 
 		transactionDialog.okClicked = $modalInstance.close;
-		transactionDialog.changed = false;
 		transactionDialog.onChange = function descriptionChanged(){transactionDialog.changed = true;};
-		transactionDialog.showingDetail = {};
+
 		transactionDialog.onSaveClicked = saveStrategyProperty;
 		transactionDialog.showDetailList = showDetailList;
 		transactionDialog.toggleShowDetailList = toggleShowDetailList;
-		transactionDialog.showByDay = true;
 
-		transactionDialog.gainMaxCountTransaction = getGainMaxCountTransaction(transactions);
-		transactionDialog.lossMaxCountTransaction = getLossMaxCountTransaction(transactions);
-		transactionDialog.maxLossTransaction = getMaxLossTransaction(transactions);
+        transactionDialog.next = function () {
+            // transactionDialog.initiated = false;
+        	strategy.next(transactionDialog.index).then(function (result) {
+                transactionDialog.index++;
+                init(result.strategy, result.transactions)
+            });
+        };
+
+        transactionDialog.previous = function () {
+            // transactionDialog.initiated = false;
+            strategy.previous(transactionDialog.index).then(function (result) {
+                transactionDialog.index--;
+                init(result.strategy, result.transactions)
+            });
+        };
 
 		$scope.$watch('transactionDialog.selectedFilterId', function(newValue, oldValue) {
 			if (newValue !== oldValue) {
@@ -38,7 +48,44 @@
 				updateTransactionsWithFilter();
 			}
 		});
+
+		$scope.$watch('transactionDialog.showStrategyProperty', function (show) {
+			if (show) {
+                drawGainLine();
+			}
+        });
 		///////////////
+		
+		function init(strategy, transactions) {
+            transactionDialog.transactions = transactionDialog.transactions || [];
+            transactionDialog.transactions.length = 0;
+            Array.prototype.push.apply(transactionDialog.transactions, transactions);
+            transactionDialog.strategy = strategy;
+            transactionDialog.strategyProperty = strategyFactory.getStrategy(transactionDialog.strategy);
+            transactionDialog.changed = false;
+            updateTransactionsWithFilter();
+            transactionDialog.gainMaxCountTransaction = getGainMaxCountTransaction(transactions);
+            transactionDialog.lossMaxCountTransaction = getLossMaxCountTransaction(transactions);
+            transactionDialog.maxLossTransaction = getMaxLossTransaction(transactions);
+            transactionDialog.showingDetail = {};
+            transactionDialog.nextDisabled = (transactionDialog.index + 1 >= size);
+            transactionDialog.previousDisabled = (transactionDialog.index - 1 < 0);
+            transactionDialog.initiated = true;
+
+            if (transactionDialog.showStrategyProperty) {
+                drawGainLine();
+			}
+        }
+
+        function drawGainLine() {
+            $timeout(function () {
+                var dailyAvgGain = _.map(transactionDialog.transactions, function (t) {
+                    return (t.avgGain+100) / 100;
+                });
+                gainLine.clear("#visualisation");
+                gainLine.drawGainLine("#visualisation", dailyAvgGain);
+            });
+        }
 
         function getLossMaxCountTransaction(transactions) {
             var gainItems = _.filter(transactions, function (transactionDateItem) {
@@ -61,7 +108,7 @@
 		function updateTransactionsWithFilter() {
 			var filterValue = transactionDialog.filterTypes[transactionDialog.selectedFilterId].value;
 			var filter = transactionDialog.filterTypes[transactionDialog.selectedFilterId].filter;
-			transactionDialog.transactions = sortTransactionOnDayDesc(_.filter(transactions, function(transactionDateItem) {
+			transactionDialog.transactions = sortTransactionOnDayDesc(_.filter(transactionDialog.transactions, function(transactionDateItem) {
 				return filter(transactionDateItem, filterValue);
 			}));
 			updateStatistics(transactionDialog.transactions);
@@ -129,7 +176,6 @@
 			var date = trasactionDateItem.buyDate;
 			if (angular.isUndefined(transactionDialog.showingDetail[date])){
 				transactionDialog.showingDetail[date] = true;
-				
 			}else{
 				transactionDialog.showingDetail[date] = !transactionDialog.showingDetail[date];
 			}

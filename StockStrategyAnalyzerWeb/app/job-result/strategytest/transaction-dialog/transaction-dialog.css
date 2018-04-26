@@ -37,3 +37,9 @@
 .transaction-dialog-transaction-date-item .transaction-day-item {
     padding-left: 20px;
 }
+
+.transaction-dialog #visualisation {
+    flex: 0 0 300px;
+    /*position: absolute;*/
+    /*right: 0px;*/
+}

@@ -67,7 +67,7 @@
                     ng-click="jobResultStrategytest.collapseAggregatingStrategies(resultItem)">-</td>
   				<td ng-show="resultItem.isAggregatedStrategy && !resultItem.aggregatingExpanded"
                     ng-click="jobResultStrategytest.expandAggregatingStrategies(resultItem)">+</td>
-				<td> <a ng-click="jobResultStrategytest.showTransactionDialog(resultItem)" href=''>{{resultItem.strategy}}</a></td>
+				<td> <a ng-click="jobResultStrategytest.showTransactionDialog(resultItem, $index)" href=''>{{resultItem.strategy}}</a></td>
 				<td>{{resultItem.meanGain}}</td>
 				<td>{{resultItem.rate|formatInt3}}</td>
 				<td>{{resultItem.netGain|formatInt3}}</td>

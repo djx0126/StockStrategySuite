@@ -122,7 +122,7 @@ function JobResultStrategyTest(){
 			return true;
         }
 		
-		function showTransactionDialog(resultItem){
+		function showTransactionDialog(resultItem, index){
 			var dialog = $modal.open({
 	            templateUrl: 'job-result/strategytest/transaction-dialog/transaction-dialog.html',
 	            backdrop: 'static',
@@ -130,11 +130,43 @@ function JobResultStrategyTest(){
 	            controllerAs: 'transactionDialog',
 	            windowClass: 'strategy-transaction-dialog',
 				resolve:{
+	                size: function () {
+                        return jobResultStrategytest.results.length;
+                    },
+                    index: function () {
+                        return index;
+                    },
 					transactions: function(){
 						return loadTransactions(resultItem);
 	            	},
 	            	strategy: function(){
-	            		return resultItem.strategy;
+	            		return {
+	            		    'name': resultItem.strategy,
+                            'next': function (index) {
+                                if (index + 1 < jobResultStrategytest.results.length) {
+                                    var nextResultItem = jobResultStrategytest.results[index + 1];
+                                    return loadTransactions(nextResultItem).then(function (transactions) {
+                                        return {
+                                            'index': index+1,
+                                            'strategy': nextResultItem.strategy,
+                                            'transactions': transactions
+                                        }
+                                    });
+                                }
+                            },
+                            'previous': function (index) {
+                                if (index - 1 >= 0) {
+                                    var preResultItem = jobResultStrategytest.results[index - 1];
+                                    return loadTransactions(preResultItem).then(function (transactions) {
+                                        return {
+                                            'index': index-1,
+                                            'strategy': preResultItem.strategy,
+                                            'transactions': transactions
+                                        }
+                                    });
+                                }
+                            }
+                        };
 	            	}
 				}
 	        });

@@ -1,4 +1,4 @@
-<div class='dialog transaction-dialog'>
+<div class='dialog transaction-dialog' ng-if="transactionDialog.initiated">
 	<div class='dialog-title flex-container flex-container-column'>
 		<div class='flex-container flex-container-row transaction-dialog-title'>
 			<div>
@@ -6,6 +6,12 @@
 				<span>Transactions {{transactionDialog.strategy}}</span>
 			</div>
 			<div>
+                <input type="button" ng-disabled="transactionDialog.previousDisabled"
+                    ng-click="transactionDialog.previous()" value="&lt;previous"
+                >
+                <span>&nbsp;&nbsp;</span>
+                <input type="button" ng-disabled="transactionDialog.nextDisabled"
+                       ng-click="transactionDialog.next()" value="next&gt;">
 				<span ng-show="transactionDialog.changed">*</span>
 				<input type="text" ng-model="transactionDialog.strategyProperty.description"
 					   ng-change="transactionDialog.onChange()"
@@ -14,12 +20,15 @@
 			</div>
 		</div>
 
-		<div ng-show="transactionDialog.showStrategyProperty">
-			<span>pre: {{transactionDialog.strategyProperty.pre}}</span>
-			<span>gain: {{transactionDialog.strategyProperty.gain}}</span>
-			<span>dayFields: {{transactionDialog.strategyProperty.dayFields}}</span>
-			<span>maFields: {{transactionDialog.strategyProperty.maFields}}</span>
-			<span>overAllmaFields: {{transactionDialog.strategyProperty.overAllmaFields}}</span>
+		<div ng-show="transactionDialog.showStrategyProperty" class="flex-container flex-container-column">
+            <div style="flex:0 0 auto">
+                <span>pre: {{transactionDialog.strategyProperty.pre}}</span>
+                <span>gain: {{transactionDialog.strategyProperty.gain}}</span>
+                <span>dayFields: {{transactionDialog.strategyProperty.dayFields}}</span>
+                <span>maFields: {{transactionDialog.strategyProperty.maFields}}</span>
+                <span>overAllmaFields: {{transactionDialog.strategyProperty.overAllmaFields}}</span>
+            </div>
+            <div id="visualisation" width="600" height="500" ng-if="transactionDialog.showStrategyProperty"></div>
 		</div>
 
 		<div class='filtered-statistics flex-container flex-container-row'>
@@ -70,6 +79,7 @@
 		</div>
 	</div>
 	<div class='dialog-container'>
+
 		<div ng-repeat="trasactionDateItem in transactionDialog.transactions" class="transaction-dialog-transaction-date-item">
 			<div>
 				<a href="" ng-click='transactionDialog.toggleShowDetailList(trasactionDateItem)'>
@@ -96,11 +106,9 @@
 			   		<span>Gain:</span><span>{{(transaction.sellPrice-transaction.buyPrice)*100/transaction.buyPrice|formatInt3}}</span>
 			   </div>
 			</div>
-		</div>
-		
-	</div>
-	<div class='dialog-footer'>
-		
+        </div>
+    </div>
+    <div class='dialog-footer'>
 		<input type="button" value="OK" ng-click='transactionDialog.okClicked()' class="dialog-footer-button"/>
 		
 	</div>
