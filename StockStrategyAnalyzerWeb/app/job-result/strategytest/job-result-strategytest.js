@@ -123,66 +123,9 @@ function JobResultStrategyTest(){
         }
 		
 		function showTransactionDialog(resultItem, index){
-			var dialog = $modal.open({
-	            templateUrl: 'job-result/strategytest/transaction-dialog/transaction-dialog.html',
-	            backdrop: 'static',
-	            controller: 'transaction-dialog-controller',
-	            controllerAs: 'transactionDialog',
-	            windowClass: 'strategy-transaction-dialog',
-				resolve:{
-	                size: function () {
-                        return jobResultStrategytest.results.length;
-                    },
-                    index: function () {
-                        return index;
-                    },
-					transactions: function(){
-						return loadTransactions(resultItem);
-	            	},
-	            	strategy: function(){
-	            		return {
-	            		    'name': resultItem.strategy,
-                            'next': function (index) {
-                                if (index + 1 < jobResultStrategytest.results.length) {
-                                    var nextResultItem = jobResultStrategytest.results[index + 1];
-                                    return loadTransactions(nextResultItem).then(function (transactions) {
-                                        return {
-                                            'index': index+1,
-                                            'strategy': nextResultItem.strategy,
-                                            'transactions': transactions
-                                        }
-                                    });
-                                }
-                            },
-                            'previous': function (index) {
-                                if (index - 1 >= 0) {
-                                    var preResultItem = jobResultStrategytest.results[index - 1];
-                                    return loadTransactions(preResultItem).then(function (transactions) {
-                                        return {
-                                            'index': index-1,
-                                            'strategy': preResultItem.strategy,
-                                            'transactions': transactions
-                                        }
-                                    });
-                                }
-                            }
-                        };
-	            	}
-				}
-	        });
+			transactionsFactory.showTransactionDialog($scope.jobId, resultItem, index, jobResultStrategytest.results);
 		}
 
-		function loadTransactions(resultItem) {
-            if (resultItem.transactions) {
-                return $q.when(resultItem.transactions);
-            }
-            return transactionsFactory.getTransactionList($scope.jobId, resultItem.strategy).then(function(rawTransactionList){
-                resultItem.transactions = initTransactionList(rawTransactionList);
-                resultItem.lastGainDate = _(resultItem.transactions).filter(function(transactionByDate) {return transactionByDate.avgGain > 0;}).map('buyDate').max().value();
-                return resultItem.transactions;
-            });
-        }
-		
 		function initResults(rawResults){
 			var results = _.map(rawResults, stategytestJobResultFactory.buildStrategyTestJobResult);
 			results = _.sortBy(results, 'strategy');
@@ -228,7 +171,7 @@ function JobResultStrategyTest(){
 
 		function preloadTransactionsForResultItemByIndex(results, index) {
 			var resultItem = results[index];
-            loadTransactions(resultItem).then(function () {
+            transactionsFactory.loadTransactions($scope.jobId, resultItem).then(function () {
 				if (index < results.length - 1) {
 					$timeout(function () {
                         preloadTransactionsForResultItemByIndex(results, index + 1);
