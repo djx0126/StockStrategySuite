@@ -32,12 +32,12 @@ public class StockDataAnalyzer {
     public static boolean forceBuy = false;
 
     /*calc parameters*/
-    public static int MIN_CLUSTER_SIZE = 50;     // 150
+    public static int MIN_CLUSTER_SIZE = 200;     // 150
     public static double TARGET_GAIN = 0.0d;
     public static boolean NORMALIZE = true;
     public static final int offset_steps = 13;   //    130,  15   ,    15
     public static final int scale_steps = 5;     //     20,  17   ,    20
-    public static final double scale_step = 0.125d;// 0.125,  0.025,  0.05
+    public static double scale_step = 0.125d;// 0.125,  0.025,  0.05
     public static final int MAX_ITER_PER_RUN = 100;
     public static boolean ADJUST_COUNT_BY_DAY = true;
 
@@ -265,7 +265,7 @@ public class StockDataAnalyzer {
     public static void writeModel(ModelWithStatistic modelWithStatistic) {
         String type = "ConfigArrayPreGainStrategy";
 //        String fileNameString = Utils.nowStr() + "_" + String.valueOf((int)modelWithStatistic.statisticResult.getScore());
-        String fileNameString = String.valueOf((int)modelWithStatistic.statisticResult.getScore()) + "_" + Utils.nowStr();
+        String fileNameString = "p2_"+String.valueOf((int)modelWithStatistic.statisticResult.getScore()) + "_" + Utils.nowStr();
         FileHelper.writeLog(fileNameString, "#" + modelWithStatistic.statisticResult.toString() + "\n"
                 + "#creationDate=" + today + "\n"
                 + "type=" + type + "\n"
