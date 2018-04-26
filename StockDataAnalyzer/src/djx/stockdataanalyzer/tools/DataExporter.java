@@ -27,7 +27,7 @@ public class DataExporter {
     public static final int GAIN = 1;
 
     public static final int[] dayFields = {/*close*/32, /*open*/0, /*high*/0, /*low*/0, /*vol*/0};
-    public static final int[] maFields = {}; //{5, 10, 20, 30};
+    public static final int[] maFields = {5,20,60,120}; //{5, 10, 20, 30};
     public static final int[] overAllmaFields = {}; //{5, 10, 20, 30};
 
     /*calc parameters*/
@@ -113,8 +113,9 @@ public class DataExporter {
 
     private static String toExportFormat(StockDataModel dataModel) {
         StringBuilder sb = new StringBuilder();
+        sb.append(dataModel.getKeyDate() + " ");
+        sb.append(dataModel.getGain() + " ");
         sb.append(Arrays.toString(dataModel.getDataArray()).replace("[", "").replace("]", "").replace(',', ' '));
-        sb.append(" " + dataModel.getGain());
         return sb.toString();
     }
 
