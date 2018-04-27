@@ -82,11 +82,26 @@
             	var orderedTransactions = _.sortBy(transactionDialog.transactions, function (t) {
 					return t.buyDate;
                 });
-                var dailyAvgGain = _.map(orderedTransactions, function (t) {
+
+            	var strategyCreationDate = transactionDialog.strategyProperty && transactionDialog.strategyProperty.creationDate || '20150630';
+
+                var transactionsBeforeStrategyCreation = _.filter(orderedTransactions, function (t) {
+					return t.buyDate <= strategyCreationDate;
+                });
+
+                var transactionsAfterStrategyCreation = _.filter(orderedTransactions, function (t) {
+                    return t.buyDate > strategyCreationDate;
+                });
+
+                var dailyAvgGain1 = _.map(transactionsBeforeStrategyCreation, function (t) {
+                    return (t.avgGain+100) / 100;
+                });
+
+                var dailyAvgGain2 = _.map(transactionsAfterStrategyCreation, function (t) {
                     return (t.avgGain+100) / 100;
                 });
                 gainLine.clear("#visualisation");
-                gainLine.drawGainLine("#visualisation", dailyAvgGain);
+                gainLine.drawGainLine("#visualisation", [dailyAvgGain1, dailyAvgGain2]);
             });
         }
 

@@ -10,21 +10,52 @@
             //     0.95,1.001,1.05,1.02,0.95,0.97,1.001,1.02,0.97,0.95,1.02,1.001];
 
             var cur = 1.0;
-            var cData = _.map(data, function (d) {
-                return cur *=d;
-            });
+            var max;
+            var dataset;
+            var size = 0;
+            if (angular.isArray(data) && angular.isArray(data[0])) {
+                var cdataPart = _.map(data, function (dataSet) {
+                    return _.map(dataSet, function (d) {
+                        return cur *=d;
+                    });
+                });
+                var max0 = _.max(cdataPart[0]);
+                var max1 = _.max(cdataPart[1]);
+                max = Math.max(max0, max1);
 
-            var max = _.max(cData);
+                var index = 0;
+                var dataPart = _.map(cdataPart, function (cdata) {
+                    return _.map(cdata, function (d, i) {
+                        return [++index, d];
+                    });
+                });
 
-            var dataset = _.map(cData, function (d, i) {
-                return [i+1, d];
-            });
-            dataset = [{data: dataset}];
+                if (cdataPart[0] && cdataPart[0].length > 0 && dataPart[1] && dataPart[1].length > 0) {
+                    var lastIndex0 = cdataPart[0].length - 1;
+                    dataPart[0].push([dataPart[0][lastIndex0][0] + 1, dataPart[1][0][1]]);
+                }
+
+                dataset = [{data: dataPart[0]}, {data: dataPart[1]}];
+
+                size = cdataPart[0].length + cdataPart[1].length + 1;
+            } else {
+                var cData = _.map(data, function (d) {
+                    return cur *=d;
+                });
+
+                max = _.max(cData);
+
+                var dataPart = _.map(cData, function (d, i) {
+                    return [i+1, d];
+                });
+                dataset = [{data: dataPart}];
+                size = cData.length + 1;
+            }
 
             var padding={top:70, right:70, bottom: 70, left:70};
 
             var xScale=d3.scale.linear()
-                .domain([1,cData.length + 1])
+                .domain([1,size])
                 .range([0,width-padding.left-padding.right]);
 
             var yScale=d3.scale.linear()
