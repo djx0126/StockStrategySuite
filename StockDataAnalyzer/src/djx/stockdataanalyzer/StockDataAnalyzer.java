@@ -265,10 +265,11 @@ public class StockDataAnalyzer {
     public static void writeModel(ModelWithStatistic modelWithStatistic) {
         String type = "ConfigArrayPreGainStrategy";
 //        String fileNameString = Utils.nowStr() + "_" + String.valueOf((int)modelWithStatistic.statisticResult.getScore());
-        String fileNameString = "p2_"+String.valueOf((int)modelWithStatistic.statisticResult.getScore()) + "_" + Utils.nowStr();
+        String fileNameString = "p1_"+String.valueOf((int)modelWithStatistic.statisticResult.getScore()) + "_" + Utils.nowStr();
         FileHelper.writeLog(fileNameString, "#" + modelWithStatistic.statisticResult.toString() + "\n"
-                + "#creationDate=" + today + "\n"
+                + "creationDate=" + today + "\n"
                 + "type=" + type + "\n"
+                + "avgByDay=" + ADJUST_COUNT_BY_DAY + "\n"
                 + "pre=" + PRE + "\n"
                 + "gain=" + GAIN + "\n"
                 + "limit=" + modelWithStatistic.model.offsets.length + "\n"

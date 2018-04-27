@@ -142,10 +142,16 @@ public class ConfigBasedStrategyFactory {
     }
 
     private static boolean parseBooleanFromString(String booleanString) {
-        if (booleanString.equalsIgnoreCase("true") || booleanString.equalsIgnoreCase("y")) {
+        return parseBooleanFromString(booleanString, false);
+    }
+
+    private static boolean parseBooleanFromString(String booleanString, boolean defaultValue) {
+        if ("true".equalsIgnoreCase(booleanString) || "y".equalsIgnoreCase(booleanString)) {
             return true;
+        } else if ("false".equalsIgnoreCase(booleanString) || "n".equalsIgnoreCase(booleanString)) {
+            return false;
         }
-        return false;
+        return defaultValue;
     }
 
     private static int[] parseIntArrayFromString(String intArrayString){
@@ -256,6 +262,7 @@ public class ConfigBasedStrategyFactory {
 
             parseSkipBigChangeProperty(properties, strategy);
             parseForceBuyProperty(properties, strategy);
+            strategy.setAvgByDay(parseBooleanFromString(properties.getProperty("avgByDay")));
 
             return strategy;
         }
@@ -284,6 +291,7 @@ public class ConfigBasedStrategyFactory {
 
             parseSkipBigChangeProperty(properties, strategy);
             parseForceBuyProperty(properties, strategy);
+            strategy.setAvgByDay(parseBooleanFromString(properties.getProperty("avgByDay")));
 
             return strategy;
         }
@@ -307,6 +315,8 @@ public class ConfigBasedStrategyFactory {
 
             parseSkipBigChangeProperty(properties, strategy);
             parseForceBuyProperty(properties, strategy);
+
+            strategy.setAvgByDay(parseBooleanFromString(properties.getProperty("avgByDay")));
 
             return strategy;
         }

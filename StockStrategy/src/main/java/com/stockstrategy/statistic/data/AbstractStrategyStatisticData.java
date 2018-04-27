@@ -12,6 +12,8 @@ public  abstract class AbstractStrategyStatisticData extends AbstractStatisticDa
 
 	private String description = null;
 
+	private boolean avgByDay = false;
+
 	public String getDescription() {
 		return description;
 	}
@@ -28,7 +30,15 @@ public  abstract class AbstractStrategyStatisticData extends AbstractStatisticDa
 	{
 		return dataArray;
 	}
-	
+
+	public boolean isAvgByDay() {
+		return avgByDay;
+	}
+
+	public void setAvgByDay(boolean avgByDay) {
+		this.avgByDay = avgByDay;
+	}
+
 	@Override
 	public DataArray generate(String stockCode, String statisticType,
 			DataMap dataMap) {

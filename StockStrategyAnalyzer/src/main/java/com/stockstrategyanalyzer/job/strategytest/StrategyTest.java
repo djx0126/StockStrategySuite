@@ -5,7 +5,7 @@ import com.stockstrategy.simulator.aggregate.AbstractAggregate;
 import com.stockstrategy.simulator.aggregate.AggregateMgr;
 import com.stockstrategy.simulator.aggregate.BuySellDetailCollector;
 import com.stockstrategy.simulator.aggregate.BuySellDetailCollector.Transaction;
-import com.stockstrategy.statistic.data.AbstractStatisticData;
+import com.stockstrategy.statistic.data.AbstractStrategyStatisticData;
 import com.stockstrategy.statistic.data.StatisticManager;
 import com.stockstrategy.statistic.result.StatisticResultManager;
 import com.stockstrategyanalyzer.job.Job;
@@ -15,6 +15,7 @@ import com.stockstrategyanalyzer.task.ITask;
 
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 public class StrategyTest extends SimulatorRunner implements ITask {
 	private long jobId;
@@ -62,28 +63,25 @@ public class StrategyTest extends SimulatorRunner implements ITask {
 
             List<Transaction> transactions = statisticsTransactionMap.get(statisticType);
 
-            AbstractStatisticData strategy = StatisticManager.getInstance().getStatistic(statisticType);
+            AbstractStrategyStatisticData strategy = (AbstractStrategyStatisticData) StatisticManager.getInstance().getStatistic(statisticType);
             String strategyStartDate = strategy.getStartDate();
 
-            int transactionGainCounter = 0;
-            int transactionLostCounter = 0;
-            float transactionGain = 0.0f;
-            float transactionLost = 0.0f;
-            for (Transaction t:transactions){
-                String buyDate = t.getBuyDate();
-                if (buyDate.compareTo(strategyStartDate)<=0){
-                    continue;
-                }
-                double buyPrice = t.getBuyPrice();
-                double sellPrice = t.getSellPrice();
-                if (sellPrice > buyPrice){
-                    transactionGainCounter++;
-                    transactionGain+= 100*((sellPrice-buyPrice)/buyPrice);
-                }else if(sellPrice < buyPrice){
-                    transactionLostCounter++;
-                    transactionLost+= 100*((buyPrice - sellPrice)/buyPrice);
-                }
+            List<Transaction> transactionsAfterCreationDate = transactions.stream().filter(t -> t.getBuyDate().compareTo(strategyStartDate) > 0).collect(Collectors.toList());
+
+            List<Double> gainList = transactionsAfterCreationDate.stream().map(t -> (t.getSellPrice()-t.getBuyPrice())/t.getBuyPrice()).collect(Collectors.toList());
+
+            if (strategy.isAvgByDay()) {
+                Map<String, List<Transaction>> transactionsByDate = transactionsAfterCreationDate.stream().collect(Collectors.groupingBy(Transaction::getBuyDate));
+                List<Double> gainListAvgByDay = transactionsByDate.keySet().stream().map(d -> transactionsByDate.get(d).stream().mapToDouble(t -> (t.getSellPrice()-t.getBuyPrice())/t.getBuyPrice()).average().getAsDouble()).collect(Collectors.toList());
+                gainList = gainListAvgByDay;
             }
+
+            List<Double> winList = gainList.stream().filter(d -> d > 0).collect(Collectors.toList());
+            int transactionGainCounter = winList.size();
+            float transactionGain = (float) winList.stream().mapToDouble(d -> 100*d).sum();
+            List<Double> lostList = gainList.stream().filter(d -> d < 0).collect(Collectors.toList());
+            int transactionLostCounter = lostList.size();
+            float transactionLost = (float) lostList.stream().mapToDouble(d -> 100*d).sum();
 
             strategyResult.setTransactionGainCounter(transactionGainCounter).setTransactionLostCounter(transactionLostCounter).setTransactionGain(transactionGain).setTransactionLost(transactionLost);
 //                System.out.println(strategyResult);
