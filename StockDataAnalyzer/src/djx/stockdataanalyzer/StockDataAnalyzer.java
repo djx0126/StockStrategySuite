@@ -37,7 +37,7 @@ public class StockDataAnalyzer {
     public static boolean NORMALIZE = true;
     public static final int offset_steps = 13;   //    130,  15   ,    15
     public static final int scale_steps = 5;     //     20,  17   ,    20
-    public static double scale_step = 0.125d;// 0.125,  0.025,  0.05
+    public static double scale_step = 0.001d;// 0.125,  0.025,  0.05
     public static final int MAX_ITER_PER_RUN = 100;
     public static boolean ADJUST_COUNT_BY_DAY = true;
 
@@ -50,6 +50,7 @@ public class StockDataAnalyzer {
     public static final int TEST_RUN_TIMES = 1000;
     public static final int THREAD_NUM = 12;
     public static int continueFrom = 0;
+    public static String endDate;
 
 
     /*running data*/
@@ -122,7 +123,7 @@ public class StockDataAnalyzer {
         System.out.println("Start");
 
 
-        StrategyHelper.generateData(CollectDataStrategy.NAME);
+        endDate = StrategyHelper.generateData(CollectDataStrategy.NAME);
         selectTrainAndTestData();
 
         System.out.println("Total " + dataList.size() + " records loaded.");
@@ -265,9 +266,10 @@ public class StockDataAnalyzer {
     public static void writeModel(ModelWithStatistic modelWithStatistic) {
         String type = "ConfigArrayPreGainStrategy";
 //        String fileNameString = Utils.nowStr() + "_" + String.valueOf((int)modelWithStatistic.statisticResult.getScore());
-        String fileNameString = "p1_"+String.valueOf((int)modelWithStatistic.statisticResult.getScore()) + "_" + Utils.nowStr();
+        String fileNameString = String.format("%.3f", StockDataAnalyzer.scale_step) + "_"+String.valueOf((int)modelWithStatistic.statisticResult.getScore()) + "_" + Utils.nowStr();
         FileHelper.writeLog(fileNameString, "#" + modelWithStatistic.statisticResult.toString() + "\n"
-                + "creationDate=" + today + "\n"
+                + "#strategyCreationDate=" + today + "\n"
+                + "creationDate=" + endDate + "\n"
                 + "type=" + type + "\n"
                 + "avgByDay=" + ADJUST_COUNT_BY_DAY + "\n"
                 + "pre=" + PRE + "\n"

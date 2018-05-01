@@ -12,11 +12,11 @@ import com.stockstrategy.tools.Utils;
 
 public class StrategyHelper {
 
-	public static void generateData(String strategyName){
+	public static String generateData(String strategyName){
 		//using strategy to generate data and save to db
 		Configurer.addStrategy(strategyName);
 
-		String endDate = "20150630";// Utils.today();
+		String endDate = "20170901";// Utils.today();
 		System.out.print("Enter the end date ["+endDate+"]: ");
 		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
 		String code = "";
@@ -41,6 +41,7 @@ public class StrategyHelper {
 			startDate=code;
 		}
 		StockStrategyTester.doTest(startDate,endDate);
+		return endDate;
 	}
 
 	@SuppressWarnings("static-access")
