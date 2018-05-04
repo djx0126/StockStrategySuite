@@ -83,7 +83,7 @@
 					return t.buyDate;
                 });
 
-            	var strategyCreationDate = transactionDialog.strategyProperty && transactionDialog.strategyProperty.creationDate || '20170901';
+            	var strategyCreationDate = transactionDialog.strategyProperty && transactionDialog.strategyProperty.creationDate || '20170101';
 
                 var transactionsBeforeStrategyCreation = _.filter(orderedTransactions, function (t) {
 					return t.buyDate <= strategyCreationDate;

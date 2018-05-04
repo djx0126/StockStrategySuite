@@ -16,7 +16,7 @@ public class StrategyHelper {
 		//using strategy to generate data and save to db
 		Configurer.addStrategy(strategyName);
 
-		String endDate = "20170901";// Utils.today();
+		String endDate = "20170101";// Utils.today();
 		System.out.print("Enter the end date ["+endDate+"]: ");
 		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
 		String code = "";
