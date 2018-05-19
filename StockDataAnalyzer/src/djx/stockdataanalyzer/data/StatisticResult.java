@@ -66,7 +66,7 @@ public class StatisticResult {
             return (score>0 && this.avgGain > 0) && this.count>=1;
         }
 
-        return (score>1.0 && accuracy>=30) && this.count>10 && this.rate > 1.05d && this.avgGain >= StockDataAnalyzer.GAIN/2;
+        return (score>1.05 && accuracy>=30) && this.count>10 && this.rate > 1.05d && this.avgGain >= StockDataAnalyzer.GAIN/2;
     }
 
     @Override
