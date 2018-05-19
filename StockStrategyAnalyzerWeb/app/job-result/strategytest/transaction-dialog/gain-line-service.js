@@ -21,7 +21,8 @@
                 });
                 var max0 = _.max(cdataPart[0]);
                 var max1 = _.max(cdataPart[1]);
-                max = Math.max(max0, max1);
+                var max2 = _.max(cdataPart[2]);
+                max = Math.max(max0, max1, max2);
 
                 var index = 0;
                 var dataPart = _.map(cdataPart, function (cdata) {
@@ -30,14 +31,27 @@
                     });
                 });
 
-                if (cdataPart[0] && cdataPart[0].length > 0 && dataPart[1] && dataPart[1].length > 0) {
-                    var lastIndex0 = cdataPart[0].length - 1;
-                    dataPart[0].push([dataPart[0][lastIndex0][0] + 1, dataPart[1][0][1]]);
+                var dataInserted = 0;
+                var lastDataIndex = 0, nextDataIndex = 1;
+                var lastDataPart, nextDataPart;
+                if (dataPart[nextDataIndex].length > 0) {
+                    lastDataPart = dataPart[lastDataIndex];
+                    nextDataPart = dataPart[nextDataIndex];
+                    lastDataPart.push(nextDataPart[0]);
+                    lastDataIndex  = 1;
+                    dataInserted++;
+                }
+                nextDataIndex = 2;
+                if (dataPart[nextDataIndex].length > 0) {
+                    lastDataPart = dataPart[lastDataIndex];
+                    nextDataPart = dataPart[nextDataIndex];
+                    lastDataPart.push(nextDataPart[0]);
+                    dataInserted++;
                 }
 
-                dataset = [{data: dataPart[0]}, {data: dataPart[1]}];
+                dataset = [{data: dataPart[0]}, {data: dataPart[1]} , {data: dataPart[2]}];
 
-                size = cdataPart[0].length + cdataPart[1].length + 1;
+                size = cdataPart[0].length + cdataPart[1].length + cdataPart[2].length + dataInserted;
             } else {
                 var cData = _.map(data, function (d) {
                     return cur *=d;
@@ -73,7 +87,7 @@
                 ;
 
             //定义两个颜色
-            var colors=[d3.rgb(0,0,255),d3.rgb(0,255,0)];
+            var colors=[d3.rgb(0,0,255),d3.rgb(255,0,255),d3.rgb(0,255,0)];
 
             var svg=d3.select(elem)
                 .append("svg")

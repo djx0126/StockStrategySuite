@@ -84,24 +84,33 @@
                 });
 
             	var strategyCreationDate = transactionDialog.strategyProperty && transactionDialog.strategyProperty.creationDate || '20170101';
+            	var strategyValidationDate = transactionDialog.strategyProperty && transactionDialog.strategyProperty.validationDate || strategyCreationDate;
 
-                var transactionsBeforeStrategyCreation = _.filter(orderedTransactions, function (t) {
-					return t.buyDate <= strategyCreationDate;
+                var transactionsTraining = _.filter(orderedTransactions, function (t) {
+					return t.buyDate <= strategyValidationDate;
+                });
+
+                var transactionsValidation = _.filter(orderedTransactions, function (t) {
+                    return t.buyDate > strategyValidationDate && t.buyDate <= strategyCreationDate;
                 });
 
                 var transactionsAfterStrategyCreation = _.filter(orderedTransactions, function (t) {
                     return t.buyDate > strategyCreationDate;
                 });
 
-                var dailyAvgGain1 = _.map(transactionsBeforeStrategyCreation, function (t) {
+                var dailyAvgGain1 = _.map(transactionsTraining, function (t) {
                     return (t.avgGain+100) / 100;
                 });
 
-                var dailyAvgGain2 = _.map(transactionsAfterStrategyCreation, function (t) {
+                var dailyAvgGain2 = _.map(transactionsValidation, function (t) {
+                    return (t.avgGain+100) / 100;
+                });
+
+                var dailyAvgGain3 = _.map(transactionsAfterStrategyCreation, function (t) {
                     return (t.avgGain+100) / 100;
                 });
                 gainLine.clear("#visualisation");
-                gainLine.drawGainLine("#visualisation", [dailyAvgGain1, dailyAvgGain2]);
+                gainLine.drawGainLine("#visualisation", [dailyAvgGain1, dailyAvgGain2, dailyAvgGain3]);
             });
         }
 
