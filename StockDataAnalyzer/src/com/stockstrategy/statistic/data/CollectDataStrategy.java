@@ -176,4 +176,9 @@ public class CollectDataStrategy extends AbstractSPreGain{
         return relativeMAData;
     }
 
+    @Override
+    protected boolean hasAllotment(int i, DataArray close, DataArray open) throws Exception {
+        // hasAllotment(i, close, open, 6);
+        return super.hasAllotment(i + GAIN, close, open, StockDataAnalyzer.GAIN + StockDataAnalyzer.PRE);
+    }
 }
