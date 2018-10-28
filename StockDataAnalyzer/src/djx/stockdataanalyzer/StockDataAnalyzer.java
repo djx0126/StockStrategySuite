@@ -32,12 +32,12 @@ public class StockDataAnalyzer {
     public static boolean forceBuy = false;
 
     /*calc parameters*/
-    public static int MIN_CLUSTER_SIZE = 200;     // 150
+    public static int MIN_CLUSTER_SIZE = 400;     // 150
     public static double TARGET_GAIN = 0.0d;
     public static boolean NORMALIZE = true;
     public static final int offset_steps = 11; //180512 13  //    130,  15   ,    15
     public static final int scale_steps = 5;     //     20,  17   ,    20
-    public static double scale_step = 0.16d;// 0.125,  0.025,  0.05
+    public static double scale_step = 0.125d;// 0.125,  0.025,  0.05
     public static final int MAX_ITER_PER_RUN = 100;
     public static boolean ADJUST_COUNT_BY_DAY = true;
 
@@ -45,7 +45,7 @@ public class StockDataAnalyzer {
     public static boolean debug = false;
     public static boolean usingPreFilter = false;
     public static float preFilterRate = 0.5f;
-    public static String SELECT_TEST_DATA_BY_DATE_STRING = "20160101"; // if set to null, will use a random selector by stock code
+    public static String SELECT_TEST_DATA_BY_DATE_STRING = "20150701"; // if set to null, will use a random selector by stock code
     public static final double E = 1e-4f;
     public static final int TEST_RUN_TIMES = 1000;
     public static final int THREAD_NUM = 12;

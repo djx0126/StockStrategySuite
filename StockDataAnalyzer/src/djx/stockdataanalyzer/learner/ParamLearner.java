@@ -36,7 +36,7 @@ public class ParamLearner implements ILeaner{
         if (StockDataAnalyzer.debug) {
             System.out.println("Start Params: " + startParam);
         }
-        StatisticResult statisticResult = resultCalculator.calcStatisticResult(startParam, trainData, new ScoreFormula.CumulativeGainScoreFormula());
+        StatisticResult statisticResult = resultCalculator.calcStatisticResult(startParam, trainData, new ScoreFormula());
         ModelWithStatistic bestModel = new ModelWithStatistic(new ResultModel(startParam), statisticResult);
 
         int fieldLength = trainData[0].getDataArray().length;
@@ -204,7 +204,7 @@ public class ParamLearner implements ILeaner{
     private static Future<ModelWithStatistic> prepareExecuteThread(ExecutorService threadPool, CountDownLatch latch, ResultModel model, StockDataModel[] trainData){
         Future<ModelWithStatistic> future = threadPool.submit(() -> {
             StatisticResultCalculator calculator = new StatisticResultCalculator();
-            StatisticResult statisticResult = calculator.calcStatisticResult(model, trainData, new ScoreFormula.CumulativeGainScoreFormula());
+            StatisticResult statisticResult = calculator.calcStatisticResult(model, trainData, new ScoreFormula());
             latch.countDown();
             return new ModelWithStatistic(model, statisticResult);
         });
