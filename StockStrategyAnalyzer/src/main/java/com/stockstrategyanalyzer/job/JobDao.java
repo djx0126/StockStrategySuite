@@ -93,7 +93,7 @@ public class JobDao {
 	}
 	
 	public List<Job> getJobs(){
-		String sql = "select id,type,state,creationDate, startDate, endDate, strategy, stockCode  from jobs";
+		String sql = "select top 100 id,type,state,creationDate, startDate, endDate, strategy, stockCode  from jobs order by id desc  ";
 		List<Job> jobs = jdbc.query(sql, new RowMapper<Job>(){
 
 			@Override
