@@ -22,7 +22,6 @@
 		transactionDialog.toggleShowDetailList = toggleShowDetailList;
 
         transactionDialog.next = function () {
-            // transactionDialog.initiated = false;
         	strategy.next(transactionDialog.index).then(function (result) {
                 transactionDialog.index++;
                 init(result.strategy, result.transactions)
@@ -30,7 +29,6 @@
         };
 
         transactionDialog.previous = function () {
-            // transactionDialog.initiated = false;
             strategy.previous(transactionDialog.index).then(function (result) {
                 transactionDialog.index--;
                 init(result.strategy, result.transactions)
@@ -57,9 +55,9 @@
 		///////////////
 		
 		function init(strategy, transactions) {
-            transactionDialog.transactions = transactionDialog.transactions || [];
-            transactionDialog.transactions.length = 0;
-            Array.prototype.push.apply(transactionDialog.transactions, transactions);
+            transactionDialog.allTransactions = transactionDialog.allTransactions || [];
+            transactionDialog.allTransactions.length = 0;
+            Array.prototype.push.apply(transactionDialog.allTransactions, transactions);
             transactionDialog.strategy = strategy;
             transactionDialog.strategyProperty = strategyFactory.getStrategy(transactionDialog.strategy);
             transactionDialog.changed = false;
@@ -135,10 +133,14 @@
 		function updateTransactionsWithFilter() {
 			var filterValue = transactionDialog.filterTypes[transactionDialog.selectedFilterId].value;
 			var filter = transactionDialog.filterTypes[transactionDialog.selectedFilterId].filter;
-			transactionDialog.transactions = sortTransactionOnDayDesc(_.filter(transactionDialog.transactions, function(transactionDateItem) {
+			transactionDialog.transactions = sortTransactionOnDayDesc(_.filter(transactionDialog.allTransactions, function(transactionDateItem) {
 				return filter(transactionDateItem, filterValue);
 			}));
 			updateStatistics(transactionDialog.transactions);
+
+            if (transactionDialog.showStrategyProperty) {
+                drawGainLine();
+            }
 		}
 
 		function updateStatistics(transactions) {

@@ -42,7 +42,7 @@
 					   class="filter-value"
 					   type="{{transactionDialog.filterTypes[transactionDialog.selectedFilterId].type}}"
 					   ng-model="transactionDialog.filterTypes[transactionDialog.selectedFilterId].value"
-					   ng-model-options="{debounce:1000}">
+					   ng-model-options="{debounce:100}">
 				<input type="checkbox"
 					   ng-checked="!transactionDialog.showByDay"
 					   ng-click="transactionDialog.showByDay = !transactionDialog.showByDay">
@@ -96,7 +96,6 @@
 				</span>
 				<span>Gain: </span><span class="sum" ng-class="{'loss': trasactionDateItem.sum < 0}">{{trasactionDateItem.sum|formatInt3}}</span>
 				<span class="transaction-day-item">Avg gain: </span><span class="avg-gain" ng-class="{'loss': trasactionDateItem.avgGain < 0}">{{trasactionDateItem.avgGain|formatInt3}}</span>
-				<span class="transaction-day-item">Ma Avg gain: </span><span class="avg-gain" ng-class="{'loss': trasactionDateItem.maAvgGain < 0}">{{trasactionDateItem.maAvgGain|formatInt3}}</span>
 			</div>
 			<div ng-if="transactionDialog.showDetailList(trasactionDateItem)">
 			   <div ng-repeat="transaction in trasactionDateItem.list">
