@@ -8,20 +8,19 @@ import com.stockstrategy.http.HttpClient;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.springframework.boot.context.embedded.LocalServerPort;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.web.server.LocalServerPort;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 public class StockDataStoreJavaApplicationTests {
 	@LocalServerPort
-	int port;
+    int port;
 
 	@Test
 	public void testLister() {
@@ -34,24 +33,24 @@ public class StockDataStoreJavaApplicationTests {
 		System.out.println(stockListItemList.size());
 		Assert.assertTrue(stockListItemList.size() > 0);
 
-		Assert.assertTrue(stockListItemList.stream().filter(s -> s.getCode().equals("600000")).findAny().isPresent());
+		Assert.assertTrue(stockListItemList.stream().anyMatch(s -> s.getCode().equals("600000")));
         String compositeIndexCode = stockListItemList.stream().filter(s -> s.getCode().equals("600000")).findAny().get().getCompositeIndexCode();
-        Assert.assertTrue(compositeIndexCode.equals("999999"));
+        Assert.assertEquals("999999", compositeIndexCode);
 
-        Assert.assertTrue(stockListItemList.stream().filter(s -> s.getCode().equals("000002")).findAny().isPresent());
+        Assert.assertTrue(stockListItemList.stream().anyMatch(s -> s.getCode().equals("000002")));
         compositeIndexCode = stockListItemList.stream().filter(s -> s.getCode().equals("000002")).findAny().get().getCompositeIndexCode();
-        Assert.assertTrue(compositeIndexCode.equals("399001"));
+        Assert.assertEquals("399001", compositeIndexCode);
 
-        Assert.assertTrue(stockListItemList.stream().filter(s -> s.getCode().equals("300059")).findAny().isPresent());
+        Assert.assertTrue(stockListItemList.stream().anyMatch(s -> s.getCode().equals("300059")));
         compositeIndexCode = stockListItemList.stream().filter(s -> s.getCode().equals("300059")).findAny().get().getCompositeIndexCode();
-        Assert.assertTrue(compositeIndexCode.equals("399006"));
+        Assert.assertEquals("399006", compositeIndexCode);
 
 		String sharedListPath = ListJobController.SHARED_LIST_PATH;
 		url = baseUrl + sharedListPath;
 		List<StockListItem> sharedStockListItemList = HttpClient.getInstance().getList(url, StockListItem.class);
 		System.out.println(sharedStockListItemList);
 		StockLister lister = new StockLister();
-		Assert.assertTrue(sharedStockListItemList.size() == lister.getSharedStockList().size());
+        Assert.assertEquals(sharedStockListItemList.size(), lister.getSharedStockList().size());
 
 	}
 
