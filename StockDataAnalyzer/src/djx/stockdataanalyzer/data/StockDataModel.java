@@ -9,7 +9,7 @@ import java.util.Arrays;
  * Created by dave on 2015/11/12.
  */
 public class StockDataModel implements IStockGain {
-    double[] dataArray; // c,c,c,o,o,h,v,ma5,ma20  -> 3,2,1,0,1  5,20
+    double[] dataArray; // c,c,c,o,o,h,v,ma5,ma20  -> 3,2,1,0,1  5,20 // for each value = C(k)/C(k-1)
     double gain;
     double percentageGain;
     String stockCode;

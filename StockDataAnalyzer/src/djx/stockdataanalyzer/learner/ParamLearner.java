@@ -4,7 +4,6 @@ import com.djx.stockgainanalyzer.Utils;
 import djx.stockdataanalyzer.StatisticResultCalculator;
 import djx.stockdataanalyzer.StockDataAnalyzer;
 import djx.stockdataanalyzer.data.*;
-import javafx.util.Pair;
 
 import java.util.*;
 import java.util.concurrent.*;
@@ -69,6 +68,7 @@ public class ParamLearner implements ILeaner{
 
             ExecutorService threadPool = Executors.newFixedThreadPool(StockDataAnalyzer.THREAD_NUM);
             CountDownLatch latch = new CountDownLatch(latchCount);
+
             List<Pair<String, Future<ModelWithStatistic>>> resultList = new LinkedList<>();
 
             for (int i=0;i<fieldLength;i++){
@@ -209,6 +209,19 @@ public class ParamLearner implements ILeaner{
             return new ModelWithStatistic(model, statisticResult);
         });
         return future;
+    }
+
+
+    class Pair<T,S>
+    {
+        private T first;
+        private S second;
+        public Pair(){ first = null; second = null;}
+        public Pair(T first, S second) { this.first = first; this.second = second; }
+        public T getKey() { return first; }
+        public S getValue() { return second; }
+        public void setKey(T newValue) { first = newValue; }
+        public void setValue(S newValue) { second = newValue; }
     }
 
 }

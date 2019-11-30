@@ -16,6 +16,7 @@ import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 /**
  * Created by dave on 2016/4/6.
@@ -23,17 +24,19 @@ import java.util.stream.Collectors;
 public class DataExporter {
 
     /*model parameters*/
-    public static final int PRE = 32;
-    public static final int GAIN = 1;
+    public static final int PRE = 64;
+    public static final int GAIN = 5;
 
-    public static final int[] dayFields = {/*close*/32, /*open*/0, /*high*/0, /*low*/0, /*vol*/0};
-    public static final int[] maFields = {5,20,60,120}; //{5, 10, 20, 30};
+    public static final int[] dayFields = {/*close*/64, /*open*/64, /*high*/64, /*low*/64, /*vol*/64};
+    public static final int[] maFields = {}; //{5, 10, 20, 30};
     public static final int[] overAllmaFields = {}; //{5, 10, 20, 30};
 
     /*calc parameters*/
-    public static boolean NORMALIZE = true;
+    public static boolean NORMALIZE = false;
     public static boolean usingPreFilter = true;
-    public static float preFilterRate = 0.1f;
+    public static float preFilterRate = 0.01f;
+
+    public static boolean PRINT_HEADER = true;
 
     static {
         StockDataAnalyzer.PRE = PRE;
@@ -75,8 +78,9 @@ public class DataExporter {
         System.out.println(Utils.getFieldArrayDefString("maFields", maFields));
 
 
-        transformValueToLog();
+//        transformValueToLog();
         normalizeData(dataList);
+
         transformOutput();
 
         String startDate = rawData[0].getKeyDate();
@@ -95,6 +99,14 @@ public class DataExporter {
                     fileNameToWrite = String.format(fileNameTemplate, startDate, splitByDate, minSuffix);
                 }
             }
+
+            if (PRINT_HEADER) {
+                String[] fields = {"c", "o", "h", "l", "v"};
+                String fieldsHeaderStr = IntStream.range(0, fields.length).mapToObj(i -> i).flatMap(i -> IntStream.range(1, dayFields[i]+1).mapToObj(n -> fields[i] + String.valueOf(n))).collect(Collectors.joining(","));
+                FileHelper.writeLog(fileNameToWrite, "date,code,gain,"+fieldsHeaderStr);
+                PRINT_HEADER = false;
+            }
+
             FileHelper.writeLog(fileNameToWrite, toExportFormat(dataModel));
         }
 
@@ -113,9 +125,9 @@ public class DataExporter {
 
     private static String toExportFormat(StockDataModel dataModel) {
         StringBuilder sb = new StringBuilder();
-        sb.append(dataModel.getKeyDate() + " ");
-        sb.append(dataModel.getGain() + " ");
-        sb.append(Arrays.toString(dataModel.getDataArray()).replace("[", "").replace("]", "").replace(',', ' '));
+        sb.append(dataModel.getKeyDate() + ", " + dataModel.getStockCode() + ", ");
+        sb.append(dataModel.getGain() + ", ");
+        sb.append(Arrays.toString(dataModel.getDataArray()).replace("[", "").replace("]", ""));//.replace(",", ' '));
         return sb.toString();
     }
 
@@ -126,7 +138,10 @@ public class DataExporter {
         stdV = Normalizer.getStdV(rawData, mean);
         double[] meanTemp = mean;
         double[] stdVTemp = stdV;
-        dataList.stream().forEach(d -> Normalizer.normalizeDataModel(d, meanTemp, stdVTemp));
+
+        if (NORMALIZE) {
+            dataList.stream().forEach(d -> Normalizer.normalizeDataModel(d, meanTemp, stdVTemp));
+        }
 
         Normalizer.NormalizeInfo normalizeInfo = Normalizer.buildNormalizeInfo(mean, stdV);
 
@@ -139,10 +154,13 @@ public class DataExporter {
 
         FileHelper.writeLog(fileNameString, "#" + "\n"
                 + "#creationDate=" + today + "\n"
+                + "#startDate=" + startDate + "\n"
+                + "#endDate=" + endDate + "\n"
                 + "pre=" + PRE + "\n"
                 + "gain=" + GAIN + "\n"
-                + (NORMALIZE ? Utils.getArrayString("mean", normalizeInfo.mean).replaceAll("\\{", "").replaceAll("}", "") + "\n" : "")
-                + (NORMALIZE ? Utils.getArrayString("stdV", normalizeInfo.stdV).replaceAll("\\{", "").replaceAll("}", "") + "\n" : "")
+                + "normalized=" + NORMALIZE + "\n"
+                + Utils.getArrayString("mean", normalizeInfo.mean).replaceAll("\\{", "").replaceAll("}", "") + "\n"
+                + Utils.getArrayString("stdV", normalizeInfo.stdV).replaceAll("\\{", "").replaceAll("}", "") + "\n"
                 + Utils.getArrayString("dayFields", dayFields).replaceAll("\\{", "").replaceAll("}", "") + "\n"
                 + Utils.getArrayString("maFields", maFields).replaceAll("\\{", "").replaceAll("}", "") + "\n"
                 + Utils.getArrayString("overAllmaFields", overAllmaFields).replaceAll("\\{", "").replaceAll("}", "") + "\n"
