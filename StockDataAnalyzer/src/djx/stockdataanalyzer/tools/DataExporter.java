@@ -32,9 +32,9 @@ public class DataExporter {
     public static final int[] overAllmaFields = {}; //{5, 10, 20, 30};
 
     /*calc parameters*/
-    public static boolean NORMALIZE = false;
-    public static boolean usingPreFilter = true;
-    public static float preFilterRate = 0.01f;
+    public static boolean NORMALIZE = true;
+    public static boolean usingPreFilter = false;
+    public static float preFilterRate = 0.1f;
 
     public static boolean PRINT_HEADER = true;
 
@@ -78,7 +78,7 @@ public class DataExporter {
         System.out.println(Utils.getFieldArrayDefString("maFields", maFields));
 
 
-//        transformValueToLog();
+        transformValueToLog();
         normalizeData(dataList);
 
         transformOutput();
