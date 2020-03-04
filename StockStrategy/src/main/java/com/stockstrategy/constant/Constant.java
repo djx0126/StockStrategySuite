@@ -233,7 +233,7 @@ public class Constant
 	public static final String SPre10Gain5_34 = "Pre10Gain5.S_34";
 	public static final String SPre10Gain5_35 = "Pre10Gain5.S_35";
 	public static final String SPre10Gain5_36 = "Pre10Gain5.S_36";
-	public static final String SPre10Gain5_37 = "Pre10Gain5.S_37";
+	public static final String SPre10Gain5_37 = "Prce10Gain5.S_37";
 	public static final String SPre10Gain5 = "Pre10Gain5.SAggregated";
 	
 	
@@ -242,8 +242,12 @@ public class Constant
 	public static final String Stestc_5 = "Stestc_5";
 	public static final String Stestd_5 = "Stestd_5";
 	public static final String Steste_5 = "Steste_5";
-	
-	public static String [] CUSTOMSTATISTICSTYPES = {};
+
+	public static final String SMacd2018202002 = "SMacd2018202002";
+	public static final String SMacd2018 = "SMacd2018";
+	public static final String SMacdStablePool = "SMacdStablePool";
+
+	public static String [] CUSTOMSTATISTICSTYPES = {"Stesta", "Stesta_5", "Stestb", "Stestb_5", "Stestc", "Stestc_5", "Stestd", "Stestd_5", "Steste", "SMacd2018202002","SMacd2018", "SMacdStablePool"};
 
 	public static String [] AGGREGATEDSTATISTICSTYPES = {};
 

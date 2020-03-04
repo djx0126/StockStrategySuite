@@ -11,7 +11,6 @@ import com.stockstrategy.constant.Constant;
 import com.stockstrategy.data.DataArray;
 import com.stockstrategy.data.DataMap;
 import com.stockstrategy.data.RawData;
-import com.stockstrategy.data.SharedStockDataHolder;
 
 import java.util.Arrays;
 import java.util.Set;
@@ -26,7 +25,7 @@ import java.util.stream.Collectors;
  *
  *
  */
-public class Steste extends AbstractStrategyStatisticData {
+public class SMacdStablePool extends AbstractStrategyStatisticData {
 	/*
 	 * (non-Javadoc)
 	 *
@@ -36,15 +35,16 @@ public class Steste extends AbstractStrategyStatisticData {
 	private int PREVIOUS = 10;
 	private int GAIN = 5;
 	private final double LIMIT = PREVIOUS;
-	private static String myStatisticType = Constant.Steste;
-	private static String START_DATE = "20140301";
+	private static String myStatisticType = Constant.SMacdStablePool;
+	private static String START_DATE = "20200304";
 
-	private static String[] pool = {"002302", "300505", "603822", "603726", "000573", "000712", "000758", "000918", "601699", "000807", "300382", "300304", "300083", "002530", "603997", "600219", "600546", "601225", "600116", "600141", "300103", "002246", "000776", "600740"};
+	private static String[] pool = {"000690", "002465", "002723", "300219", "600305", "600547", "600619", "601890"};
 	private static Set<String> stockPool = Arrays.stream(pool).collect(Collectors.toSet());
 
 
-	public Steste() {
+	public SMacdStablePool() {
 		super(myStatisticType);
+		setStartDate(START_DATE);
 	}
 
 
@@ -94,7 +94,7 @@ public class Steste extends AbstractStrategyStatisticData {
 				}
 				boolean tobuy = false;
 
-				if (macd.getValue(i) > 0 && macd.getValue(i - 1) < 0) {
+				if (macd.getValue(i) > 0.01 && macd.getValue(i - 1) < -0.01) {
 					tobuy = true;
 				}
 

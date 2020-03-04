@@ -11,7 +11,6 @@ import com.stockstrategy.constant.Constant;
 import com.stockstrategy.data.DataArray;
 import com.stockstrategy.data.DataMap;
 import com.stockstrategy.data.RawData;
-import com.stockstrategy.data.SharedStockDataHolder;
 
 import java.util.Arrays;
 import java.util.Set;
@@ -26,38 +25,34 @@ import java.util.stream.Collectors;
  *
  *
  */
-public class Steste extends AbstractStrategyStatisticData {
+public class SMacd2018202002 extends AbstractStrategyStatisticData {
 	/*
 	 * (non-Javadoc)
 	 *
 	 * @see com.stock.statistic.data.IStatisticData#generate(java.lang.String,
 	 * java.lang.String, com.stock.data.DataMap)
 	 */
-	private int PREVIOUS = 10;
 	private int GAIN = 5;
-	private final double LIMIT = PREVIOUS;
-	private static String myStatisticType = Constant.Steste;
-	private static String START_DATE = "20140301";
+	private static String myStatisticType = Constant.SMacd2018202002;
+	private static String START_DATE = "20200301";
 
-	private static String[] pool = {"002302", "300505", "603822", "603726", "000573", "000712", "000758", "000918", "601699", "000807", "300382", "300304", "300083", "002530", "603997", "600219", "600546", "601225", "600116", "600141", "300103", "002246", "000776", "600740"};
+	private static String[] pool = {"000063", "000401", "000652", "000877", "000990", "002028", "002118", "002124", "002291", "002382", "002395", "002434", "002458", "002570", "300114", "300169", "300220", "300316", "300326", "300390", "300430", "300446", "300450", "300527", "300555", "300685", "300711", "600072", "600118", "600218", "600234", "600425", "600517", "600536", "600602", "600613", "600677", "600729", "600892", "603060", "603108", "603383", "603669"};
 	private static Set<String> stockPool = Arrays.stream(pool).collect(Collectors.toSet());
 
 
-	public Steste() {
+	public SMacd2018202002() {
 		super(myStatisticType);
 	}
 
-
-	public int getPrevious(){
-		return this.PREVIOUS;
-	}
-	public int getGain(){
-		return this.GAIN;
-	}
-	public double getLimit(){
-		return this.LIMIT;
+	@Override
+	public String getStartDate() {
+		return START_DATE;
 	}
 
+	@Override
+	public boolean isAvgByDay() {
+		return true;
+	}
 
 	@Override
 	public DataArray actualGenerate(String stockCode, String statisticType,

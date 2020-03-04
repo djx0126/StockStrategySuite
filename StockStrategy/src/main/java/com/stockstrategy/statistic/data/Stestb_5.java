@@ -1,5 +1,5 @@
 /**
- * 
+ *
  */
 package com.stockstrategy.statistic.data;
 
@@ -13,50 +13,42 @@ import com.stockstrategy.data.DataMap;
 import com.stockstrategy.data.RawData;
 import com.stockstrategy.data.SharedStockDataHolder;
 
+import java.util.Arrays;
+import java.util.Set;
+import java.util.stream.Collectors;
+
 /**
  * @author Administrator
- * 
+ *
  *         when ma5 > ma10 , tigger buy , set value to 1; when ma5 < ma10 ,
  *         tigger sell , set value to -1
- * 
- * 
- * 
+ *
+ *
+ *
  */
 public class Stestb_5 extends AbstractStrategyStatisticData {
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see com.stock.statistic.data.IStatisticData#generate(java.lang.String,
 	 * java.lang.String, com.stock.data.DataMap)
 	 */
 	private int PREVIOUS = 10;
 	private int GAIN = 5;
 	private final double LIMIT = PREVIOUS;
-	private static String myStatisticType = Constant.SPre30Gain5I;
+	private static String myStatisticType = Constant.Stestb;
 	private static String START_DATE = "20140301";
 
-	//11406.435(avgGain=8.981%,sum=2227.203,lost=98.110,rate=23.701,count=248,accuracy=95.161) time:33s offset:high3:U
-//**********  end run with >>>>>>>> 5638.899(avgGain=8.195%,sum=860.444,lost=56.315,rate=16.279,count=105,accuracy=92.381), end at Sat Jun 20 07:56:49 CST 2015 passed 449s
-	private static double[] closeOffset={0.03236224387028352, 0.0029240348431290716, -0.003154043401018291, 0.013783339402803423, -0.033561462582647625, -0.004734494070604925, -0.004253229185686658, 0.022450107974579282, 0.006775877457703452, -0.013034177481977584};
-	private static double[] openOffset={0.0058605968573982176, -0.008913646210339656, 0.019602576911970336, -0.029453674905816345, -0.01346984500721191, -0.001079887374225803, -0.01010718649445053, 0.01291959871159108, 0.015708565262499242, 0.010851853157203356};
-	private static double[] highOffset={0.04137176924761186, -0.009632002100907021, 0.006879906753605622, 0.007043033588791025, -0.02469560052214189, 0.010443177398868983, -0.005643514575516915, -0.009573560484123968, -0.006959636627046461, 0.032116161048459636};
-	private static double[] lowOffset={0.012519246876647856, -0.006887496020477676, 0.010611287994370501, 0.003194530636728246, -0.03921569266711317, 0.005898827282082137, 0.007110538116369822, -0.0025235692533960227, -0.01816843170082716, 0.06465352392901194};
-	private static double[] volOffset={0.33854567686723547, -0.009531272261846593, -0.09710060731406475, -0.18578165228797275, 0.14319789563631038, -0.0017546532528463015, -0.0902211521976863, 0.06541194180783107, -0.14524460221179522, 0.3718135221496854};
-	private static double[] closeScale={0.007663028814703213, 0.06896725933232892, 0.09195634577643856, 0.04597817288821928, 0.09195634577643856, 0.107282403405845, 0.02298908644410964, 0.107282403405845, 0.1149454322205482, 0.015326057629406427};
-	private static double[] openScale={0.18846785048684533, 0.047116962621711334, 0.0353377219662835, 0.08245468458799483, 0.1766886098314175, 0.16490936917598967, 0.12957164720970615, 0.18846785048684533, 0.20024709114227318, 0.070675443932567};
-	private static double[] highScale={0.092344371153456, 0.20007947083248803, 0.261642384934792, 0.092344371153456, 0.21547019935806402, 0.184688742306912, 0.20007947083248803, 0.10773509967903201, 0.23086092788364004, 0.10773509967903201};
-	private static double[] lowScale={0.05217058470174969, 0.20868233880699877, 0.026085292350874846, 0.2217249849824362, 0.02608529235087485, 0.03912793852631227, 0.1173838155789368, 0.03912793852631227, 0.07825587705262455, 0.013042646175437423};
-	private static double[] volScale={5.811180301274632, 6.226264608508535, 7.05643322297634, 5.3960959940407305, 4.981011686806828, 1.2452529217017072, 4.565927379572925, 6.641348915742437, 4.150843072339024, 1.6603372289356093};
-//<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+	private static String[] pool = {"002463", "000063", "600807", "300655", "300470", "600490", "000576", "600741", "600183", "300500", "002421", "000895", "300413", "000650", "002202", "002044", "600139", "300429", "600872", "601006", "002723", "002871"};
+	private static Set<String> stockPool = Arrays.stream(pool).collect(Collectors.toSet());
+
 
 	public Stestb_5() {
 		super(myStatisticType);
 	}
-	
 
-	
-	
+
 	public int getPrevious(){
 		return this.PREVIOUS;
 	}
@@ -66,12 +58,69 @@ public class Stestb_5 extends AbstractStrategyStatisticData {
 	public double getLimit(){
 		return this.LIMIT;
 	}
-	
+
 
 	@Override
 	public DataArray actualGenerate(String stockCode, String statisticType,
-			DataMap dataMap) {
-		return null;
+									DataMap dataMap) {
+		DataArray statisticArray = null;
+		try {
+			DataArray close = dataMap.getDataArray(Constant.CLOSE);
+			DataArray open = dataMap.getDataArray(Constant.OPEN);
+			DataArray macd = dataMap.getDataArray(Constant.MACD);
+			DataArray macddif = dataMap.getDataArray(Constant.MACDDIF);
+			DataArray macddea = dataMap.getDataArray(Constant.MACDDEA);
+			statisticArray = new DataArray(stockCode, myStatisticType, dataMap);
+			int start = 0;
+			int count = 0;
+			for (int i = 0; i < close.size(); i++) {
+				RawData data = new RawData(close.getDate(i), 0);
+				statisticArray.addData(data);
+			}
+
+			if (!stockPool.contains(stockCode)) {
+				return statisticArray;
+			}
+
+			for (int i = 0; i < close.size(); i++) {
+
+				if (i < 1) {
+					continue;
+				}
+
+				if (Math.abs(close.getValue(i) - open.getValue(i)) > open.getValue(i) * 0.1f
+						|| Math.abs(close.getValue(i) - close.getValue(i - 1)) > close.getValue(i - 1) * 0.15) {
+					start = i;
+					count = 0;
+					continue;
+				}
+				boolean tobuy = false;
+
+//				if (macd.getValue(i) > 0.01 && macd.getValue(i - 1) < -0.01) {
+				if (macd.getValue(i) > 0 && macd.getValue(i - 1) < 0 && macddif.getValue(i) < 0.7) {
+					tobuy = true;
+				}
+
+				if (tobuy){
+					statisticArray.setValue(i, 1);
+				}
+
+			}
+			//sell: cross ma5 ma10
+			for (int i = 0 ; i<close.size()-GAIN;i++)
+			{
+				if (i < 1) {
+					continue;
+				}
+
+				if (macd.getValue(i) < 0 && macd.getValue(i - 1) > 0) {
+					statisticArray.setValue(i, -1);
+				}
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return statisticArray;
 	}
 
 }
