@@ -10,7 +10,7 @@ import com.stockstrategy.data.DataMap;
 
 public class MA200 extends AbstractMA {
 	private static final String myStatisticType = Constant.MA200;
-	private static final int MA = 200;
+	private static final int MA = 150;
 
 	@Override
 	public DataArray generate(String stockCode, String statisticType,

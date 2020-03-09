@@ -39,10 +39,6 @@ public class Steste extends AbstractStrategyStatisticData {
 	private static String myStatisticType = Constant.Steste;
 	private static String START_DATE = "20140301";
 
-	private static String[] pool = {"002302", "300505", "603822", "603726", "000573", "000712", "000758", "000918", "601699", "000807", "300382", "300304", "300083", "002530", "603997", "600219", "600546", "601225", "600116", "600141", "300103", "002246", "000776", "600740"};
-	private static Set<String> stockPool = Arrays.stream(pool).collect(Collectors.toSet());
-
-
 	public Steste() {
 		super(myStatisticType);
 	}
@@ -67,7 +63,8 @@ public class Steste extends AbstractStrategyStatisticData {
 			DataArray close = dataMap.getDataArray(Constant.CLOSE);
 			DataArray open = dataMap.getDataArray(Constant.OPEN);
 			DataArray macd = dataMap.getDataArray(Constant.MACD);
-			DataArray ma20 = dataMap.getDataArray(Constant.MA20);
+			DataArray dif = dataMap.getDataArray(Constant.MACDDIF);
+			DataArray dea = dataMap.getDataArray(Constant.MACDDEA);
 			statisticArray = new DataArray(stockCode, myStatisticType, dataMap);
 			int start = 0;
 			int count = 0;
@@ -76,13 +73,13 @@ public class Steste extends AbstractStrategyStatisticData {
 				statisticArray.addData(data);
 			}
 
-			if (!stockPool.contains(stockCode)) {
-				return statisticArray;
-			}
-
 			for (int i = 0; i < close.size(); i++) {
 
-				if (i < 1) {
+				if (i < 10) {
+					continue;
+				}
+
+				if (close.getValue(i) - close.getValue(i - 1) > 0.09 * close.getValue(i - 1)) {
 					continue;
 				}
 
@@ -94,8 +91,48 @@ public class Steste extends AbstractStrategyStatisticData {
 				}
 				boolean tobuy = false;
 
-				if (macd.getValue(i) > 0 && macd.getValue(i - 1) < 0) {
-					tobuy = true;
+				if (macd.getValue(i) > 0 && macd.getValue(i - 1) < 0  ) {
+					int lastDeathCrossK = -1;
+					for (int j = i - 2; j > 2; j--) {
+						if (macd.getValue(j) < 0 && macd.getValue(j - 1) > 0) {
+							lastDeathCrossK = j;
+							break;
+						}
+					}
+
+					int lastGoldenCross = -1;
+					double maxDif = 0;
+					for (int j = lastDeathCrossK - 2; lastDeathCrossK > 20 && j > 2; j--) {
+						if (dif.getValue(j) > maxDif) {
+							maxDif = dif.getValue(j);
+						}
+
+						if (macd.getValue(j) > 0 && macd.getValue(j - 1) < 0) {
+							lastGoldenCross = j;
+							break;
+						}
+					}
+
+					if (lastDeathCrossK > 0 && lastGoldenCross > 0) {
+						if (i - lastGoldenCross <60 && i - lastGoldenCross > 12
+						) {
+							tobuy = true;
+
+							int nextDeathCross = -1;
+							for (int j = i+1 ; j<close.size()-GAIN;j++)
+							{
+								if (macd.getValue(j) < 0 && macd.getValue(j - 1) > 0) {
+									nextDeathCross = j;
+									break;
+								}
+							}
+
+							if (nextDeathCross > 0) {
+								double gain = (close.getValue(nextDeathCross) - close.getValue(i)) * 100/close.getValue(i);
+//								System.out.printf("%s %s %.2f dif=%.3f d_sc=%d maxDif=%.3f d_bc=%d dif_bc=%.3f\n", close.getDate(i), stockCode, gain, dif.getValue(i), i - lastDeathCrossK, maxDif, i- lastGoldenCross, dif.getValue(lastGoldenCross));
+							}
+						}
+					}
 				}
 
 				if (tobuy){

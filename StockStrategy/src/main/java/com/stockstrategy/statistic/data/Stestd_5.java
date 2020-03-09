@@ -39,10 +39,6 @@ public class Stestd_5 extends AbstractStrategyStatisticData {
 	private static String myStatisticType = Constant.Stestb;
 	private static String START_DATE = "20140301";
 
-	private static String[] pool = {"000815", "002455", "002489", "000019", "002233", "600776", "601777", "600800", "000913", "601890", "600338", "600586", "002025", "600118", "002623", "002133", "002295", "300391", "600178", "600779", "002220", "300257", "002410", "600775", "300122", "600385", "600608", "002163", "002156", "000561", "600560", "600711", "300103", "000752", "300062", "000026", "600190", "600156", "600077", "600230", "600894", "300346", "000619", "300395", "600131", "600605", "002054", "600088", "600038", "600282", "600735", "600543", "002086", "600888", "002258", "002125", "000987", "601339", "000036", "000570", "603555", "000738", "002336", "002637", "002088", "300231", "600505", "601678", "002033", "002490", "300270", "002651", "002079", "002482", "002457", "600470", "002381", "002498", "600523", "600080", "600444", "002105", "002275", "600289", "000548", "000930", "002130", "300029", "002154", "002287", "002323", "601012", "600137", "300263", "600478", "601177", "600356", "000565", "600396", "603088", "600685", "002400", "600985", "600635", "300275", "002268", "002222", "002031", "000666", "002731", "002671", "002665", "000713", "601333", "600366", "000017", "002216", "601998", "002734", "300251", "002621", "603126", "002243", "600305", "002058", "000828", "600668", "002661", "600592", "002465", "000537", "600392", "002277", "600979", "300256", "300401", "600854", "002149", "603018", "000993", "000417", "600337", "002418", "600278", "002114", "002468", "002399", "002082", "600161", "600715", "600268", "600892", "600420", "600079", "002217"};
-	private static Set<String> stockPool = Arrays.stream(pool).collect(Collectors.toSet());
-
-
 	public Stestd_5() {
 		super(myStatisticType);
 	}
@@ -67,17 +63,14 @@ public class Stestd_5 extends AbstractStrategyStatisticData {
 			DataArray close = dataMap.getDataArray(Constant.CLOSE);
 			DataArray open = dataMap.getDataArray(Constant.OPEN);
 			DataArray macd = dataMap.getDataArray(Constant.MACD);
-			DataArray ma20 = dataMap.getDataArray(Constant.MA20);
+			DataArray dif = dataMap.getDataArray(Constant.MACDDIF);
+			DataArray dea = dataMap.getDataArray(Constant.MACDDEA);
 			statisticArray = new DataArray(stockCode, myStatisticType, dataMap);
 			int start = 0;
 			int count = 0;
 			for (int i = 0; i < close.size(); i++) {
 				RawData data = new RawData(close.getDate(i), 0);
 				statisticArray.addData(data);
-			}
-
-			if (!stockPool.contains(stockCode)) {
-				return statisticArray;
 			}
 
 			for (int i = 0; i < close.size(); i++) {
@@ -94,8 +87,44 @@ public class Stestd_5 extends AbstractStrategyStatisticData {
 				}
 				boolean tobuy = false;
 
-				if (macd.getValue(i) > 0 && macd.getValue(i - 1) < 0) {
-					tobuy = true;
+				if (close.getValue(i) - close.getValue(i - 1) > 0.09 * close.getValue(i - 1)) {
+					continue;
+				}
+
+				if (macd.getValue(i) > 0 && macd.getValue(i - 1) < 0  ) {
+					int lastDeathCrossK = -1;
+					for (int j = i - 10; j > 2; j--) {
+						if (macd.getValue(j) < 0 && macd.getValue(j - 1) > 0) {
+							lastDeathCrossK = j;
+							break;
+						}
+					}
+
+					int lastGoldenCross = -1;
+					double maxDif = 0;
+					for (int j = lastDeathCrossK - 2; lastDeathCrossK > 15 && j > 2; j--) {
+						if (dif.getValue(j) > maxDif) {
+							maxDif = dif.getValue(j);
+						}
+
+						if (macd.getValue(j) > 0 && macd.getValue(j - 1) < 0) {
+							lastGoldenCross = j;
+
+							break;
+						}
+					}
+
+					if (lastDeathCrossK > 0 && lastGoldenCross > 0) {
+						if (i - lastGoldenCross <60 && i - lastGoldenCross >12
+								&& dif.getValue(lastGoldenCross) < -1
+								&& dif.getValue(i) > -0.1 &&  dif.getValue(i) < 0.5 && dif.getValue(i) > - maxDif/3
+								&& dif.getValue(lastDeathCrossK) > 0
+								&& maxDif > 0.3
+								&& (-dif.getValue(lastGoldenCross)) > maxDif
+						) {
+							tobuy = true;
+						}
+					}
 				}
 
 				if (tobuy){
