@@ -1,5 +1,5 @@
 /**
- * 
+ *
  */
 package com.stockstrategy.statistic.data;
 
@@ -13,47 +13,36 @@ import com.stockstrategy.data.DataMap;
 import com.stockstrategy.data.RawData;
 import com.stockstrategy.data.SharedStockDataHolder;
 
+import java.util.Arrays;
+import java.util.Set;
+import java.util.stream.Collectors;
+
 /**
  * @author Administrator
- * 
+ *
  *         when ma5 > ma10 , tigger buy , set value to 1; when ma5 < ma10 ,
  *         tigger sell , set value to -1
- * 
- * 
- * 
+ *
+ *
+ *
  */
 public class Steste_5 extends AbstractStrategyStatisticData {
-
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see com.stock.statistic.data.IStatisticData#generate(java.lang.String,
 	 * java.lang.String, com.stock.data.DataMap)
 	 */
 	private int PREVIOUS = 10;
 	private int GAIN = 5;
 	private final double LIMIT = PREVIOUS;
-	private static String myStatisticType = Constant.SPre30Gain5I;
+	private static String myStatisticType = Constant.Steste_5;
 	private static String START_DATE = "20140301";
-
-	//3947.984(avgGain=6.082%,sum=1873.200,lost=33.656,rate=56.657,count=308,accuracy=95.455) time:33s scale:low6:U
-//**********  end run with >>>>>>>> 1493.097(avgGain=5.139%,sum=621.847,lost=39.253,rate=16.842,count=121,accuracy=94.215), end at Sat Jun 20 15:35:27 CST 2015 passed 564s
-	private static double[] closeOffset={-0.01989754198062466, 0.004713996437400715, -0.01872471088021536, 0.00134717279610735, 0.0076567122013918515, 0.005180512503780314, -0.005180512503780329, 0.005701978824470203, 0.018238496401665014, 0.004179594201894812};
-	private static double[] openOffset={-0.00339643433329933, -0.02068873982890445, -0.0035508019953024187, 0.006959724379251514, 0.006551609086648311, -0.027716131552645108, 0.0, 0.030584087646018606, 0.009421074025565164, -0.0037929890171390676};
-	private static double[] highOffset={0.04119742387804981, -0.006839424530305515, -0.0067333826589683786, -0.004321373782642578, 0.01275454131950536, -8.507240367763901E-4, -0.0028800597814529053, 0.008698118575738519, 0.036084860785546305, -0.005579877380836604};
-	private static double[] lowOffset={0.010686826930115518, -0.005442721813557216, -0.01563913430717506, -0.03583034930718722, 0.015449452173531556, -0.003559810766220274, 0.007149041789664057, -0.044533705171367996, 0.012732362458678804, 0.003679663107870687};
-	private static double[] volOffset={0.16173448802695456, -0.2119841253017907, -0.08937442717515061, -0.015852454954273454, 0.14381827257445143, -0.1787806136025776, -0.2652131337129334, -0.019855156999630925, 0.41018104147414103, 0.22082085646828595};
-	private static double[] closeScale={0.030652115258812854, 0.0536412017029225, 0.02298908644410964, 0.09195634577643856, 0.13027148984995462, 0.09961937459114177, 0.007663028814703213, 0.07663028814703213, 0.06896725933232892, 0.107282403405845};
-	private static double[] openScale={0.11779240655427833, 0.047116962621711334, 0.11779240655427833, 0.05889620327713917, 0.05889620327713917, 0.011779240655427833, 0.15313012852056185, 0.1060131658988505, 0.18846785048684533, 0.05889620327713917};
-	private static double[] highScale={0.015390728525576002, 0.138516556730184, 0.030781457051152004, 0.24625165640921604, 0.21547019935806402, 0.10773509967903201, 0.046172185576728, 0.184688742306912, 0.015390728525576002, 0.092344371153456};
-	private static double[] lowScale={0.18259704645612393, 0.13042646175437422, 0.06521323087718711, 0.09129852322806196, 0.13042646175437422, 0.07825587705262455, 0.07825587705262453, 0.013042646175437423, 0.026085292350874846, 0.18259704645612393};
-	private static double[] volScale={3.3206744578712186, 5.3960959940407305, 3.3206744578712186, 2.905590150637316, 4.150843072339024, 6.641348915742437, 6.226264608508535, 0.4150843072339023, 4.565927379572925, 3.3206744578712186};
-//<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 
 	public Steste_5() {
 		super(myStatisticType);
 	}
-	
+
 
 	public int getPrevious(){
 		return this.PREVIOUS;
@@ -64,12 +53,117 @@ public class Steste_5 extends AbstractStrategyStatisticData {
 	public double getLimit(){
 		return this.LIMIT;
 	}
-	
+
 
 	@Override
 	public DataArray actualGenerate(String stockCode, String statisticType,
-			DataMap dataMap) {
-		return null;
+									DataMap dataMap) {
+		DataArray statisticArray = null;
+		try {
+			DataArray close = dataMap.getDataArray(Constant.CLOSE);
+			DataArray open = dataMap.getDataArray(Constant.OPEN);
+			DataArray macd = dataMap.getDataArray(Constant.MACD);
+			DataArray dif = dataMap.getDataArray(Constant.MACDDIF);
+			DataArray atr = dataMap.getDataArray(Constant.ATR);
+			statisticArray = new DataArray(stockCode, myStatisticType, dataMap);
+			int start = 0;
+			int count = 0;
+			for (int i = 0; i < close.size(); i++) {
+				RawData data = new RawData(close.getDate(i), 0);
+				statisticArray.addData(data);
+			}
+
+			for (int i = 0; i < close.size(); i++) {
+
+				if (i < 10) {
+					continue;
+				}
+
+				if (close.getValue(i) - close.getValue(i - 1) > 0.09 * close.getValue(i - 1)) {
+					continue;
+				}
+
+				if (Math.abs(close.getValue(i) - open.getValue(i)) > open.getValue(i) * 0.1f
+						|| Math.abs(close.getValue(i) - close.getValue(i - 1)) > close.getValue(i - 1) * 0.15) {
+					start = i;
+					count = 0;
+					continue;
+				}
+				boolean tobuy = false;
+
+				if (macd.getValue(i) > 0 && macd.getValue(i - 1) < 0  ) {
+					int lastDeathCrossK = -1;
+					for (int j = i - 10; j > 2; j--) {
+						if (macd.getValue(j) < 0 && macd.getValue(j - 1) > 0) {
+							lastDeathCrossK = j;
+							break;
+						}
+					}
+
+					boolean minorDeath = false;
+					for (int j = i -1; j > 2 && j>i-10 ; j--) {
+						if (macd.getValue(j) < 0 && macd.getValue(j - 1) > 0) {
+							minorDeath = true;
+							break;
+						}
+					}
+
+					int lastGoldenCross = -1;
+					double maxDif = -100;
+					for (int j = lastDeathCrossK - 10; lastDeathCrossK > 20 && j > 2; j--) {
+						double dif1 = dif.getValue(j)/ Math.abs(atr.getValue(j));
+						if (dif1 > maxDif) {
+							maxDif = dif1;
+						}
+
+						if (macd.getValue(j) > 0 && macd.getValue(j - 1) < 0) {
+							lastGoldenCross = j;
+							break;
+						}
+					}
+
+					boolean minorGoldenCross = false;
+					for (int j = lastDeathCrossK -1; j > 2 && j>lastDeathCrossK-10 ; j--) {
+						if (macd.getValue(j) > 0 && macd.getValue(j - 1) < 0) {
+							minorGoldenCross = true;
+							break;
+						}
+					}
+
+					if (lastDeathCrossK > 0 && lastGoldenCross > 0 && !minorDeath && !minorGoldenCross) {
+						if (i - lastGoldenCross <60 && i - lastGoldenCross > 12
+						) {
+							double difValue = dif.getValue(i) / Math.abs(atr.getValue(i));
+							double dif2Value = dif.getValue(lastGoldenCross) / Math.abs(atr.getValue(lastGoldenCross));
+							if (difValue >-0.6083574973706583 && difValue< 0.10674762147488259
+									&& maxDif > -2.1641223541356296 && maxDif < -0.11328021314758674
+									&& dif2Value> -0.443338738719806 && dif2Value < 0.579727965522391) {
+								tobuy = true;
+							}
+						}
+					}
+				}
+
+				if (tobuy){
+					statisticArray.setValue(i, 1);
+				}
+
+			}
+			//sell: cross ma5 ma10
+			for (int i = 0 ; i<close.size()-GAIN;i++)
+			{
+				if (i < 1) {
+					continue;
+				}
+
+				if (macd.getValue(i) < 0 && macd.getValue(i - 1) > 0) {
+					statisticArray.setValue(i, -1);
+				}
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return statisticArray;
 	}
 
 }

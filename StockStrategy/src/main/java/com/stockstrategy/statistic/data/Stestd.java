@@ -36,12 +36,8 @@ public class Stestd extends AbstractStrategyStatisticData {
 	private int PREVIOUS = 10;
 	private int GAIN = 5;
 	private final double LIMIT = PREVIOUS;
-	private static String myStatisticType = Constant.Stestb;
+	private static String myStatisticType = Constant.Steste;
 	private static String START_DATE = "20140301";
-
-	private static String[] pool = {"600760", "601225", "300440", "000603", "000948", "300207", "300341", "600782", "300131", "600478", "300023", "600570", "600466", "300256", "600116", "300067", "300429", "002081", "600685", "000519", "600072", "000930"};
-	private static Set<String> stockPool = Arrays.stream(pool).collect(Collectors.toSet());
-
 
 	public Stestd() {
 		super(myStatisticType);
@@ -67,7 +63,8 @@ public class Stestd extends AbstractStrategyStatisticData {
 			DataArray close = dataMap.getDataArray(Constant.CLOSE);
 			DataArray open = dataMap.getDataArray(Constant.OPEN);
 			DataArray macd = dataMap.getDataArray(Constant.MACD);
-			DataArray ma20 = dataMap.getDataArray(Constant.MA20);
+			DataArray dif = dataMap.getDataArray(Constant.MACDDIF);
+			DataArray atr = dataMap.getDataArray(Constant.ATR);
 			statisticArray = new DataArray(stockCode, myStatisticType, dataMap);
 			int start = 0;
 			int count = 0;
@@ -76,13 +73,13 @@ public class Stestd extends AbstractStrategyStatisticData {
 				statisticArray.addData(data);
 			}
 
-			if (!stockPool.contains(stockCode)) {
-				return statisticArray;
-			}
-
 			for (int i = 0; i < close.size(); i++) {
 
-				if (i < 1) {
+				if (i < 10) {
+					continue;
+				}
+
+				if (close.getValue(i) - close.getValue(i - 1) > 0.09 * close.getValue(i - 1)) {
 					continue;
 				}
 
@@ -94,8 +91,49 @@ public class Stestd extends AbstractStrategyStatisticData {
 				}
 				boolean tobuy = false;
 
-				if (macd.getValue(i) > 0 && macd.getValue(i - 1) < 0) {
-					tobuy = true;
+				if (macd.getValue(i) > 0 && macd.getValue(i - 1) < 0  ) {
+					int lastDeathCrossK = -1;
+					for (int j = i - 10; j > 2; j--) {
+						if (macd.getValue(j) < 0 && macd.getValue(j - 1) > 0) {
+							lastDeathCrossK = j;
+							break;
+						}
+					}
+
+					boolean minorDeath = false;
+					for (int j = i -1; j > 2 && j>i-9 ; j--) {
+						if (macd.getValue(j) < 0 && macd.getValue(j - 1) > 0) {
+							minorDeath = true;
+							break;
+						}
+					}
+
+					int lastGoldenCross = -1;
+					double maxDif = -100;
+					for (int j = lastDeathCrossK - 2; lastDeathCrossK > 20 && j > 2; j--) {
+						double dif1 = dif.getValue(j)/ Math.abs(atr.getValue(j));
+						if (dif1 > maxDif) {
+							maxDif = dif1;
+						}
+
+						if (macd.getValue(j) > 0 && macd.getValue(j - 1) < 0) {
+							lastGoldenCross = j;
+							break;
+						}
+					}
+
+					if (lastDeathCrossK > 0 && lastGoldenCross > 0 && !minorDeath) {
+						if (i - lastGoldenCross <60 && i - lastGoldenCross > 12
+						) {
+							double difValue = dif.getValue(i) / Math.abs(atr.getValue(i));
+							double dif2Value = dif.getValue(lastGoldenCross) / Math.abs(atr.getValue(lastGoldenCross));
+							if (difValue > -1.7919316196121167 && difValue< -0.51787771638634
+									&& maxDif > -2.9202901143859785 && maxDif < -0.3895218154269262
+									&& dif2Value> -0.443338738719806 && dif2Value < 0.4092168481486915) {
+								tobuy = true;
+							}
+						}
+					}
 				}
 
 				if (tobuy){
