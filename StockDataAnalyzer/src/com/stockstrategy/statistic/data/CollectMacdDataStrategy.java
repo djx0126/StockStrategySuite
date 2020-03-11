@@ -78,7 +78,7 @@ public class CollectMacdDataStrategy extends AbstractSPreGain{
                     }
 
                     boolean minorDeath = false;
-                    for (int j = i -1; j > 2 && j>i-10 ; j--) {
+                    for (int j = i -1; j > 2 && j>i-9 ; j--) {
                         if (macd.getValue(j) < 0 && macd.getValue(j - 1) > 0) {
                             minorDeath = true;
                             break;
