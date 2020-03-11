@@ -21,7 +21,7 @@ public class MacdDataTester {
         dataList.add(data);
     }
 
-    public static synchronized void addPartData(PartMacdData data) {
+    private static synchronized void addPartData(PartMacdData data) {
         partMacdData.add(data);
     }
 
@@ -40,12 +40,8 @@ public class MacdDataTester {
         Map<String, List<CollectMacdDataStrategy.MacdData>> dataByDate = dataList.stream().collect(Collectors.groupingBy(CollectMacdDataStrategy.MacdData::getDate));
         System.out.println("size by date:" + dataByDate.size());
 
-        double totalAvgGainByDay = dataByDate.keySet().stream().mapToDouble(k -> dataByDate.get(k).stream().mapToDouble(CollectMacdDataStrategy.MacdData::getGain).average().getAsDouble()).average().getAsDouble();
-        List<Double> totalGainsByDay = dataByDate.keySet().stream().map(k -> dataByDate.get(k).stream().mapToDouble(CollectMacdDataStrategy.MacdData::getGain).average().getAsDouble()).collect(Collectors.toList());
-        double gainAll = 1.0;
-        for (Double g: totalGainsByDay) {
-            gainAll = gainAll *(100.0 + g)/100.0;
-        }
+        double totalAvgGainByDay = dataByDate.keySet().stream().parallel().mapToDouble(k -> dataByDate.get(k).stream().parallel().mapToDouble(CollectMacdDataStrategy.MacdData::getGain).average().getAsDouble()).average().getAsDouble();
+        double gainAll = accumulateGain(dataByDate);
         System.out.println("totalAvgGainByDay: " + Utils.format3(totalAvgGainByDay) + ", total gain: " + Utils.format3(gainAll));
 
         double dif_max = dataList.stream().parallel().mapToDouble(CollectMacdDataStrategy.MacdData::getDif).max().getAsDouble();
@@ -73,18 +69,9 @@ public class MacdDataTester {
                 scan(dif2_min, dif2_max, dif2Steps, (lDif2, rDif2) -> {
                     List<CollectMacdDataStrategy.MacdData> byDif2 = byMaxDif.stream().parallel().filter(d -> d.getLastGoldenCrossDif() >= lDif2 && d.getLastGoldenCrossDif() < rDif2).collect(Collectors.toList());
                     if (!byDif2.isEmpty()) {
-//                        System.out.println("dif=[" + lDif + "," + rDif + "] maxDif=[" + lMaxDif + "," + rMaxDif + "] dif2=[" + lDif2 + "," + rDif2 + "]");
                         Map<String, List<CollectMacdDataStrategy.MacdData>> byDate = byDif2.stream().parallel().collect(Collectors.groupingBy(CollectMacdDataStrategy.MacdData::getDate));
 
                         if (byDate.size() > 20) {
-//                            double avgGainByDay = byDate.keySet().stream().mapToDouble(k -> dataByDate.get(k).stream().mapToDouble(CollectMacdDataStrategy.MacdData::getGain).average().getAsDouble()).average().getAsDouble();
-                            List<Double> gainsByDay = byDate.keySet().stream().map(k -> dataByDate.get(k).stream().mapToDouble(CollectMacdDataStrategy.MacdData::getGain).average().getAsDouble()).collect(Collectors.toList());
-                            double gain = 1.0;
-                            for (Double g: gainsByDay) {
-                                gain = gain *(100.0 + g)/100.0;
-                            }
-//                        System.out.println("avgGainByDay: " + Utils.format3(avgGainByDay));
-
                             PartMacdData partMacdData = new PartMacdData();
                             partMacdData.lDif = lDif;
                             partMacdData.rDif = rDif;
@@ -92,8 +79,8 @@ public class MacdDataTester {
                             partMacdData.rMaxDif = rMaxDif;
                             partMacdData.lDif2 = lDif2;
                             partMacdData.rDif2 = rDif2;
-                            partMacdData.avgGainByDay = gain;
-                            partMacdData.count = byDate.size();
+
+                            partMacdData.addData(byDate);
                             addPartData(partMacdData);
                         }
                     }
@@ -112,12 +99,21 @@ public class MacdDataTester {
             return 0;
         }).limit(100).collect(Collectors.toList());
 
-        topGainPartData.stream().forEach(System.out::println);
+        topGainPartData.forEach(System.out::println);
 
 
         long endTime = System.currentTimeMillis();
         System.out.println("time passed:" + (endTime - startTime) / 1000 + " seconds.");
         System.out.println("End at " + new Date());
+    }
+
+    private static double accumulateGain(Map<String, List<CollectMacdDataStrategy.MacdData>> data) {
+        List<Double> gainsByDay = data.keySet().stream().parallel().map(k -> data.get(k).stream().parallel().mapToDouble(CollectMacdDataStrategy.MacdData::getGain).average().getAsDouble()).collect(Collectors.toList());
+        double gain = 1.0;
+        for (Double g: gainsByDay) {
+            gain = gain *(100.0 + g)/100.0;
+        }
+        return gain;
     }
 
     private static void scan(double min, double max, Map<Integer, Double> steps, BiConsumer<Double, Double> consumer) {
@@ -157,6 +153,11 @@ public class MacdDataTester {
         private double rDif2;
         private double avgGainByDay;
         private double count;
+
+        private void addData(Map<String, List<CollectMacdDataStrategy.MacdData>> byDate) {
+            avgGainByDay = accumulateGain(byDate);
+            count = byDate.size();
+        }
 
         @Override
         public String toString() {
