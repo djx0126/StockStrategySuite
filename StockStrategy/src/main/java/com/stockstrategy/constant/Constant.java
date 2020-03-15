@@ -81,11 +81,15 @@ public class Constant
 	public static final String TR = "TR";
 	public static final String ATR = "ATR";
 
+	public static final String MACDDIF_ATR = "MACDDIF_ATR";
+	public static final String MACDDEA_ATR = "MACDDEA_ATR";
+	public static final String MACD_ATR = "MACD_ATR";
+
 	public static final String Percentage3OneDayOrClose = "Percentage3OneDayOrClose";
 	public static final String ForceBuyPrice = "ForceBuyPrice";
 	public static final String RiseStopPrice = "RiseStopPrice";
 		
-	public static final String [] ADVANCEDTATISTICSTYPES = {MACDDIF, MACDDEA, MACD, KDJRSV,KDJK,KDJD,KDJJ, TR, ATR, Percentage3OneDayOrClose, RiseStopPrice, ForceBuyPrice};
+	public static final String [] ADVANCEDTATISTICSTYPES = {MACDDIF, MACDDEA, MACD, KDJRSV,KDJK,KDJD,KDJJ, TR, ATR, MACDDIF_ATR, MACDDEA_ATR, MACD_ATR, Percentage3OneDayOrClose, RiseStopPrice, ForceBuyPrice};
 	
 	
 	public static final String SELL_ARRAY_SUFFIX = "_sell";
