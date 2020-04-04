@@ -19,9 +19,9 @@ public class TransactionDao {
 	private JdbcTemplate jdbc;
 	
 	public List<Transaction> getTransactions(long jobId, String strategy){
-		String strategyResulttTransactionQuerySql = "select stockCode, buyDate, sellDate, buyPrice, sellPrice from strategytesttransaction where jobId = "+jobId +" and strategy='"+strategy+"' order by buyDate asc";
+		String strategyResultTransactionQuerySql = "select stockCode, buyDate, sellDate, buyPrice, sellPrice, actionCode from strategytesttransaction where jobId = "+jobId +" and strategy='"+strategy+"' order by buyDate asc";
 		
-		List<Transaction> transactions = jdbc.query(strategyResulttTransactionQuerySql, new RowMapper<Transaction>(){
+		List<Transaction> transactions = jdbc.query(strategyResultTransactionQuerySql, new RowMapper<Transaction>(){
 
 			@Override
 			public Transaction mapRow(ResultSet rs, int rowNum) throws SQLException {
@@ -30,14 +30,15 @@ public class TransactionDao {
 				String sellDate = rs.getString(3);
 				double buyPrice = rs.getFloat(4);
 				double sellPrice = rs.getFloat(5);
-				Transaction trans = new Transaction(stockCode, strategy, buyDate, sellDate, buyPrice, sellPrice);
+				double actionCode = rs.getFloat(6);
+				Transaction trans = new Transaction(stockCode, strategy, buyDate, sellDate, buyPrice, sellPrice, actionCode);
 				return trans;
 			}});
 		return transactions;
 	}
 
 	public void saveTransactions(long jobId, String strategy, List<Transaction> transactions) {
-		String sqlString = "insert into strategytesttransaction(jobId, strategy, stockCode, buyDate, sellDate, buyPrice, sellPrice) values(?,?,?,?,?,?,?)";
+		String sqlString = "insert into strategytesttransaction(jobId, strategy, stockCode, buyDate, sellDate, buyPrice, sellPrice, actionCode) values(?,?,?,?,?,?,?,?)";
 		jdbc.batchUpdate(sqlString, new BatchPreparedStatementSetter() {
 
 			@Override
@@ -50,6 +51,7 @@ public class TransactionDao {
 				ps.setString(5, trans.getSellDate());
 				ps.setFloat(6, (float) trans.getBuyPrice());
 				ps.setFloat(7, (float) trans.getSellPrice());
+				ps.setFloat(8, (float) trans.getActionCode());
 			}
 
 			@Override

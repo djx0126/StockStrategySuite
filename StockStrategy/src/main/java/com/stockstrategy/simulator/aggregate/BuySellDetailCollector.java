@@ -117,7 +117,7 @@ public class BuySellDetailCollector extends AbstractAggregate {
 //				}
 				if (!toSkip){
                     buyDate = date;
-                    Transaction t = new Transaction(stockCode, statisticType, buyDate, sellDate, buyPrice, sellPrice, inHand);
+                    Transaction t = new Transaction(stockCode, statisticType, buyDate, sellDate, buyPrice, sellPrice, actionCode);
                     inHand = true;
                     inHandList.add(t);
                 }
@@ -160,25 +160,16 @@ public class BuySellDetailCollector extends AbstractAggregate {
 		String sellDate;
 		double buyPrice;
 		double sellPrice;
-		boolean inHandBefore;
-		
-		public Transaction(String stockCode, String statisticType, String buyDate, String sellDate, double buyPrice, double sellPrice) {
-			this.stockCode = stockCode;
-			this.statisticType = statisticType;
-			this.buyDate = buyDate;
-			this.sellDate = sellDate;
-			this.buyPrice = buyPrice;
-			this.sellPrice = sellPrice;
-		}
+		double actionCode;
 
-		public Transaction(String stockCode, String statisticType, String buyDate, String sellDate, double buyPrice, double sellPrice, boolean inHandBefore) {
+		public Transaction(String stockCode, String statisticType, String buyDate, String sellDate, double buyPrice, double sellPrice, double actionCode) {
 			this.stockCode = stockCode;
 			this.statisticType = statisticType;
 			this.buyDate = buyDate;
 			this.sellDate = sellDate;
 			this.buyPrice = buyPrice;
 			this.sellPrice = sellPrice;
-			this.inHandBefore = inHandBefore;
+			this.actionCode = actionCode;
 		}
 
 		public String getStockCode() {
@@ -204,8 +195,10 @@ public class BuySellDetailCollector extends AbstractAggregate {
 		public double getSellPrice() {
 			return sellPrice;
 		}
-		
-		
+
+		public double getActionCode() {
+			return actionCode;
+		}
 	}
 
 }

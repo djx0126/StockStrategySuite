@@ -19,12 +19,7 @@ import com.stockstrategy.data.SharedStockDataHolder;
  *
  */
 public class StestAggregate2 extends AbstractStrategyStatisticData {
-	/*
-	 * (non-Javadoc)
-	 *
-	 * @see com.stock.statistic.data.IStatisticData#generate(java.lang.String,
-	 * java.lang.String, com.stock.data.DataMap)
-	 */
+
 	private static String myStatisticType = Constant.StestAggregate2;
 
 	public StestAggregate2() {
@@ -36,7 +31,6 @@ public class StestAggregate2 extends AbstractStrategyStatisticData {
 	public DataArray actualGenerate(String stockCode, String statisticType,
 									DataMap dataMap) throws Exception {
 		DataArray close = dataMap.getDataArray(Constant.CLOSE);
-		DataArray dif = dataMap.getDataArray(Constant.MACDDIF);
 		DataArray statisticArray = new DataArray(stockCode, myStatisticType, dataMap);
 
 		DataArray refDataArray = dataMap.getDataArray("pending.gain5b.Aggregated");
@@ -55,10 +49,10 @@ public class StestAggregate2 extends AbstractStrategyStatisticData {
 				statisticArray.setValue(i, refDataArray.getValue(i));
 			}
 
-			if (refDataArray.getValue(i) > 0 && indexDif.getValue(i) > 0 && dif.getValue(i) > 0) {
+			if (refDataArray.getValue(i) > 0 && indexDif.getValue(i) > 0 ) {
 				statisticArray.setValue(i, refDataArray.getValue(i));
 			} else if (refDataArray.getValue(i) > 0) {
-//				statisticArray.setValue(i, refDataArray.getValue(i) / 2.0d);
+				statisticArray.setValue(i, refDataArray.getValue(i) / 2.0d);
 			}
 		}
 
