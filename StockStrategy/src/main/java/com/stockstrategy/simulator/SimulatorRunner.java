@@ -4,6 +4,7 @@ import java.util.*;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
+import com.stockstrategy.constant.Configurer;
 import com.stockstrategy.constant.Constant;
 import com.stockstrategy.data.StockDataHolder;
 import com.stockstrategy.file.StockLister;
@@ -134,6 +135,8 @@ public class SimulatorRunner {
 		}
 		
 		Simulator.prepareSharedStockData(startDate, endDate);
+
+		Arrays.stream(Constant.AGGREGATEDSTATISTICSTYPES).forEach(Configurer::addStrategy);
 
         stockCodes = StockLister.getStockList();
 

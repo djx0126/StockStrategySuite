@@ -36,7 +36,7 @@ public class Simulator {
 		DataAnalyzer.analyze(stockCode);
 	}
 	
-	public static void actualExecuteWithStatistic(String stockCode, String startDate, String endDate){
+	public static void actualExecuteFind(String stockCode, String startDate, String endDate){
 		DataMap dataMap = prepareData(stockCode, startDate, endDate);
 		if (dataMap==null){return;}
 		
@@ -78,6 +78,9 @@ public class Simulator {
 			if (dataMap != null){
 				//calculate by strategy
 				DataAnalyzer.calBasicStatics(stockCode, dataMap);//calculate customer statistic data
+
+				//Analyze data
+				DataAnalyzer.calAdvancedStatics(stockCode, dataMap);//calculate basic Advanced data
 
 				//save data
 				SharedStockDataHolder.getInstance().put(stockCode, dataMap);

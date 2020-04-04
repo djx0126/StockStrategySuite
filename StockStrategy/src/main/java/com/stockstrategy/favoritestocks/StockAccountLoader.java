@@ -71,7 +71,7 @@ public class StockAccountLoader implements Runnable {
 			if (stockDetail==null){
 				continue;
 			}
-			Simulator.actualExecuteWithStatistic(stock, startDate, endDate);
+			Simulator.actualExecuteFind(stock, startDate, endDate);
 			
 			DataMap dataMap = StockDataHolder.getInstance().get(stock);
 			if (dataMap == null){

@@ -126,7 +126,7 @@ public abstract class AbstractSPreGain extends AbstractStrategyStatisticData {
 			DataArray close = dataMap.getDataArray(Constant.CLOSE);
 			statisticArray = new DataArray(stockCode, myStatisticType, dataMap);
             DataArray sellArray = new DataArray(stockCode, getSellArrayStatisticName(), dataMap);
-            dataMap.putDataArray(getSellArrayStatisticName(), sellArray);
+//            dataMap.putDataArray(getSellArrayStatisticName(), sellArray);
 
 			for (int i = 0; i < close.size(); i++) {
 				RawData data = new RawData(close.getDate(i), 0);
@@ -149,6 +149,12 @@ public abstract class AbstractSPreGain extends AbstractStrategyStatisticData {
 			// sell: cross ma5 ma10
 			
 			setSell(statisticArray, sellArray, dataMap);
+
+			for (int i = 0; i<close.size(); i++) {
+				if (sellArray.getValue(i) < 0) {
+					statisticArray.setValue(i, sellArray.getValue(i));
+				}
+			}
 
 		} catch (Exception e) {
 			e.printStackTrace();

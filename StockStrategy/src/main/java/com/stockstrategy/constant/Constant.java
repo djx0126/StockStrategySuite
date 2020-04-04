@@ -255,7 +255,10 @@ public class Constant
 
 	public static String [] CUSTOMSTATISTICSTYPES = {"Stesta", "Stesta_5", "Stestb", "Stestb_5", "Stestc", "Stestc_5", "Stestd", "Stestd_5", "Steste", "Steste_5", "SMacd2018202002","SMacd2018", "SMacdStablePool"};
 
-	public static String [] AGGREGATEDSTATISTICSTYPES = {};
+
+	public static final String StestAggregate1 = "StestAggregate1";
+	public static final String StestAggregate2 = "StestAggregate2";
+	public static String [] AGGREGATEDSTATISTICSTYPES = {StestAggregate1, StestAggregate2};
 
 	
 	///////////////////////  Delay not lager than 5 !

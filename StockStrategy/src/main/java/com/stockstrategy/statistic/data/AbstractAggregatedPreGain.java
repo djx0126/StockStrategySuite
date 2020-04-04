@@ -31,7 +31,7 @@ public abstract class AbstractAggregatedPreGain extends AbstractSPreGain {
 		super(name, pre, gain, null, null, null, null, null, null, null, null, null, null);
 		this.strategies = Arrays.copyOf(strategies, strategies.length);
 	}
-	
+
 	@Override
 	protected void setBuy(DataArray statisticArray, DataMap dataMap)  throws Exception{
 		DataArray close = dataMap.getDataArray(Constant.CLOSE);
