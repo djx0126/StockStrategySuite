@@ -1,49 +1,39 @@
-/**
- *
- */
 package com.stockstrategy.statistic.data;
-
-//import android.graphics.Paint;
-
-//import android.graphics.Paint;
 
 import com.stockstrategy.constant.Constant;
 import com.stockstrategy.data.DataArray;
 import com.stockstrategy.data.DataMap;
 import com.stockstrategy.data.RawData;
+import djx.stockdataanalyzer.StockDataAnalyzer;
+import djx.stockdataanalyzer.tools.BreakDataTester;
+import djx.stockdataanalyzer.tools.MacdDataTester;
 
 import java.util.HashMap;
 import java.util.Map;
 
-/**
- * @author Administrator
- *
- *         when ma5 > ma10 , tigger buy , set value to 1; when ma5 < ma10 ,
- *         tigger sell , set value to -1
- *
- *
- *
- */
-public class Break1 extends AbstractStrategyStatisticData {
-    /*
-     * (non-Javadoc)
-     *
-     * @see com.stock.statistic.data.IStatisticData#generate(java.lang.String,
-     * java.lang.String, com.stock.data.DataMap)
-     */
-    private static String NAME = Constant.SBreak;
-    private static String START_DATE = "20200301";
 
-    public Break1() {
-        super(NAME);
+/**
+ * Created by dave on 2015/9/29.
+ */
+public class CollectBreakStrategy extends AbstractSPreGain{
+    public static final String NAME = "CollectBreakStrategy";
+    public static int PREVIOUS = StockDataAnalyzer.PRE;
+    public static int GAIN = StockDataAnalyzer.GAIN;
+    public static int MAX_MA_DAYS = StockDataAnalyzer.fieldModel.maxMaDays;
+    public static int OVER_ALL_MAX_MA_DAYS = StockDataAnalyzer.fieldModel.overAllMaxMaDays;
+
+    private static int BREAKLONG = 52;
+    private static int LONGLONG = 100;
+
+
+    public CollectBreakStrategy() {
+        super(NAME, PREVIOUS, GAIN, /*limit*/PREVIOUS+MAX_MA_DAYS+OVER_ALL_MAX_MA_DAYS);
+
     }
 
     @Override
     public DataArray actualGenerate(String stockCode, String statisticType,
                                     DataMap dataMap) throws Exception {
-        int BREAKLONG = 52;
-        int LONGLONG = 100;
-
         DataArray close = dataMap.getDataArray(Constant.CLOSE);
         DataArray open = dataMap.getDataArray(Constant.OPEN);
         DataArray high = dataMap.getDataArray(Constant.HIGH);
@@ -70,7 +60,6 @@ public class Break1 extends AbstractStrategyStatisticData {
             ema65.addData(new RawData(close.getDate(i), 0));
             ema130.addData(new RawData(close.getDate(i), 0));
             macd_l.addData(new RawData(close.getDate(i), 0));
-
         }
 
         double tempEma65 = 0f;
@@ -192,6 +181,7 @@ public class Break1 extends AbstractStrategyStatisticData {
                 data.buyPrice = close.getValue(i);
                 data.buyDateIdx = i;
 
+
                 for (int k = i-52; k <i ; k++) {
                     if (macd_atr.getValue(k) < 0 && macd_atr.getValue(k+1) > 0) {
                         data.gcCount++;
@@ -237,17 +227,16 @@ public class Break1 extends AbstractStrategyStatisticData {
                 inhand = true;
                 statisticArray.setValue(i, 1);
                 currentData = buyData.get(close.getDate(i));
-//				BreakDataTester.addData(currentData);
+                BreakDataTester.addData(currentData);
             } else if (inhand) {
                 // test sell
                 boolean toSell= false;
 
                 double peek = MAX(high, i-52, i-1);
 
-                toSell = close.getValue(i) < sellPrice || close.getValue(i) < peek * 0.8 ;
+                toSell = close.getValue(i) < sellPrice || close.getValue(i) < peek * 0.8;
 
-//				if (toSell || i == close.size() - 1) {
-                if (toSell) {
+                if (toSell || i == close.size() - 1) {
                     inhand = false;
                     currentData.gain = 100 * (close.getValue(i) - currentData.buyPrice) / currentData.buyPrice;
                     currentData.dates = i - currentData.buyDateIdx;
@@ -269,13 +258,12 @@ public class Break1 extends AbstractStrategyStatisticData {
                     sellPrice = h1 - 3 * atr_mid;
                 }
 
-                if (currentData.buyPrice - close.getValue(i) > currentData.maxLoss) {
-                    currentData.maxLoss = currentData.buyPrice - close.getValue(i);
+                double currentGain =  (close.getValue(i) - currentData.buyPrice)*100/currentData.buyPrice;
+                if (currentGain < currentData.maxLoss) {
+                    currentData.maxLoss = currentGain;
                 }
             }
         }
-
-
 
         return statisticArray;
     }
@@ -331,5 +319,4 @@ public class Break1 extends AbstractStrategyStatisticData {
                     '}';
         }
     }
-
 }

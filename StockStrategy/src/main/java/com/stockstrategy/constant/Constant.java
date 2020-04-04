@@ -20,8 +20,8 @@ public class Constant
 	public static boolean ENABLE_SH=true;
 	public static boolean ENABLE_SZ=true;
 	
-	public static final String START = "20080101";
-	public static final String END   = "20111231";
+	public static String START = "20080101";
+	public static String END   = "20111231";
 
 	public static final String SP = "/";
 	public static final String STOCK_LIST = "stocklist.txt";

@@ -113,7 +113,7 @@ public abstract class AbstractSPreGain extends AbstractStrategyStatisticData {
 
 	@Override
 	public DataArray actualGenerate(String stockCode, String statisticType,
-			DataMap dataMap) {
+			DataMap dataMap) throws Exception {
 		DataArray statisticArray = null;
 
 		if (!dataMap.containArray(Constant.MA5)

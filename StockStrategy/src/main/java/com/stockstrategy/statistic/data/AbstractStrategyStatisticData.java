@@ -42,17 +42,21 @@ public  abstract class AbstractStrategyStatisticData extends AbstractStatisticDa
 	@Override
 	public DataArray generate(String stockCode, String statisticType,
 			DataMap dataMap) {
-		dataArray = actualGenerate(stockCode, statisticType,dataMap);
-		
-		patchAllotment( stockCode, dataArray );
-		
-		breakPatch( stockCode, dataArray );
-		
+		try {
+			dataArray = actualGenerate(stockCode, statisticType,dataMap);
+			patchAllotment( stockCode, dataArray );
+
+			breakPatch( stockCode, dataArray );
+		} catch (Exception e) {
+			e.printStackTrace();
+			dataArray = new DataArray(stockCode, statisticType, dataMap);
+		}
+
 		return dataArray;
 	}
 	
 	protected abstract DataArray actualGenerate(String stockCode, String statisticType,
-			DataMap dataMap);
+			DataMap dataMap) throws Exception;
 	
 	
 	

@@ -16,7 +16,7 @@ public class StrategyHelper {
 		//using strategy to generate data and save to db
 		Configurer.addStrategy(strategyName);
 
-		String endDate = "20170101";// Utils.today();
+		String endDate = Constant.END;// Utils.today();
 		System.out.print("Enter the end date ["+endDate+"]: ");
 		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
 		String code = "";
@@ -29,7 +29,7 @@ public class StrategyHelper {
 			endDate=code;
 		}
 
-		String startDate = "20070101"; //Utils.addMonth(endDate, -12);
+		String startDate = Constant.START; //Utils.addMonth(endDate, -12);
 
 		System.out.print("Enter the start date ["+startDate+"]: ");
 		try {
