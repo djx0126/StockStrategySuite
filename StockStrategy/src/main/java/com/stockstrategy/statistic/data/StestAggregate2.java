@@ -33,26 +33,28 @@ public class StestAggregate2 extends AbstractStrategyStatisticData {
 		DataArray close = dataMap.getDataArray(Constant.CLOSE);
 		DataArray statisticArray = new DataArray(stockCode, myStatisticType, dataMap);
 
-		DataArray refDataArray = dataMap.getDataArray("pending.gain5b.Aggregated");
-
+		String refStrategy = "pending.gain5b.Aggregated";
+		DataArray refDataArray = dataMap.getDataArray(refStrategy);
 
 		String indexStockCode = this.getStockCode001(statisticArray.getStockCode());
 		DataMap indexDataMap = SharedStockDataHolder.getInstance().get(indexStockCode);
-		DataArray indexDif = indexDataMap.getDataArray(Constant.MACDDIF);
+		DataArray indexDif = indexDataMap.getDataArray(Constant.MACDDIF_ATR);
 
 		for (int i = 0; i < close.size(); i++) {
 			statisticArray.addData(new RawData(close.getDate(i), 0));
 		}
 
 		for (int i = 0; i< close.size(); i++) {
-			if (refDataArray.getValue(i) < 0) {
-				statisticArray.setValue(i, refDataArray.getValue(i));
-			}
-
-			if (refDataArray.getValue(i) > 0 && indexDif.getValue(i) > 0 ) {
+			double indexDifValue = indexDif.getValue(indexDif.getIndexByDate(close.getDate(i)));
+//			double indexDifValue = indexDif.getValue(indexDif.getIndexByDate(close.getDate(i-10)));
+			if (refDataArray.getValue(i) > 0 && indexDifValue > 0) {
 				statisticArray.setValue(i, refDataArray.getValue(i));
 			} else if (refDataArray.getValue(i) > 0) {
-				statisticArray.setValue(i, refDataArray.getValue(i) / 2.0d);
+//				statisticArray.setValue(i, refDataArray.getValue(i) / 2.0d);
+			}
+
+			if (refDataArray.getValue(i) < 0) {
+				statisticArray.setValue(i, refDataArray.getValue(i));
 			}
 		}
 

@@ -7,6 +7,7 @@ import com.stockstrategy.constant.Constant;
 import com.stockstrategy.data.DataArray;
 import com.stockstrategy.data.DataMap;
 import com.stockstrategy.data.RawData;
+import com.stockstrategy.data.SharedStockDataHolder;
 
 /**
  * @author Administrator
@@ -17,7 +18,7 @@ import com.stockstrategy.data.RawData;
  *
  *
  */
-public class Stesta extends AbstractStrategyStatisticData {
+public class SMacd2018b extends AbstractStrategyStatisticData {
 	/*
 	 * (non-Javadoc)
 	 *
@@ -27,10 +28,10 @@ public class Stesta extends AbstractStrategyStatisticData {
 	private int PREVIOUS = 10;
 	private int GAIN = 5;
 	private final double LIMIT = PREVIOUS;
-	private static String myStatisticType = Constant.SMacd2018;
+	private static String myStatisticType = Constant.SMacd2018b;
 	private static String START_DATE = "20140301";
 
-	public Stesta() {
+	public SMacd2018b() {
 		super(myStatisticType);
 	}
 
@@ -53,7 +54,7 @@ public class Stesta extends AbstractStrategyStatisticData {
 		try {
 			DataArray close = dataMap.getDataArray(Constant.CLOSE);
 			DataArray open = dataMap.getDataArray(Constant.OPEN);
-			DataArray macd = dataMap.getDataArray(Constant.MACD_ATR);
+			DataArray macd = dataMap.getDataArray(Constant.MACD);
 			DataArray dif = dataMap.getDataArray(Constant.MACDDIF);
 			DataArray atr = dataMap.getDataArray(Constant.ATR);
 			statisticArray = new DataArray(stockCode, myStatisticType, dataMap);
@@ -126,8 +127,19 @@ public class Stesta extends AbstractStrategyStatisticData {
 						) {
 							double difValue = dif.getValue(i) / Math.abs(atr.getValue(i));
 							double dif2Value = dif.getValue(lastGoldenCross) / Math.abs(atr.getValue(lastGoldenCross));
+
+							String indexStockCode = this.getStockCode001(statisticArray.getStockCode());
+							DataMap indexDataMap = SharedStockDataHolder.getInstance().get(indexStockCode);
+							DataArray indexMA60 = indexDataMap.getDataArray(Constant.MA200);
+
+							DataArray indexClose = indexDataMap.getDataArray(Constant.CLOSE);
+
+							int indexI = indexMA60.getIndexByDate(close.getDate(i));
+
+							double maxDifRLimit = indexClose.getValue(indexI) > indexMA60.getValue(indexI) ? 0.00328021314758674 : -0.11328021314758674;
+
 							if (difValue >-0.6083574973706583 && difValue< 0.10674762147488259
-									&& maxDif > -2.1641223541356296 && maxDif < -0.11328021314758674
+									&& maxDif > -2.1641223541356296 && maxDif < maxDifRLimit
 									&& dif2Value> -0.443338738719806 && dif2Value < 0.579727965522391) {
 								tobuy = true;
 							}

@@ -27,7 +27,7 @@ public class SMacd2018 extends AbstractStrategyStatisticData {
 	private int PREVIOUS = 10;
 	private int GAIN = 5;
 	private final double LIMIT = PREVIOUS;
-	private static String myStatisticType = Constant.Steste_5;
+	private static String myStatisticType = Constant.SMacd2018;
 	private static String START_DATE = "20140301";
 
 	public SMacd2018() {

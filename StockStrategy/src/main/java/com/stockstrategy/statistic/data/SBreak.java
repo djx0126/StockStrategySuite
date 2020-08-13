@@ -24,7 +24,7 @@ import java.util.Map;
  *
  *
  */
-public class Break1 extends AbstractStrategyStatisticData {
+public class SBreak extends AbstractStrategyStatisticData {
     /*
      * (non-Javadoc)
      *
@@ -32,9 +32,9 @@ public class Break1 extends AbstractStrategyStatisticData {
      * java.lang.String, com.stock.data.DataMap)
      */
     private static String NAME = Constant.SBreak;
-    private static String START_DATE = "20200301";
+    private static String START_DATE = "20200301"; // > 20
 
-    public Break1() {
+    public SBreak() {
         super(NAME);
     }
 
