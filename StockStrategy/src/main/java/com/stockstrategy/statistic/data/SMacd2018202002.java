@@ -99,12 +99,8 @@ public class SMacd2018202002 extends AbstractStrategyStatisticData {
 
 			}
 			//sell: cross ma5 ma10
-			for (int i = 0 ; i<close.size()-GAIN;i++)
+			for (int i = 1 ; i<close.size();i++)
 			{
-				if (i < 1) {
-					continue;
-				}
-
 				if (macd.getValue(i) < 0 && macd.getValue(i - 1) > 0) {
 					statisticArray.setValue(i, -1);
 				}

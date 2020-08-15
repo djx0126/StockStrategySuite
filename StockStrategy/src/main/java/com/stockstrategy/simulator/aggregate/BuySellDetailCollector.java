@@ -73,7 +73,7 @@ public class BuySellDetailCollector extends AbstractAggregate {
         String buyDate = "";
         String sellDate = "";
         for (int i = 0;i< buySellArray.size();i++){
-        	
+			double actionCode = buySellArray.getValue(i);
         	String date = buySellArray.getDate(i);
         	if (date.compareTo(stateDate)<0){
         		continue;
@@ -87,13 +87,20 @@ public class BuySellDetailCollector extends AbstractAggregate {
                     for (Transaction t:inHandList) {
                         t.sellDate = sellDate;
                         t.sellPrice = sellPrice;
+						t.actionCode = actionCode;
+                        if (actionCode < 0) {
+							t.inHand = false;
+						} else {
+                        	t.inHand = true;
+						}
+
                         transactions.add(t);
                     }
                 }
         		break;
         	}
         	
-        	double actionCode = buySellArray.getValue(i);
+
         	double sellCode = sellArray.getValue(i);
             if(inHand && sellCode<0){
                 Transaction t = inHandList.remove(0);
@@ -137,6 +144,7 @@ public class BuySellDetailCollector extends AbstractAggregate {
             for (Transaction t:inHandList) {
                 t.sellDate = sellDate;
                 t.sellPrice = sellPrice;
+                t.inHand = true;
                 transactions.add(t);
             }
     	}
@@ -161,6 +169,7 @@ public class BuySellDetailCollector extends AbstractAggregate {
 		double buyPrice;
 		double sellPrice;
 		double actionCode;
+		boolean inHand;
 
 		public Transaction(String stockCode, String statisticType, String buyDate, String sellDate, double buyPrice, double sellPrice, double actionCode) {
 			this.stockCode = stockCode;
@@ -198,6 +207,10 @@ public class BuySellDetailCollector extends AbstractAggregate {
 
 		public double getActionCode() {
 			return actionCode;
+		}
+
+		public boolean isInHand() {
+			return this.inHand;
 		}
 	}
 

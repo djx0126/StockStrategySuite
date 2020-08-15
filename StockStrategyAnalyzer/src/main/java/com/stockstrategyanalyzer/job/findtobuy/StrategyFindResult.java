@@ -24,9 +24,8 @@ public class StrategyFindResult {
 	@Override
 	public String toString(){
 		StringBuilder sb = new StringBuilder();
-		sb.append(strategy+": \n");
-		sb.append(String.valueOf(stockGainMap.size())+" +++ ");
-		
+		sb.append(">>>  " + strategy+" ("+String.valueOf(stockGainMap.size())+"): \n");
+
 		int i=0;
 		for (String stockCode:stockGainMap.keySet()){
 			float gain = stockGainMap.get(stockCode);

@@ -2,10 +2,14 @@ package com.stockstrategyanalyzer.job.findtobuy;
 
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 
 import com.stockstrategy.example.panel.tester.StockFinder;
 import com.stockstrategy.example.panel.tester.StockStrategyTester;
 import com.stockstrategy.simulator.DataAnalyzer;
+import com.stockstrategy.simulator.aggregate.AbstractAggregate;
+import com.stockstrategy.simulator.aggregate.AggregateMgr;
+import com.stockstrategy.simulator.aggregate.BuySellDetailCollector;
 import com.stockstrategy.statistic.result.StatisticResult;
 import com.stockstrategy.statistic.result.StatisticResultManager;
 import com.stockstrategy.statistic.result.StockStatisticResult;
@@ -19,6 +23,9 @@ public class FindToBuy extends StockFinder implements ITask {
 	private String endDate;
 	
 	private FindResult result;
+
+	private FindResult toSell;
+	private AbstractAggregate buySellDetailCollector = new BuySellDetailCollector();
 	
 	public FindToBuy(Job job, JobParam jobParam) {
 		this.jobId = job.getId();
@@ -28,13 +35,27 @@ public class FindToBuy extends StockFinder implements ITask {
 	@Override
 	public ITaskResult runTask() {
 		result = new FindResult(jobId, endDate);
+		toSell = new FindResult(jobId, endDate);
 		
 		String startDate = getStartDateByEndDate(endDate);
 		
+//		this.init(startDate, endDate);
+//		this.run();
+//		this.resultInit();
+//		this.buildFindResult();
+
 		this.init(startDate, endDate);
+		AggregateMgr.getInstance().addAggregate(this.buySellDetailCollector);
 		this.run();
 		this.resultInit();
 		this.buildFindResult();
+		buildSellResult();
+
+		AggregateMgr.getInstance().releaseAggregate(this.buySellDetailCollector);
+
+		System.out.println("TO SELL >>>>>>>>>>>>>>>>>>>>>");
+		System.out.println(toSell);
+		System.out.println("TO SELL <<<<<<<<<<<<<<<<<<<<<");
 		
 		return result;
 	}
@@ -76,6 +97,24 @@ public class FindToBuy extends StockFinder implements ITask {
 			}
 		}
 //		System.out.println(result);
+	}
+
+	private void buildSellResult() {
+		Map<String, List<BuySellDetailCollector.Transaction>> statisticsTransactionMap = (Map<String, List<BuySellDetailCollector.Transaction>>) buySellDetailCollector.getResult();
+		for (String statisticType : statisticsTransactionMap.keySet()) {
+			List<BuySellDetailCollector.Transaction> transactions = statisticsTransactionMap.get(statisticType);
+			for (BuySellDetailCollector.Transaction t : transactions) {
+				if (t.getSellDate().equals(this.endDate) && !t.isInHand() ) {
+					if (!toSell.getStrategyFindResults().containsKey(statisticType)) {
+						StrategyFindResult strategyFindResult = new StrategyFindResult(statisticType);
+						toSell.addStrategyFindResult(strategyFindResult);
+					}
+					StrategyFindResult strategyFindResult = toSell.getStrategyFindResults().get(statisticType);
+					float gain = (float) (100.0 * (t.getSellPrice() - t.getBuyPrice()) / t.getBuyPrice());
+					strategyFindResult.addStockWithGain(t.getStockCode(), gain);
+				}
+			}
+		}
 	}
 
 }
