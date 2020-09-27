@@ -3,19 +3,11 @@
  */
 package com.stockstrategy.statistic.data;
 
-//import android.graphics.Paint;
-
-//import android.graphics.Paint;
-
 import com.stockstrategy.constant.Constant;
 import com.stockstrategy.data.DataArray;
 import com.stockstrategy.data.DataMap;
 import com.stockstrategy.data.RawData;
 import com.stockstrategy.data.SharedStockDataHolder;
-
-import java.util.Arrays;
-import java.util.Set;
-import java.util.stream.Collectors;
 
 /**
  * @author Administrator
@@ -27,7 +19,6 @@ import java.util.stream.Collectors;
  *
  */
 public class Stestb extends AbstractStrategyStatisticData {
-
 	/*
 	 * (non-Javadoc)
 	 *
@@ -37,12 +28,8 @@ public class Stestb extends AbstractStrategyStatisticData {
 	private int PREVIOUS = 10;
 	private int GAIN = 5;
 	private final double LIMIT = PREVIOUS;
-	private static String myStatisticType = Constant.Stestb;
+	private static String myStatisticType = Constant.SMacd2018b;
 	private static String START_DATE = "20140301";
-
-	private static String[] pool = {"002463", "000063", "600807", "300655", "300470", "600490", "000576", "600741", "600183", "300500", "002421", "000895", "300413", "000650", "002202", "002044", "600139", "300429", "600872", "601006", "002723", "002871"};
-	private static Set<String> stockPool = Arrays.stream(pool).collect(Collectors.toSet());
-
 
 	public Stestb() {
 		super(myStatisticType);
@@ -68,7 +55,9 @@ public class Stestb extends AbstractStrategyStatisticData {
 			DataArray close = dataMap.getDataArray(Constant.CLOSE);
 			DataArray open = dataMap.getDataArray(Constant.OPEN);
 			DataArray macd = dataMap.getDataArray(Constant.MACD);
-			DataArray ma20 = dataMap.getDataArray(Constant.MA20);
+			DataArray dif = dataMap.getDataArray(Constant.MACDDIF);
+			DataArray atr = dataMap.getDataArray(Constant.ATR);
+			DataArray macdAtr = dataMap.getDataArray(Constant.MACD_ATR);
 			statisticArray = new DataArray(stockCode, myStatisticType, dataMap);
 			int start = 0;
 			int count = 0;
@@ -77,13 +66,13 @@ public class Stestb extends AbstractStrategyStatisticData {
 				statisticArray.addData(data);
 			}
 
-			if (!stockPool.contains(stockCode)) {
-				return statisticArray;
-			}
-
 			for (int i = 0; i < close.size(); i++) {
 
-				if (i < 1) {
+				if (i < 10) {
+					continue;
+				}
+
+				if (close.getValue(i) - close.getValue(i - 1) > 0.09 * close.getValue(i - 1)) {
 					continue;
 				}
 
@@ -95,8 +84,87 @@ public class Stestb extends AbstractStrategyStatisticData {
 				}
 				boolean tobuy = false;
 
-				if (macd.getValue(i) > 0 && macd.getValue(i - 1) < 0) {
-					tobuy = true;
+				boolean macdGoldCross = macd.getValue(i) > 0 && macd.getValue(i - 1) <= 0;
+				if (macdGoldCross && macdAtr.getValue(i) > 0 ) {
+					int lastDeathCrossK = -1;
+					for (int j = i - 10; j > 2; j--) {
+						if (macd.getValue(j) < 0 && macd.getValue(j - 1) > 0) {
+							lastDeathCrossK = j;
+							break;
+						}
+					}
+
+					boolean minorDeath = false;
+					for (int j = i -1; j > 2 && j>i-10 ; j--) {
+						if (macd.getValue(j) < 0 && macd.getValue(j - 1) > 0) {
+							minorDeath = true;
+							break;
+						}
+					}
+
+					int lastGoldenCross = -1;
+					double maxDif = -100;
+					for (int j = lastDeathCrossK - 10; lastDeathCrossK > 20 && j > 2; j--) {
+						double dif1 = dif.getValue(j)/ Math.abs(atr.getValue(j));
+						if (dif1 > maxDif) {
+							maxDif = dif1;
+						}
+
+						if (macd.getValue(j) > 0 && macd.getValue(j - 1) < 0) {
+							lastGoldenCross = j;
+							break;
+						}
+					}
+
+					boolean minorGoldenCross = false;
+					for (int j = lastDeathCrossK -1; j > 2 && j>lastDeathCrossK-10 ; j--) {
+						if (macd.getValue(j) > 0 && macd.getValue(j - 1) < 0) {
+							minorGoldenCross = true;
+							break;
+						}
+					}
+
+
+
+					if (lastDeathCrossK > 0 && lastGoldenCross > 0 && !minorDeath && !minorGoldenCross) {
+						if (i - lastGoldenCross <60 && i - lastGoldenCross > 12
+						) {
+							double difValue = dif.getValue(i) / Math.abs(atr.getValue(i));
+							double dif2Value = dif.getValue(lastGoldenCross) / Math.abs(atr.getValue(lastGoldenCross));
+
+							String indexStockCode = this.getStockCode001(statisticArray.getStockCode());
+							DataMap indexDataMap = SharedStockDataHolder.getInstance().get(indexStockCode);
+							DataArray indexMA60 = indexDataMap.getDataArray(Constant.MA200);
+
+							DataArray indexClose = indexDataMap.getDataArray(Constant.CLOSE);
+
+							int indexI = indexMA60.getIndexByDate(close.getDate(i));
+
+							double maxDifRLimit = indexClose.getValue(indexI) > indexMA60.getValue(indexI) ? 0.00328021314758674 : -0.11328021314758674;
+
+							if (difValue >-0.6083574973706583 && difValue< 0.10674762147488259
+									&& maxDif > -2.1641223541356296 && maxDif < maxDifRLimit
+									&& dif2Value> -0.443338738719806 && dif2Value < 0.579727965522391) {
+								tobuy = true;
+							}
+
+//							PartMacdData{avgGainByDay=3.570060233952363, count=138.0, lDif=-0.6083574973706583, rDif=0.10674762147488259, lMaxDif=-2.1641223541356296, rMaxDif=-0.11328021314758674, lDif2=-0.443338738719806, rDif2=0.579727965522391}
+//							PartMacdData{avgGainByDay=3.570060233952363, count=138.0, lDif=-0.6083574973706583, rDif=0.10674762147488259, lMaxDif=-2.1641223541356296, rMaxDif=-0.11328021314758674, lDif2=-0.443338738719806, rDif2=1.602794669764588}
+//							PartMacdData{avgGainByDay=3.570060233952363, count=138.0, lDif=-0.6083574973706583, rDif=0.10674762147488259, lMaxDif=-2.1641223541356296, rMaxDif=-0.11328021314758674, lDif2=-0.443338738719806, rDif2=2.625861374006785}
+//							PartMacdData{avgGainByDay=3.570060233952363, count=138.0, lDif=-0.6083574973706583, rDif=0.10674762147488259, lMaxDif=-2.1641223541356296, rMaxDif=-0.11328021314758674, lDif2=-0.443338738719806, rDif2=3.648928078248982}
+//							PartMacdData{avgGainByDay=3.570060233952363, count=138.0, lDif=-0.6083574973706583, rDif=0.10674762147488259, lMaxDif=-2.1641223541356296, rMaxDif=-0.11328021314758674, lDif2=-0.443338738719806, rDif2=3.648928078248982}
+//							PartMacdData{avgGainByDay=3.570060233952363, count=138.0, lDif=-0.6083574973706583, rDif=0.10674762147488259, lMaxDif=-1.4805016404729487, rMaxDif=-0.11328021314758674, lDif2=-0.443338738719806, rDif2=0.579727965522391}
+//							PartMacdData{avgGainByDay=3.570060233952363, count=138.0, lDif=-0.6083574973706583, rDif=0.10674762147488259, lMaxDif=-1.4805016404729487, rMaxDif=-0.11328021314758674, lDif2=-0.443338738719806, rDif2=1.602794669764588}
+//							PartMacdData{avgGainByDay=3.570060233952363, count=138.0, lDif=-0.6083574973706583, rDif=0.10674762147488259, lMaxDif=-1.4805016404729487, rMaxDif=-0.11328021314758674, lDif2=-0.443338738719806, rDif2=2.625861374006785}
+//							PartMacdData{avgGainByDay=3.570060233952363, count=138.0, lDif=-0.6083574973706583, rDif=0.10674762147488259, lMaxDif=-1.4805016404729487, rMaxDif=-0.11328021314758674, lDif2=-0.443338738719806, rDif2=3.648928078248982}
+//							PartMacdData{avgGainByDay=3.570060233952363, count=138.0, lDif=-0.6083574973706583, rDif=0.10674762147488259, lMaxDif=-1.4805016404729487, rMaxDif=-0.11328021314758674, lDif2=-0.443338738719806, rDif2=3.648928078248982}
+//							PartMacdData{avgGainByDay=3.570060233952363, count=138.0, lDif=-0.6083574973706583, rDif=0.10674762147488259, lMaxDif=-0.7968909268102677, rMaxDif=-0.11328021314758674, lDif2=-0.443338738719806, rDif2=0.579727965522391}
+//							PartMacdData{avgGainByDay=3.570060233952363, count=138.0, lDif=-0.6083574973706583, rDif=0.10674762147488259, lMaxDif=-0.7968909268102677, rMaxDif=-0.11328021314758674, lDif2=-0.443338738719806, rDif2=1.602794669764588}
+//							PartMacdData{avgGainByDay=3.570060233952363, count=138.0, lDif=-0.6083574973706583, rDif=0.10674762147488259, lMaxDif=-0.7968909268102677, rMaxDif=-0.11328021314758674, lDif2=-0.443338738719806, rDif2=2.625861374006785}
+//							PartMacdData{avgGainByDay=3.570060233952363, count=138.0, lDif=-0.6083574973706583, rDif=0.10674762147488259, lMaxDif=-0.7968909268102677, rMaxDif=-0.11328021314758674, lDif2=-0.443338738719806, rDif2=3.648928078248982}
+//							PartMacdData{avgGainByDay=3.570060233952363, count=138.0, lDif=-0.6083574973706583, rDif=0.10674762147488259, lMaxDif=-0.7968909268102677, rMaxDif=-0.11328021314758674, lDif2=-0.443338738719806, rDif2=3.648928078248982}
+						}
+					}
 				}
 
 				if (tobuy){
@@ -105,10 +173,9 @@ public class Stestb extends AbstractStrategyStatisticData {
 
 			}
 			//sell: cross ma5 ma10
-			for (int i = 1 ; i<close.size();i++)
+			for (int i = 1; i<close.size();i++)
 			{
-
-				if (macd.getValue(i) < 0 && macd.getValue(i - 1) > 0) {
+				if (macdAtr.getValue(i) < 0 || macd.getValue(i) < 0 && macd.getValue(i - 1) >= 0) {
 					statisticArray.setValue(i, -1);
 				}
 			}

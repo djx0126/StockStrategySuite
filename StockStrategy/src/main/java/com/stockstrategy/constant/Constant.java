@@ -254,7 +254,7 @@ public class Constant
 	public static final String SMacd2018b = "SMacd2018b";
 	public static final String SMacdStablePool = "SMacdStablePool";
 
-	public static String [] CUSTOMSTATISTICSTYPES = {"Stesta", "Stesta_5", "Stestb", "Stestb_5", "Stestc", "Stestc_5", "Stestd", "Stestd_5", "Steste", "Steste_5", "SBreak",  "SMacd2018202002","SMacd2018", "SMacd2018b", "SMacdStablePool"};
+	public static String [] CUSTOMSTATISTICSTYPES = {"Stesta", "Stesta_5", "Stestb", "Stestb_5", "Stestc", "Stestc_5", "Stestd", "Stestd_5", "Steste", "Steste_5", "SBreak", "SMacd2018", "SMacd2018b", "SMacdStablePool"};
 
 
 	public static final String StestAggregate1 = "StestAggregate1";
