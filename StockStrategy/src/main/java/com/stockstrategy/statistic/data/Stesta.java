@@ -27,7 +27,7 @@ public class Stesta extends AbstractStrategyStatisticData {
 	private int PREVIOUS = 10;
 	private int GAIN = 5;
 	private final double LIMIT = PREVIOUS;
-	private static String myStatisticType = Constant.SMacd2018;
+	private static String myStatisticType = Constant.Stesta;
 	private static String START_DATE = "20140301";
 
 	public Stesta() {
@@ -53,7 +53,7 @@ public class Stesta extends AbstractStrategyStatisticData {
 		try {
 			DataArray close = dataMap.getDataArray(Constant.CLOSE);
 			DataArray open = dataMap.getDataArray(Constant.OPEN);
-			DataArray macd = dataMap.getDataArray(Constant.MACD_ATR);
+			DataArray macd = dataMap.getDataArray(Constant.MACD);
 			DataArray dif = dataMap.getDataArray(Constant.MACDDIF);
 			DataArray atr = dataMap.getDataArray(Constant.ATR);
 			statisticArray = new DataArray(stockCode, myStatisticType, dataMap);
@@ -84,12 +84,20 @@ public class Stesta extends AbstractStrategyStatisticData {
 
 				if (macd.getValue(i) > 0 && macd.getValue(i - 1) < 0  ) {
 					int lastDeathCrossK = -1;
-					for (int j = i - 10; j > 2; j--) {
-						if (macd.getValue(j) < 0 && macd.getValue(j - 1) > 0) {
-							lastDeathCrossK = j;
+					double greenSize1 = 0.0d;
+					for (int j = i-1; j > 2; j--) {
+						if (macd.getValue(j) > 0.01) {
+							if (j <= i-10) {
+								lastDeathCrossK = j+1;
+							}
 							break;
 						}
+						greenSize1 += Math.abs(macd.getValue(j)) / Math.abs(atr.getValue(j));
 					}
+					if (lastDeathCrossK < 0) {
+						continue;
+					}
+
 
 					boolean minorDeath = false;
 					for (int j = i -1; j > 2 && j>i-10 ; j--) {
@@ -98,55 +106,65 @@ public class Stesta extends AbstractStrategyStatisticData {
 							break;
 						}
 					}
+					if (minorDeath) {
+						continue;
+					}
 
 					int lastGoldenCross = -1;
 					double maxDif = -100;
-					for (int j = lastDeathCrossK - 10; lastDeathCrossK > 20 && j > 2; j--) {
+					double greenSize2 = 0.0d;
+					for (int j = lastDeathCrossK -1; j > 2; j--) {
 						double dif1 = dif.getValue(j)/ Math.abs(atr.getValue(j));
 						if (dif1 > maxDif) {
 							maxDif = dif1;
 						}
-
-						if (macd.getValue(j) > 0 && macd.getValue(j - 1) < 0) {
-							lastGoldenCross = j;
+						if (macd.getValue(j) < -0.01) {
+							if (j <= lastDeathCrossK - 10 ) {
+								lastGoldenCross = j+1;
+							}
 							break;
 						}
+						greenSize2 += Math.abs(macd.getValue(j)) / Math.abs(atr.getValue(j));
+					}
+					if (lastGoldenCross < 0) {
+						continue;
 					}
 
-					boolean minorGoldenCross = false;
-					for (int j = lastDeathCrossK -1; j > 2 && j>lastDeathCrossK-10 ; j--) {
-						if (macd.getValue(j) > 0 && macd.getValue(j - 1) < 0) {
-							minorGoldenCross = true;
-							break;
-						}
-					}
-
-					if (lastDeathCrossK > 0 && lastGoldenCross > 0 && !minorDeath && !minorGoldenCross) {
+					if (lastDeathCrossK > 0 && lastGoldenCross > 0 && !minorDeath ) {
 						if (i - lastGoldenCross <60 && i - lastGoldenCross > 12
 						) {
 							double difValue = dif.getValue(i) / Math.abs(atr.getValue(i));
 							double dif2Value = dif.getValue(lastGoldenCross) / Math.abs(atr.getValue(lastGoldenCross));
-							if (difValue >-0.6083574973706583 && difValue< 0.10674762147488259
-									&& maxDif > -2.1641223541356296 && maxDif < -0.11328021314758674
-									&& dif2Value> -0.443338738719806 && dif2Value < 0.579727965522391) {
+							double sizeRate = Math.log10(greenSize1/greenSize2);
+
+							if (difValue > -1.2739033092340826 && difValue< -0.6533809556695691
+									&& maxDif > -1.7100025125926361 && maxDif < 0.2089873177343693
+									&& dif2Value> -2.4746844249873945 && dif2Value < -1.693687577222569
+									&& sizeRate> -1.2466607691767195 && sizeRate < -0.15379618937533834) {
 								tobuy = true;
 							}
 
-//							PartMacdData{avgGainByDay=3.570060233952363, count=138.0, lDif=-0.6083574973706583, rDif=0.10674762147488259, lMaxDif=-2.1641223541356296, rMaxDif=-0.11328021314758674, lDif2=-0.443338738719806, rDif2=0.579727965522391}
-//							PartMacdData{avgGainByDay=3.570060233952363, count=138.0, lDif=-0.6083574973706583, rDif=0.10674762147488259, lMaxDif=-2.1641223541356296, rMaxDif=-0.11328021314758674, lDif2=-0.443338738719806, rDif2=1.602794669764588}
-//							PartMacdData{avgGainByDay=3.570060233952363, count=138.0, lDif=-0.6083574973706583, rDif=0.10674762147488259, lMaxDif=-2.1641223541356296, rMaxDif=-0.11328021314758674, lDif2=-0.443338738719806, rDif2=2.625861374006785}
-//							PartMacdData{avgGainByDay=3.570060233952363, count=138.0, lDif=-0.6083574973706583, rDif=0.10674762147488259, lMaxDif=-2.1641223541356296, rMaxDif=-0.11328021314758674, lDif2=-0.443338738719806, rDif2=3.648928078248982}
-//							PartMacdData{avgGainByDay=3.570060233952363, count=138.0, lDif=-0.6083574973706583, rDif=0.10674762147488259, lMaxDif=-2.1641223541356296, rMaxDif=-0.11328021314758674, lDif2=-0.443338738719806, rDif2=3.648928078248982}
-//							PartMacdData{avgGainByDay=3.570060233952363, count=138.0, lDif=-0.6083574973706583, rDif=0.10674762147488259, lMaxDif=-1.4805016404729487, rMaxDif=-0.11328021314758674, lDif2=-0.443338738719806, rDif2=0.579727965522391}
-//							PartMacdData{avgGainByDay=3.570060233952363, count=138.0, lDif=-0.6083574973706583, rDif=0.10674762147488259, lMaxDif=-1.4805016404729487, rMaxDif=-0.11328021314758674, lDif2=-0.443338738719806, rDif2=1.602794669764588}
-//							PartMacdData{avgGainByDay=3.570060233952363, count=138.0, lDif=-0.6083574973706583, rDif=0.10674762147488259, lMaxDif=-1.4805016404729487, rMaxDif=-0.11328021314758674, lDif2=-0.443338738719806, rDif2=2.625861374006785}
-//							PartMacdData{avgGainByDay=3.570060233952363, count=138.0, lDif=-0.6083574973706583, rDif=0.10674762147488259, lMaxDif=-1.4805016404729487, rMaxDif=-0.11328021314758674, lDif2=-0.443338738719806, rDif2=3.648928078248982}
-//							PartMacdData{avgGainByDay=3.570060233952363, count=138.0, lDif=-0.6083574973706583, rDif=0.10674762147488259, lMaxDif=-1.4805016404729487, rMaxDif=-0.11328021314758674, lDif2=-0.443338738719806, rDif2=3.648928078248982}
-//							PartMacdData{avgGainByDay=3.570060233952363, count=138.0, lDif=-0.6083574973706583, rDif=0.10674762147488259, lMaxDif=-0.7968909268102677, rMaxDif=-0.11328021314758674, lDif2=-0.443338738719806, rDif2=0.579727965522391}
-//							PartMacdData{avgGainByDay=3.570060233952363, count=138.0, lDif=-0.6083574973706583, rDif=0.10674762147488259, lMaxDif=-0.7968909268102677, rMaxDif=-0.11328021314758674, lDif2=-0.443338738719806, rDif2=1.602794669764588}
-//							PartMacdData{avgGainByDay=3.570060233952363, count=138.0, lDif=-0.6083574973706583, rDif=0.10674762147488259, lMaxDif=-0.7968909268102677, rMaxDif=-0.11328021314758674, lDif2=-0.443338738719806, rDif2=2.625861374006785}
-//							PartMacdData{avgGainByDay=3.570060233952363, count=138.0, lDif=-0.6083574973706583, rDif=0.10674762147488259, lMaxDif=-0.7968909268102677, rMaxDif=-0.11328021314758674, lDif2=-0.443338738719806, rDif2=3.648928078248982}
-//							PartMacdData{avgGainByDay=3.570060233952363, count=138.0, lDif=-0.6083574973706583, rDif=0.10674762147488259, lMaxDif=-0.7968909268102677, rMaxDif=-0.11328021314758674, lDif2=-0.443338738719806, rDif2=3.648928078248982}
+//PartMacdData{avgGainByDay=8.897555009590619, count=63.0, lDif=-5.239209043625603, rDif=-1.2133049951300645, lMaxDif=-1.3592495797232786, rMaxDif=0.22486094348377228, lDif2=-3.724946591688249, rDif2=0.3895432595118402}
+//PartMacdData{avgGainByDay=8.897555009590619, count=63.0, lDif=-5.239209043625603, rDif=-1.2133049951300645, lMaxDif=-1.3592495797232786, rMaxDif=0.22486094348377228, lDif2=-3.724946591688249, rDif2=2.446783185111885}
+//PartMacdData{avgGainByDay=8.897555009590619, count=63.0, lDif=-5.239209043625603, rDif=-1.2133049951300645, lMaxDif=-1.3592495797232786, rMaxDif=0.22486094348377228, lDif2=-3.724946591688249, rDif2=4.5040231107119295}
+//PartMacdData{avgGainByDay=8.897555009590619, count=63.0, lDif=-5.239209043625603, rDif=-1.2133049951300645, lMaxDif=-1.3592495797232786, rMaxDif=0.22486094348377228, lDif2=-3.724946591688249, rDif2=4.5040231107119295}
+//PartMacdData{avgGainByDay=8.861042360629762, count=81.0, lDif=-2.5552696779619106, rDif=-1.2133049951300645, lMaxDif=-1.3592495797232786, rMaxDif=1.8089614666908231, lDif2=-3.724946591688249, rDif2=0.3895432595118402}
+//PartMacdData{avgGainByDay=8.861042360629762, count=81.0, lDif=-2.5552696779619106, rDif=-1.2133049951300645, lMaxDif=-1.3592495797232786, rMaxDif=3.393061989897874, lDif2=-3.724946591688249, rDif2=0.3895432595118402}
+//PartMacdData{avgGainByDay=8.861042360629762, count=81.0, lDif=-2.5552696779619106, rDif=-1.2133049951300645, lMaxDif=-1.3592495797232786, rMaxDif=4.977162513104925, lDif2=-3.724946591688249, rDif2=0.3895432595118402}
+//PartMacdData{avgGainByDay=8.861042360629762, count=81.0, lDif=-2.5552696779619106, rDif=-1.2133049951300645, lMaxDif=-1.3592495797232786, rMaxDif=4.977162513104925, lDif2=-3.724946591688249, rDif2=0.3895432595118402}
+//PartMacdData{avgGainByDay=8.738683513219295, count=81.0, lDif=-2.5552696779619106, rDif=-1.2133049951300645, lMaxDif=-1.3592495797232786, rMaxDif=1.8089614666908231, lDif2=-1.6676966660882044, rDif2=0.3895432595118402}
+//PartMacdData{avgGainByDay=8.738683513219295, count=81.0, lDif=-2.5552696779619106, rDif=-1.2133049951300645, lMaxDif=-1.3592495797232786, rMaxDif=3.393061989897874, lDif2=-1.6676966660882044, rDif2=0.3895432595118402}
+//PartMacdData{avgGainByDay=8.738683513219295, count=81.0, lDif=-2.5552696779619106, rDif=-1.2133049951300645, lMaxDif=-1.3592495797232786, rMaxDif=4.977162513104925, lDif2=-1.6676966660882044, rDif2=0.3895432595118402}
+//PartMacdData{avgGainByDay=8.738683513219295, count=81.0, lDif=-2.5552696779619106, rDif=-1.2133049951300645, lMaxDif=-1.3592495797232786, rMaxDif=4.977162513104925, lDif2=-1.6676966660882044, rDif2=0.3895432595118402}
+//PartMacdData{avgGainByDay=8.721521173072679, count=62.0, lDif=-2.5552696779619106, rDif=-1.2133049951300645, lMaxDif=-1.3592495797232786, rMaxDif=0.22486094348377228, lDif2=-3.724946591688249, rDif2=0.3895432595118402}
+//PartMacdData{avgGainByDay=8.721521173072679, count=62.0, lDif=-2.5552696779619106, rDif=-1.2133049951300645, lMaxDif=-1.3592495797232786, rMaxDif=0.22486094348377228, lDif2=-3.724946591688249, rDif2=2.446783185111885}
+//PartMacdData{avgGainByDay=8.721521173072679, count=62.0, lDif=-2.5552696779619106, rDif=-1.2133049951300645, lMaxDif=-1.3592495797232786, rMaxDif=0.22486094348377228, lDif2=-3.724946591688249, rDif2=4.5040231107119295}
+//PartMacdData{avgGainByDay=8.721521173072679, count=62.0, lDif=-2.5552696779619106, rDif=-1.2133049951300645, lMaxDif=-1.3592495797232786, rMaxDif=0.22486094348377228, lDif2=-3.724946591688249, rDif2=4.5040231107119295}
+//PartMacdData{avgGainByDay=8.518935647480381, count=62.0, lDif=-3.897234360793757, rDif=-1.2133049951300645, lMaxDif=-1.3592495797232786, rMaxDif=0.22486094348377228, lDif2=-3.724946591688249, rDif2=0.3895432595118402}
+//PartMacdData{avgGainByDay=8.518935647480381, count=62.0, lDif=-3.897234360793757, rDif=-1.2133049951300645, lMaxDif=-1.3592495797232786, rMaxDif=0.22486094348377228, lDif2=-3.724946591688249, rDif2=2.446783185111885}
+//PartMacdData{avgGainByDay=8.518935647480381, count=62.0, lDif=-3.897234360793757, rDif=-1.2133049951300645, lMaxDif=-1.3592495797232786, rMaxDif=0.22486094348377228, lDif2=-3.724946591688249, rDif2=4.5040231107119295}
+//PartMacdData{avgGainByDay=8.518935647480381, count=62.0, lDif=-3.897234360793757, rDif=-1.2133049951300645, lMaxDif=-1.3592495797232786, rMaxDif=0.22486094348377228, lDif2=-3.724946591688249, rDif2=4.5040231107119295}
+//PartMacdData{avgGainByDay=8.07410171491971, count=62.0, lDif=-5.239209043625603, rDif=-1.2133049951300645, lMaxDif=-1.3592495797232786, rMaxDif=0.22486094348377228, lDif2=-1.6676966660882044, rDif2=0.3895432595118402}
 						}
 					}
 				}
